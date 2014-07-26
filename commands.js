@@ -467,14 +467,14 @@ exports.commands = {
 
 	// Roleplaying commands
 	setpoll: function(arg, by, room, con) {
-		if (!this.hasRank(by, '+%@#~')) return false;
+		if (!this.canUse('setrp', room, by) || !(room in this.RP)) return false;
 		if (!arg) return this.say(con, room, 'Please enter a strawpoll link.');
 
 		this.RP[room].poll = arg;
 		this.say(con, room, 'The poll was set to ' + arg + '.');
 	},
 	setwotd: function(arg, by, room, con) {
-		if (!this.hasRank(by, '+%@#~')) return false;
+		if (!this.canUse('setrp', room, by) || !(room in this.RP)) return false;
 		if (!arg) return this.say(con, room, 'Please enter a Writer of the Day.');
 
 		this.RP[room].wotd = arg;
@@ -497,13 +497,13 @@ exports.commands = {
 	wotdclear: 'clearwotd',
 	removewotd: 'clearwotd',
 	clearwotd: function(arg, by, room, con) {
-		if (!this.hasRank(by, '+%@#~')) return false;
+		if (!this.canUse('setrp', room, by) || !(room in this.RP)) return false;
 		if (!this.RP[room].wotd) return this.say(con, room, 'There isn\'t a Writer of the Day to remove. :/');
 		this.say(con, room, 'The Writer of the Day has been cleared.');
 		delete this.RP[room].wotd;
 	},
 	setdoc: function(arg, by, room, con) {
-		if (!this.hasRank(by, '+%@#~')) return false;
+		if (!this.canUse('setrp', room, by) || !(room in this.RP)) return false;
 		if (!arg) return this.say(con, room, 'Please enter a document link.');
 
 		this.RP[room].doc = arg;
@@ -523,7 +523,7 @@ exports.commands = {
 		this.say(con, room, text + 'The current document for the RP is available at ' + this.RP[room].doc + '.');
 	},
 	rmdoc: function(arg, by, room, con) {
-		if (!this.hasRank(by, '+%@#~')) return false;
+		if (!this.canuse('setrp', room, by) || !(room in this.RP)) return false;
 		if (!this.RP[room].doc) return this.say(con, room, 'There isn\'t a document to remove. :/');
 		this.say(con, room, 'The document has been removed.');
 		delete this.RP[room].doc;
@@ -542,13 +542,13 @@ exports.commands = {
 		this.say(con, room, text + 'The current poll is available at ' + this.RP[room].poll + '.');
 	},
 	endpoll: function(arg, by, room, con) {
-		if (!this.hasRank(by, '+%@#~')) return false;
+		if (!this.canUse('setrp', room, by)) return false;
 		if (!this.RP[room].poll) return this.say(con, room, 'There isn\'t a poll to remove.');
 		this.say(con, room, '**The poll has ended!** Results at ' + this.RP[room].poll + '/r');
 		delete this.RP[room].poll;
 	},
 	rmpoll: function(arg, by, room, con) {
-		if (!this.hasRank(by, '+%@#~')) return false;
+		if (!this.canUse('setrp', room, by) || !(room in this.RP)) return false;
 		if (!this.RP[room].poll) return this.say(con, room, 'There isn\'t a poll to remove.');
 		this.say(con, room, 'The poll has been cleared.');
 		delete this.RP[room].poll;
@@ -581,18 +581,13 @@ exports.commands = {
 		this.say(con, room, text + 'This command is designed to test if the bot is working, and it is.');
 	},
 	newbie: function(arg, by, room, con) {
-		if (config.serverid !== 'showdown' || room !== 'writing' || !this.hasRank(by, '@#~')); 
-		if ((this.hasRank(by, '@#~') && config.rprooms.indexOf(room) !== -1) || room.charAt(0) === ',') {
-			var newbie1 = 'Welcome to the Writing room! In case you missed the big shiny box, please make sure to visit the room website and read the rules listed there: http://pswriting.weebly.com/rules.html'
-                        var newbie2 = 'Also, feel free to ask the staff any questions you may have. I\'m sure they\'d love to answer them!'
-		}
-                    this.say(con, room, newbie1);  		
-                    this.say(con, room, newbie2);
-
+		if (config.serverid !== 'showdown' || room !== 'writing' || !this.hasRank(by, '@#~')) return false; 
+		this.say(con, room, 'Welcome to the Writing room! In case you missed the big shiny box, please make sure to visit the room website and read the rules listed there: http://pswriting.weebly.com/rules.html');
+		this.say(con, room, 'Also, feel free to ask the staff any questions you may have. I\'m sure they\'d love to answer them!');
 	},
 	ping: function(arg, by, room, con) {
 		var text = '/msg AxeBane, You are needed by ' + by;
-		if (toId(arg).length) {text += ' because: '+ arg};
+		if (toId(arg).length) text += ' because: '+ arg;
 		this.say(con, room, text);
 	},
 	fossil: function(arg, by, room, con) {
@@ -632,49 +627,49 @@ exports.commands = {
 	events: function(arg, by, room, con) {
 		if (config.serverid !== 'showdown') return true;
 		if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !== -1) || room.charAt(0) === ',') {
-			var text = ''
+			var text = '';
+		} else {
+			var text = '/w ' + by + ', ';
 		}
 		this.say(con, room, 'The current Contests and Events for the Writing Room can be found here: http://pswriting.weebly.com/contests--events.html'); 
         },
         randomstats: 'randstats',
         rs: 'randstats',
-        randstats: function(arg, by, room, con, shuffle) {
+        randstats: function(arg, by, room, con) {
                 var text = '';
                 var stat = [];
                 if (!arg) {
                         var bst = Math.floor(580 * Math.random()) + 200;
                 } else {
-                        if (isNaN(arg)) return this.say(con, room, "Specified BST must be a number. Leave blank for a random BST.");
-                        var bst = Math.floor(arg);
-                        if (bst < 30) return this.say(con, room, "Specified BST must be a greater than 30.");
-                        if (bst > 780) return this.say(con, room, "Specified BST must be a less than 780.");
+                	arg = parseInt(arg);
+                        if (isNaN(arg) || arg < 30 || arg > 780) return this.say(con, room, "Specified BST must be a whole number between 30 and 780.");
                 }
-                var remaining = bst
+                var remaining = arg;
                 for (i = 0; i < 6; i++) {
                         if (remaining > 200) {
                                 stat[i] = Math.floor(194 * Math.random()) + 5;
                         } else {
                                 stat[i] = Math.floor((remaining - ((6 - i) * 5 )) * Math.random()) + 5;
                         }
-                        remaining = remaining - stat[i];
+                        remaining -= stat[i];
                 }
                 if (remaining !== 0) {
                         if (remaining < 100) {
-                                for (i = 0; i < 6; i++) {
-                                        if (stat[i] < 100) stat[i] = stat[i] + remaining;
+                                for (var i = 0; i < 6; i++) {
+                                        if (stat[i] < 100) stat[i] += remaining;
                                 }
                         } else {
                                 var share = Math.floor(remaining / 6);
                                 var total = '';
-                                for (i = 0; i < 6; i++) {
-                                        stat[i] = stat[i] + (share);
-                                        total = total + stat[i];
+                                for (var i = 0; i < 6; i++) {
+                                        stat[i] += share;
+                                        total += stat[i];
                                 }
-                        remaining = (bst - total);
-                        stat[0] = stat[0] + remaining;
+                        	remaining = (bst - total);
+                        	stat[0] = stat[0] + remaining;
                         }
                 }
-                ranStats = this.shuffle(stat);
+                var ranStats = this.shuffle(stat);
                 text += 'Random stats: ``HP:`` ' + ranStats[0] + ' ``Atk:`` ' + ranStats[1] + ' ``Def:`` ' + ranStats[2] + ' ``SpA:`` ' + ranStats[3] + ' ``SpD:`` ' + ranStats[4] + ' ``Spe:`` ' + ranStats[5] + ' BST: ' + bst + '.';
                 this.say(con, room, text);
 	},
