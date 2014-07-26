@@ -632,43 +632,48 @@ exports.commands = {
 			var text = '/w ' + by + ', ';
 		}
 		this.say(con, room, 'The current Contests and Events for the Writing Room can be found here: http://pswriting.weebly.com/contests--events.html'); 
-        },
+       },
         randomstats: 'randstats',
         rs: 'randstats',
-        randstats: function(arg, by, room, con) {
+        randstats: function(arg, by, room, con, shuffle) {
                 var text = '';
                 var stat = [];
                 if (!arg) {
                         var bst = Math.floor(580 * Math.random()) + 200;
                 } else {
-                	arg = parseInt(arg);
+                        var bst = Math.floor(arg);
+                        arg = parseInt(arg);
                         if (isNaN(arg) || arg < 30 || arg > 780) return this.say(con, room, "Specified BST must be a whole number between 30 and 780.");
                 }
-                var remaining = arg;
+                var remaining = bst
                 for (i = 0; i < 6; i++) {
                         if (remaining > 200) {
                                 stat[i] = Math.floor(194 * Math.random()) + 5;
                         } else {
                                 stat[i] = Math.floor((remaining - ((6 - i) * 5 )) * Math.random()) + 5;
                         }
-                        remaining -= stat[i];
+                        remaining = remaining - stat[i];
                 }
                 if (remaining !== 0) {
                         if (remaining < 100) {
-                                for (var i = 0; i < 6; i++) {
-                                        if (stat[i] < 100) stat[i] += remaining;
+                                for (i = 0; i < 6; i++) {
+                                        if (stat[i] < 100) stat[i] = stat[i] + remaining;
                                 }
                         } else {
                                 var share = Math.floor(remaining / 6);
                                 var total = '';
-                                for (var i = 0; i < 6; i++) {
-                                        stat[i] += share;
-                                        total += stat[i];
+                                for (i = 0; i < 6; i++) {
+                                        stat[i] = stat[i] + (share);
+                                        total = total + stat[i];
                                 }
-                        	remaining = (bst - total);
-                        	stat[0] = stat[0] + remaining;
+                        remaining = (bst - total);
+                        stat[0] = stat[0] + remaining;
                         }
                 }
+                ranStats = this.shuffle(stat);
+                text += 'Random stats: ``HP:`` ' + ranStats[0] + ' ``Atk:`` ' + ranStats[1] + ' ``Def:`` ' + ranStats[2] + ' ``SpA:`` ' + ranStats[3] + ' ``SpD:`` ' + ranStats[4] + ' ``Spe:`` ' + ranStats[5] + ' BST: ' + bst + '.';
+                this.say(con, room, text);
+	},
                 var ranStats = this.shuffle(stat);
                 text += 'Random stats: ``HP:`` ' + ranStats[0] + ' ``Atk:`` ' + ranStats[1] + ' ``Def:`` ' + ranStats[2] + ' ``SpA:`` ' + ranStats[3] + ' ``SpD:`` ' + ranStats[4] + ' ``Spe:`` ' + ranStats[5] + ' BST: ' + bst + '.';
                 this.say(con, room, text);
