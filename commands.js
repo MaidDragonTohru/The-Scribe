@@ -681,37 +681,4 @@ exports.commands = {
 		}
 		this.say(con, room, text + 'Come join our Plug.dj~! http://plug.dj/ps-writing-room/');
 	},
-        announce: function(arg, by, room, con) {
-                if (!this.hasRank(by, '%@#~')) return false;
-                var text = 'Random announcements are now enabled by ' + by + '.';
-                this.say(con, room, text);
-                var text = '';
-                var announcing = true;
-                while (announcing === true) {
-                	var text = Math.floor(17 * Math.random()) + 1;
-                	switch (text) {
-                	        case 1: text = "-=Writing Room Tip!=- Don\'t forget to set your documents on Google Drive to allow comments once you\'re ready to receive feedback."; break;
-                	        case 2: text = "-=Writing Room Tip!=- Feel free to check out our official Plug.dj and listen to some cool music! http://plug.dj/ps-writing-room/"; break;
-                	        case 3: text = "-=Writing Room Tip!=- 3"; break;
-                	        case 4: text = "-=Writing Room Tip!=- 4"; break;
-               	        	case 5: text = "-=Writing Room Tip!=- 5"; break;
-                        	case 6: text = "-=Writing Room Tip!=- 6"; break;
-                        	case 7: text = "-=Writing Room Tip!=- 7"; break;
-                        	case 8: text = "-=Writing Room Tip!=- 8"; break;
-                        	case 9: text = "-=Writing Room Tip!=- 9"; break;
-                        	case 10: text = "-=Writing Room Tip!=- 10"; break;
-                        	case 11: text = "-=Writing Room Tip!=- 11"; break;
-                        	case 12: text = "-=Writing Room Tip!=- 12"; break;
-                        	case 13: text = "-=Writing Room Tip!=- 13"; break;
-                        	case 14: text = "-=Writing Room Tip!=- 14"; break;
-                        	case 15: text = "-=Writing Room Tip!=- 15"; break;
-                        	case 16: text = "-=Writing Room Tip!=- 16"; break;
-                        	case 17: text = "-=Writing Room Tip!=- 17"; break;
-                	}
-                	var delay = 1 * 60 * 100;
-                	setTimeout(function(){
-                		this.say(con, room, text);
-                	}, delay);
-        	}
-	},
 }
