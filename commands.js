@@ -622,7 +622,7 @@ exports.commands = {
         } else {
             var text = '/pm ' + by + ', ';
         }
-        this.say(con, room, text + 'Community Drive: http://goo.my/pswritingdrive');
+        this.say(con, room, text + 'Community Drive: http://goo.my/writingarchive');
     },
     contests: 'events',
     contest: 'events',
@@ -708,7 +708,7 @@ exports.commands = {
         } else {
             var text = '/pm ' + by + ', ';
         }
-        this.say(con, room, text + 'Writing Room Poems: http://goo.my/poemsthinkpi');
+        this.say(con, room, text + 'Writing Room Poems: http://goo.my/writingpoems');
     },
     stories: function(arg, by, room, con) {
         if (config.serverid !== 'showdown') return false;
@@ -717,7 +717,7 @@ exports.commands = {
         } else {
             var text = '/pm ' + by + ', ';
         }
-        this.say(con, room, text + 'Writing Room Stories: http://goo.my/storiesthinkpi');
+        this.say(con, room, text + 'Writing Room Stories: http://goo.my/writingstories');
     },
     rules: function(arg, by, room, con) {
         if (config.serverid !== 'showdown') return false;
@@ -727,6 +727,15 @@ exports.commands = {
             var text = '/pm ' + by + ', ';
         }
         this.say(con, room, text + 'Please read our Rules page: http://pswriting.weebly.com/rules.html ^.^');
+    },
+    voice: function(arg, by, room, con) {
+        if (config.serverid !== 'showdown') return false;
+        if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !== -1) || room.charAt(0) === ',') {
+            var text = '';
+        } else {
+            var text = '/pm ' + by + ', ';
+        }
+        this.say(con, room, text + 'Interested in becoming a voice? Check out the guideines for your chance at having a shot! http://goo.my/writingvoice or http://goo.my/writingvoicerap');
     },
     goodnight: function(arg, by, room, con) {
         if (config.serverid !== 'showdown') return false;
