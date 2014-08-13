@@ -635,45 +635,48 @@ exports.commands = {
         }
         this.say(con, room, 'The current Contests and Events for the Writing Room can be found here: http://pswriting.weebly.com/contests--events.html');
     },
-    randomstats: 'randstats',
-    rs: 'randstats',
-    randstats: function(arg, by, room, con, shuffle) {
-        var text = '';
-        var stat = [];
-        if (!arg) {
-            var bst = Math.floor(580 * Math.random()) + 200;
-        } else {
-            var bst = parseInt(arg);
-            if (isNaN(bst) || bst < 30 || bst > 780) return this.say(con, room, "Specified BST must be a whole number between 30 and 780.");
-        }
-        var remaining = bst;
-        for (i = 0; i < 6; i++) {
-            if (remaining > 255) {
-                stat[i] = Math.floor(255 * Math.random()) + 1;
-            } else {
-                stat[i] = Math.floor(remaining * Math.random()) + 1;
-            }
-            remaining -= stat[i];
-        }
-        if (remaining > 0) {
-            if (remaining < 100) {
-                for (i = 0; i < 6; i++) {
-                    if (stat[i] < 100) stat[i] += remaining;
-                }
-            } else {
-                var share = Math.floor(remaining / 6);
-                var total = 0;
-                for (i = 0; i < 6; i++) {
-                    stat[i] += share;
-                    total += stat[i];
-                }
-                if (bst > total) stat[0] ++;
-            }
-        }
-        stat = this.shuffle(stat);
-        text += 'Random stats: ``HP:`` ' + stat[0] + ' ``Atk:`` ' + stat[1] + ' ``Def:`` ' + stat[2] + ' ``SpA:`` ' + stat[3] + ' ``SpD:`` ' + stat[4] + ' ``Spe:`` ' + stat[5] + ' BST: ' + bst + '.';
-        this.say(con, room, text);
-    },
+	randstats: 'randomstats',
+	rs: 'randomstats',
+	randomstats: function(arg, by, room, con, shuffle) {
+		if (this.canUse('randomstats', room, by) || room.charAt(0) === ',') {
+			var text = '';
+		} else {
+			var text = '/pm ' + by + ', ';
+		}
+		var text = '';
+		var stat = [0,0,0,0,0,0];
+		var currentST = 0;
+		var leveler = 2 * (Math.floor(Math.random() + 1));
+		if (!arg) {
+				var bst = Math.floor(580 * Math.random()) + 200;
+		} else {
+			var bst = Math.floor(arg);
+		arg = parseInt(arg);
+			if (isNaN(arg) || arg < 30 || arg > 780) return this.say(con, room, "Specified BST must be a whole number between 30 and 780.");
+		}
+		
+		for (j=0; j<leveler; j++) {
+			for (i=0; i<6; i++) {
+				var randomPart = Math.floor((bst / ( leveler * 6 )) * Math.random()) + 1;
+				stat[i] += randomPart;
+				currentST += randomPart;
+			}
+		}
+		if (currentST > bst) {
+			for (k=currentST; k>bst; k--) {
+				stat[Math.floor(5 * Math.random()) + 1] -= 1;
+			}
+		} else if (currentST < bst) {
+			for (k=currentST; k<bst; k++) {
+				stat[Math.floor(5 * Math.random()) + 1] += 1;
+			}
+		}
+		
+		ranStats = this.shuffle(stat);
+		text += 'Random stats: HP:' + ranStats[0] + ' Atk:' + ranStats[1] + ' Def:' + ranStats[2] + ' SpA:' + ranStats[3] +
+				' SpD:' + ranStats[4] + ' Spe:' + ranStats[5] + ' BST:' + bst + '';
+		this.say(con, room, text);
+	},
     plug: function(arg, by, room, con) {
         if (config.serverid !== 'showdown') return false;
         if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !== -1) || room.charAt(0) === ',') {
