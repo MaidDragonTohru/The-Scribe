@@ -19,9 +19,9 @@ seen 'user': The bot returns the last time that user was seen online (while the 
 idea, randomidea, randidea, ri, randstyle, randomstyle, rs, rg, randgenre, randomgenre: Randomly generates either a single genre or a splicing of two genres. This is your best friend for when you're stuck on things to write~! (Voices and up)
 rt, gentype, randtype: The same as above, except it randomly generates Pokémon types instead of genres.
 rs, randstats, randomstats 'optional BST': Randomly generates a stat build using the Pokémon format. If you didn't specify a BST to use, it'll pick a random one. (Voices and up)
-setpoll '[Strawpoll] link': This command will set the specified [Strawpoll] poll as the current poll in the setpoll so that poll can list the poll that's been set in the setpoll. Geez! That's a lot of polls!
+setpoll '[Strawpoll][4] link': This command will set the specified [Strawpoll][4] poll as the current poll in the setpoll so that poll can list the poll that's been set in the setpoll. Geez! That's a lot of polls!
 poll: Lists the poll that was set in the setpoll. . . Let's not start that again.
-endpoll: Ends the poll that was listed in the setpoll, preventing it from being accessed by the poll command. It'll also link back to the respective results page for that poll. This is why the poll needs to be a [Strawpoll] link.
+endpoll: Ends the poll that was listed in the setpoll, preventing it from being accessed by the poll command. It'll also link back to the respective results page for that poll. This is why the poll needs to be a [Strawpoll][4] link.
 
 Installation
 ------------
@@ -51,6 +51,7 @@ Some information will be shown, and will automatically join the room(s) you spec
 
   [2]: http://nodejs.org/
   [3]: https://github.com/Zarel/Pokemon-Showdown
+  [4]: http://www.strawpoll.me/
 
 Development
 -----------
