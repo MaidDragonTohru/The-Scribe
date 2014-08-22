@@ -49,7 +49,7 @@ Commands any user can use~!
 *poll*: Lists the poll that was set in the *setpoll*. . . Let's not start that again.
 
 Installation
-------------
+============
 
 **This is not recommended for beginners!**
 Why? Because I'm too lazy to explain everything in detail.
@@ -79,7 +79,7 @@ Some information will be shown, and will automatically join the room(s) you spec
   [4]: http://www.strawpoll.me/
 
 Development
------------
+===========
 
 Everyone is more than welcome to contribute to the bot.
 However, please refrain from adding more example commands.
@@ -92,7 +92,7 @@ Credits:
  - Solarisfox (Development)
 
 License
--------
+=======
 
 Pokémon Showdown Bot is distributed under the terms of the [MIT License][5].
 
