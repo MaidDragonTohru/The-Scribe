@@ -7,7 +7,7 @@ A chat bot for [Pokémon Showdown][1]. This bot has a number of commands, some h
 
 Commands
 ========
-Below is a list of commands for the bot. Note that this can occasionally become out of date as new commands are created or removed. () = Text not actually directly related to the actual command's use. '' = User input. You don't actually need to type the '', just what's inside of them.
+Below is a list of commands for the bot. Note that this can occasionally become out of date as new commands are created or removed. () = Text not actually directly related to the actual command's use. '' = User input. You don't actually need to type the '', just what's inside of them. Commas in a command's name indicate alternate names for the commands, which do exactly the same thing.
 
 Room Owners and up
 ------------------
@@ -19,10 +19,14 @@ Room Owners and up
 
 *reload*: Reloads the bot's commands, adding any updates without having to reboot it entirely.
 
+*goodnight*: Forces the bot to leave all rooms, going to 'sleep'.
+
 Moderators and up
 -----------------
 
 A bunch of autoban/unban commands. Pretty much self-explanatory. They ban users on sight. This command isn't active, but is present.
+
+*newbie*: Gives a newcomer to the room a nice friendly greeting~
 
 Voices and up
 -------------
@@ -41,12 +45,38 @@ Voices and up
 
 *endpoll*: Ends the poll that was listed in the *setpoll*, preventing it from being accessed by the *poll* command. It'll also link back to the respective results page for that poll. This is why the *poll* needs to be a [Strawpoll][4] link.
 
+*rmpoll*: Removes the poll from the *poll* command without actually 'ending' it, sparing people the confusion and the bold abuse. .w.'
+
+*setwotd 'writer's name'*: Sets the specified writer as the "Writer of the Day", which can be viewed at any time using the *wotd* command.
+
+*wotdremove, wotdclear, removewotd, clearwotd*: Erases the Writer of the Day from the face of the earth! :o
+
+*voice*: Explains to the room how they can become a voice. 
+
 Commands any user can use~!
 ---------------------------
 
 *seen 'user'*: The bot returns the last time that user was seen online (while the bot was online).
 
 *poll*: Lists the poll that was set in the *setpoll*. . . Let's not start that again.
+
+*wotd*: PMs the user, assuming they're not ranked, the Writer of the Day.
+
+*site*: PMs the user, assuming they're not ranked, the Writing Room's website.
+
+*ping 'optional reason'*: Sends the creater of the bot a Private Message, assuming they're online, to get their ass into the room.
+
+*esupport*: For when you need a little love. ^.^
+
+*drive*: Gives you a nice friendly link to the Writing Room's Google Drive.
+
+*contests, events*: Links the user to the page containing updates on any contests and/or events going on in the room at the moment.
+
+*plug*: Links the user to the Writing Room's Official Plug.dj, a music sharing website. 
+
+*faq*: Links the user to the Writing Room's FAQ page.
+
+*rules*: A nice alternative to the /rules command. Useful if you want to tell multiple people at the same time and you're too much of a rebel to use the !rules command.
 
 Installation
 ============
