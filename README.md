@@ -6,7 +6,11 @@ A chat bot for [Pokémon Showdown][1]. This bot has a number of commands, some h
   [1]: http://www.pokemonshowdown.com/
 
 Commands
---------
+========
+Below is a list of commands for the bot. Note that this can occasionally become out of date as new commands are created or removed.
+
+
+
 
 Installation
 ------------
