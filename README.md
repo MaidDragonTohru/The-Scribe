@@ -9,7 +9,7 @@ Commands
 ========
 Below is a list of commands for the bot. Note that this can occasionally become out of date as new commands are created or removed. () = Text not actually directly related to the actual command's use. '' = User input. You don't actually need to type the '', just what's inside of them.
 
-*about*: Explains the bot in a nutshell and links here. (Voices and up)
+_about_: Explains the bot in a nutshell and links here. (Voices and up)
 help, guide: Links to this page. (Voices and up)
 reload: Reloads the bot's commands, adding any updates without having to reboot it entirely. (Room Owners and up)
 js: Manipulates basic JavaScript functions.
