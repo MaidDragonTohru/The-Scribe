@@ -7,10 +7,21 @@ A chat bot for [Pokémon Showdown][1]. This bot has a number of commands, some h
 
 Commands
 ========
-Below is a list of commands for the bot. Note that this can occasionally become out of date as new commands are created or removed.
+Below is a list of commands for the bot. Note that this can occasionally become out of date as new commands are created or removed. () = Text not actually directly related to the actual command's use. '' = User input. You don't actually need to type the '', just what's inside of them.
 
-
-
+about: Explains the bot in a nutshell and links here. (Voices and up)
+help, guide: Links to this page. (Voices and up)
+reload: Reloads the bot's commands, adding any updates without having to reboot it entirely. (Room Owners and up)
+js: Manipulates basic JavaScript functions.
+settings, set: Toggles which commands can be used or not. (Room Owners and up)
+(A bunch of autoban/unban commands): Pretty much self-explanatory. They ban users on sight. This command isn't active, but is present.
+seen 'user': The bot returns the last time that user was seen online (while the bot was online).
+idea, randomidea, randidea, ri, randstyle, randomstyle, rs, rg, randgenre, randomgenre: Randomly generates either a single genre or a splicing of two genres. This is your best friend for when you're stuck on things to write~! (Voices and up)
+rt, gentype, randtype: The same as above, except it randomly generates Pokémon types instead of genres.
+rs, randstats, randomstats 'optional BST': Randomly generates a stat build using the Pokémon format. If you didn't specify a BST to use, it'll pick a random one. (Voices and up)
+setpoll '[Strawpoll] link': This command will set the specified [Strawpoll] poll as the current poll in the setpoll so that poll can list the poll that's been set in the setpoll. Geez! That's a lot of polls!
+poll: Lists the poll that was set in the setpoll. . . Let's not start that again.
+endpoll: Ends the poll that was listed in the setpoll, preventing it from being accessed by the poll command. It'll also link back to the respective results page for that poll. This is why the poll needs to be a [Strawpoll] link.
 
 Installation
 ------------
