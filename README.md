@@ -69,6 +69,6 @@ Credits:
 License
 -------
 
-Pokémon Showdown Bot is distributed under the terms of the [MIT License][4].
+Pokémon Showdown Bot is distributed under the terms of the [MIT License][5].
 
-  [4]: https://github.com/Quinella/Pokemon-Showdown-Bot/blob/master/LICENSE
+  [5]: https://github.com/Quinella/Pokemon-Showdown-Bot/blob/master/LICENSE
