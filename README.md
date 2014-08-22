@@ -115,7 +115,7 @@ Everyone is more than welcome to contribute to the bot.
 However, please refrain from adding more example commands.
 
 Credits:
- - TalkTakesTime (Original Bot)
+ - TalkTakesTime (Original Bot and a bit of troubleshooting)
  - Quinella (Original Bot)
  - Morfent (Modified Original Bot)
  - AxeBane (Development)
