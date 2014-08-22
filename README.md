@@ -1,4 +1,4 @@
-Pokemon-Showdown-Bot
+Writing Room Bot
 ====================
 
 A chat bot for [Pokémon Showdown][1]. This bot has a number of commands, some helpful and some less so, as well as the capability to mod. It only reacts to basic offences such as flooding/caps/stretching.
@@ -42,8 +42,11 @@ Everyone is more than welcome to contribute to the bot.
 However, please refrain from adding more example commands.
 
 Credits:
- - TalkTakesTime (Development)
- - Quinella (Development)
+ - TalkTakesTime (Original Bot)
+ - Quinella (Original Bot)
+ - Morfent (Modified Original Bot)
+ - AxeBane (Development)
+ - Solarisfox (Development)
 
 License
 -------
