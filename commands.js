@@ -46,7 +46,7 @@ exports.commands = {
      */
 
     reload: function(arg, by, room, con) {
-        if (!this.hasRank(by, '#~')) return false;
+        if (toId(by) !== 'axebane') return false;
         try {
             this.uncacheTree('./commands.js');
             Commands = require('./commands.js').commands;
