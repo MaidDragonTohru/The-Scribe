@@ -677,6 +677,63 @@ exports.commands = {
 				' SpD:' + ranStats[4] + ' Spe:' + ranStats[5] + ' BST:' + bst + '';
 		this.say(con, room, text);
 	},
+	rollpokemon: 'randpokemon',
+	randpoke: 'randpokemon',
+	randompoke: 'randpokemon',
+	randompokemon: 'randpokemon',
+	randpokemon: function(arg, by, room, con) {
+		if (this.canUse('randomstats', room, by) || room.charAt(0) === ',') {
+			var text = '';
+		} else {
+			var text = '/pm ' + by + ', ';
+		}
+		var randompokes = [];
+		var pokequantity = '';
+		var pokeNum = '';
+		var Uber = '';
+		var legend = '';
+		var NFE = '';
+		var noUber = '';
+		var noNFE = '';
+		var noLegend = '';
+		if (!arg) {
+			pokequantity = 1;
+		} else {
+			var parameters = arg.toLowerCase().split(", ");
+			pokequantity = parameters[0];
+			if (isNaN(pokequantity) || pokequantity < 1 || pokequantity > 6) return this.say(con, room, "Quantity of random pokemon must be between 1 and 6.");
+			if (parameters.length > 1) {
+				if (parameters.indexOf('uber') > -1 && parameters.indexOf('!uber') > -1) return this.say(con, room, 'roll cannot contain both \'uber\' and \'!uber\'.');
+				if (parameters.indexOf('nfe') > -1 && parameters.indexOf('!nfe') > -1) return this.say(con, room, 'roll cannot contain both \'nfe\' and \'!nfe\'.');
+				if (parameters.indexOf('legendary') > -1 && parameters.indexOf('!legendary') > -1) return this.say(con, room, 'roll cannot contain both \'legend\' and \'!legend\'.');
+				if (parameters.indexOf('uber') > -1 && parameters.indexOf('!legendary') > -1 && pokequantity > 3) return this.say(con, room, 'Invalid generation conditions.');
+				for (j=1; j<parameters.length; j++) {
+					switch (parameters[j]) {
+						case 'uber': Uber = 1; continue;
+						case 'legendary': legend = 1; continue;
+						case 'nfe': NFE = 1; continue;
+						case '!uber': noUber = 1; continue;
+						case '!legendary': noLegend = 1; continue;
+						case '!nfe': noNFE = 1; continue;
+						default: return this.say(con, room, 'Parameter \'' + parameters[j] + '\' not recognized.');
+					}
+				}
+			}
+		}
+		if (pokequantity === 1 && room.charAt(0) !== ',' && this.hasRank(by, '+%@#~')) text = '!dex ';
+		for (i=0; i<pokequantity; i++) {
+			pokeNum = Math.floor(722 * Math.random());
+			if (Uber && !Pokedex[pokeNum].uber) {i--; continue;}
+			if (legend && !Pokedex[pokeNum].legend) {i--; continue;}
+			if (NFE && !Pokedex[pokeNum].nfe) {i--; continue;}
+			if (noUber && Pokedex[pokeNum].uber) {i--; continue;}
+			if (noLegend && Pokedex[pokeNum].legend) {i--; continue;}
+			if (noNFE && Pokedex[pokeNum].nfe) {i--; continue;}
+			if (randompokes.indexOf(Pokedex[pokeNum].species) > -1) {i--; continue;}
+			randompokes.push(Pokedex[pokeNum].species);
+		}
+		this.say(con, room, text + randompokes.join(", "));
+	},
     plug: function(arg, by, room, con) {
         if (config.serverid !== 'showdown') return false;
         if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !== -1) || room.charAt(0) === ',') {
