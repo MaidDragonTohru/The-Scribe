@@ -50,7 +50,8 @@ exports.commands = {
         try {
             this.uncacheTree('./commands.js');
             Commands = require('./commands.js').commands;
-            this.say(con, room, 'These impeccable commands have been reloaded.');
+            this.say(con, room, 'Reloaded. .w.');
+            console.log(by, 'reloaded the bot.');
         } catch (e) {
             error('failed to reload: ' + sys.inspect(e));
         }
@@ -85,11 +86,10 @@ exports.commands = {
 
         var settable = {
             joke: 1,
-            axe: 1,
             autoban: 1,
             regexautoban: 1,
             banword: 1,
-            setrp: 1
+            randpokemon: 1
         };
         var modOpts = {
             flooding: 1,
@@ -112,7 +112,7 @@ exports.commands = {
                 if (!(toId(opts[2]) in {
                     on: 1,
                     off: 1
-                })) return this.say(con, room, 'Incorrect command: correct syntax is .set mod, [' +
+                })) return this.say(con, room, 'Incorrect command: correct syntax is ;set mod, [' +
                     Object.keys(modOpts).join('/') + '](, [on/off])');
                 if (toId(opts[2]) === 'off') {
                     this.settings['modding'][room][toId(opts[1])] = 0;
@@ -137,7 +137,7 @@ exports.commands = {
                     if (cmd in settable) {
                         break;
                     } else {
-                        this.say(con, room, 'The settings for .' + opts[0] + ' cannot be changed.');
+                        this.say(con, room, 'The settings for ;' + opts[0] + ' cannot be changed.');
                         return;
                     }
                 } else {
@@ -146,7 +146,7 @@ exports.commands = {
                 }
                 failsafe++;
                 if (failsafe > 5) {
-                    this.say(con, room, 'The command ".' + opts[0] + '" could not be found.');
+                    this.say(con, room, 'The command ";' + opts[0] + '" could not be found.');
                     return;
                 }
             }
@@ -572,33 +572,10 @@ exports.commands = {
         }
         this.say(con, room, text + 'Writing Room\'s Website: http://pswriting.weebly.com/');
     },
-    truth: function(arg, by, room, con) {
-        if (config.serverid !== 'showdown') return false;
-        if ((this.hasRank(by, '@#~') && config.rprooms.indexOf(room) !== -1) || room.charAt(0) === ',') {
-            var text = '';
-        } else {
-            var text = '/pm ' + by + ', ';
-        }
-        this.say(con, room, text + 'The authority are your lords and saviors. Praise the auth!');
-    },
-    test: function(arg, by, room, con) {
-        if (config.serverid !== 'showdown') return false;
-        if ((this.hasRank(by, '@#~') && config.rprooms.indexOf(room) !== -1) || room.charAt(0) === ',') {
-            var text = '';
-        } else {
-            var text = '/pm ' + by + ', ';
-        }
-        this.say(con, room, text + 'This command is designed to test if the bot is working, and it is.');
-    },
     newbie: function(arg, by, room, con) {
         if (config.serverid !== 'showdown' || room !== 'writing' || !this.hasRank(by, '@#~')) return false;
         this.say(con, room, 'Welcome to the Writing room! In case you missed the big shiny box, please make sure to visit the room website and read the rules listed there: http://pswriting.weebly.com/rules.html');
         this.say(con, room, 'Also, feel free to ask the staff any questions you may have. I\'m sure they\'d love to answer them!');
-    },
-    ping: function(arg, by, room, con) {
-        var text = '/msg AxeBane, You are needed by ' + by;
-        if (toId(arg).length) text += ' because: ' + arg;
-        this.say(con, room, text);
     },
     esupport: function(arg, by, room, con) {
         if ((this.hasRank(by, '%@#~') && config.rprooms.indexOf(room) !== -1) || room.charAt(0) === ',') {
@@ -607,14 +584,6 @@ exports.commands = {
             var text = '/pm ' + by + ', ';
         }
         this.say(con, room, text + 'I love you, ' + by + '.');
-    },
-    back: function(arg, by, room, con) {
-        if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !== -1) || room.charAt(0) === ',') {
-            var text = '';
-        } else {
-            var text = '/pm ' + by + ', ';
-        }
-        this.say(con, room, text + by + ' has returned.');
     },
     drive: function(arg, by, room, con) {
         if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !== -1) || room.charAt(0) === ',') {
@@ -684,8 +653,10 @@ exports.commands = {
 	randpokemon: function(arg, by, room, con) {
 		if (this.canUse('randomstats', room, by) || room.charAt(0) === ',') {
 			var text = '';
+                        var rpreminder = '';
 		} else {
 			var text = '/pm ' + by + ', ';
+                        var rpreminder = 'Don\'t forget that you could also use this command in PM. In fact, I\'d prefer that! ^.^\'';
 		}
 		var randompokes = [];
 		var pokequantity = '';
@@ -722,7 +693,7 @@ exports.commands = {
 		}
 		if (pokequantity === 1 && room.charAt(0) !== ',' && this.hasRank(by, '+%@#~')) text = '!dex ';
 		for (i=0; i<pokequantity; i++) {
-			pokeNum = Math.floor(722 * Math.random());
+			pokeNum = Math.floor(723 * Math.random());
 			if (Uber && !Pokedex[pokeNum].uber) {i--; continue;}
 			if (legend && !Pokedex[pokeNum].legend) {i--; continue;}
 			if (NFE && !Pokedex[pokeNum].nfe) {i--; continue;}
@@ -732,7 +703,16 @@ exports.commands = {
 			if (randompokes.indexOf(Pokedex[pokeNum].species) > -1) {i--; continue;}
 			randompokes.push(Pokedex[pokeNum].species);
 		}
-		this.say(con, room, text + randompokes.join(", "));
+		this.say(con, room, text + randompokes.join(", ") + '. ' + rpreminder);
+                if (this.hasRank(by, '+')) { var sender = by.yellow; var roomRank = 'Voiced user ' }
+                if (this.hasRank(by, '%')) { var sender = by.cyan; var roomRank = 'Driver ' }
+                if (this.hasRank(by, '@')) { var sender = by.blue; var roomRank = 'Moderator ' }
+                if (this.hasRank(by, '#')) { var sender = by.red; var roomRank = 'Room Owner or Higher ' }
+                if (this.hasRank(by, '~')) { var sender = by.green; var roomRank = 'Admin or Bot Owner ' }
+                else { var sender = by; var roomRank = 'Regular User '};
+                console.log(roomRank + sender + '  used the Random Pokemon command and got ' + randompokes + '.');
+                var sender = ''
+                var roomRank = ''
 	},
     plug: function(arg, by, room, con) {
         if (config.serverid !== 'showdown') return false;
