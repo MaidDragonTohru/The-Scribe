@@ -28,10 +28,10 @@ exports.pokedex = {
 26:{species:"Raichu"},
 27:{species:"Sandshrew",nfe:1},
 28:{species:"Sandslash"},
-29:{species:"Nidoran♀",nfe:1},
+29:{species:"Nidoranâ™€",nfe:1},
 30:{species:"Nidorina",nfe:1},
 31:{species:"Nidoqueen"},
-32:{species:"Nidoran♂",nfe:1},
+32:{species:"Nidoranâ™‚",nfe:1},
 33:{species:"Nidorino",nfe:1},
 34:{species:"Nidoking"},
 35:{species:"Clefairy",nfe:1},
@@ -668,7 +668,7 @@ exports.pokedex = {
 666:{species:"Vivillon"},
 667:{species:"Litleo",nfe:1},
 668:{species:"Pyroar"},
-669:{species:"Flabébé",nfe:1},
+669:{species:"FlabÃ©bÃ©",nfe:1},
 670:{species:"Floette",nfe:1},
 671:{species:"Florges"},
 672:{species:"Skiddo",nfe:1},
@@ -721,5 +721,5 @@ exports.pokedex = {
 719:{species:"Diancie",legend:1},
 720:{species:"Hoopa",uber:1,legend:1},
 721:{species:"Volcanion",uber:1,legend:1},
-722:{species:"Solaris"}
+722:{species:"Lux"}
 };
