@@ -73,6 +73,9 @@ exports.whitelist = [];
 // will link to it.
 exports.botguide = '';
 
+//This allows the bot to log messages sent by main and send them to the console. Off by default.
+exports.logmain = false;
+
 //This allows the bot to log PMs sent to it in the console. Off by default.
 exports.logpms = false;
 
