@@ -30,9 +30,9 @@ A bunch of autoban/unban commands. Pretty much self-explanatory. They ban users 
 
 Voices and up
 -------------
-*about*: Explains the bot in a nutshell and links here. (Voices and up)
+*about*: Explains the bot in a nutshell and links here.
 
-*help, guide*: Links to this page. (Voices and up)
+*help, guide*: Links to this page.
 
 *idea, randomidea, randidea, ri, randstyle, randomstyle, rs, rg, randgenre, randomgenre*: Randomly generates either a single genre or a splicing of two genres. This is your best friend for when you're stuck on things to write~! (Voices and up)
 
