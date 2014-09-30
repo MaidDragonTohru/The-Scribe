@@ -1,4 +1,4 @@
-﻿/**
+/**
  * This is the main file of Pokémon Showdown Bot
  *
  * Some parts of this code are taken from the Pokémon Showdown server code, so
@@ -107,9 +107,9 @@ if (!Object.select) {
 var sys = require('sys');
 global.colors = require('colors');
 
-console.log('------------------------'.red);
-console.log('| Welcome back, Master.|'.green);
-console.log('------------------------'.red);
+console.log('-----------------------------------|'.red);
+console.log('|'.red + ' Welcome to AxeBane\'s'.green + ' Writing Bot!|'.red);
+console.log('-----------------------------------|'.red);
 console.log('');
 
 // Config and config.js watching...
