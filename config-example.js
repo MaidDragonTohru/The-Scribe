@@ -79,6 +79,9 @@ exports.logmain = false;
 //This allows the bot to log PMs sent to it in the console. Off by default.
 exports.logpms = false;
 
+//This is how the Writer of the Day/Spotlighted Writer is stored.
+exports.wotd = ['Test Writer'];
+
 // This allows the bot to act as an automated moderator. If enabled, the bot will
 // mute users who send 6 lines or more in 6 or fewer seconds for 7 minutes. NOTE: THIS IS
 // BY NO MEANS A PERFECT MODERATOR OR SCRIPT. It is a bot and so cannot think for itself or
