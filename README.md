@@ -47,10 +47,6 @@ Voices and up
 
 *rmpoll*: Removes the poll from the *poll* command without actually 'ending' it, sparing people the confusion and the bold abuse. .w.'
 
-*setwotd 'writer's name'*: Sets the specified writer as the "Writer of the Day", which can be viewed at any time using the *wotd* command.
-
-*wotdremove, wotdclear, removewotd, clearwotd*: Erases the Writer of the Day from the face of the earth! :o
-
 *voice*: Explains to the room how they can become a voice. 
 
 Commands any user can use~!
@@ -60,7 +56,7 @@ Commands any user can use~!
 
 *poll*: Lists the poll that was set in the *setpoll*. . . Let's not start that again.
 
-*wotd*: PMs the user, assuming they're not ranked, the Writer of the Day.
+*writer, wotd*: PMs the user, assuming they're not ranked, the Writer of the Day.
 
 *site*: PMs the user, assuming they're not ranked, the Writing Room's website.
 
