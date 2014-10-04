@@ -105,7 +105,7 @@ exports.pokedex = {
         species: "Sandslash"
     },
     29: {
-        species: "Nidoranâ™€",
+        species: "Nidoran♀,
         nfe: 1
     },
     30: {
@@ -116,7 +116,7 @@ exports.pokedex = {
         species: "Nidoqueen"
     },
     32: {
-        species: "Nidoranâ™‚",
+        species: "Nidoran♂‚",
         nfe: 1
     },
     33: {
@@ -2386,7 +2386,7 @@ exports.pokedex = {
         species: "Pyroar"
     },
     669: {
-        species: "FlabÃ©bÃ©",
+        species: "Flabébé",
         nfe: 1
     },
     670: {
@@ -2578,6 +2578,6 @@ exports.pokedex = {
         legend: 1
     },
     722: {
-        species: "Lux"
+        species: "Magikarp's Revenge"
     }
 };
