@@ -949,4 +949,86 @@ exports.commands = {
         this.say(con, room, text +
             'This command currently does nothing. That is all.');
     },
+    idea: 'randomgenre',
+    randomidea: 'randomgenre',
+    randidea: 'randomgenre',
+    ri: 'randomgenre',
+    randstyle: 'randomgenre',
+    randomstyle: 'randomgenre',
+    rs: 'randomgenre',
+    rg: 'randomgenre',
+    randgenre: 'randomgenre',
+    randomgenre: function(arg, by, room, con) {
+        if (!this.hasRank(by, '+%@#~')) return false;
+        var text = '';
+        var genre = [];
+        for (i = 0; i < 2; i++) {
+            genre[i] = Math.floor(17 * Math.random()) + 1;
+            switch (genre[i]) {
+                case 1:
+                    genre[i] = "Action";
+                    break;
+                case 2:
+                    genre[i] = "Adventure";
+                    break;
+                case 3:
+                    genre[i] = "Comedy";
+                    break;
+                case 4:
+                    genre[i] = "Crime";
+                    break;
+                case 5:
+                    genre[i] = "Fantasy";
+                    break;
+                case 6:
+                    genre[i] = "Historical";
+                    break;
+                case 7:
+                    genre[i] = "Children's Book";
+                    break;
+                case 8:
+                    genre[i] = "Horror";
+                    break;
+                case 9:
+                    genre[i] = "Mystery";
+                    break;
+                case 10:
+                    genre[i] = "Philosophical";
+                    break;
+                case 11:
+                    genre[i] = "Political";
+                    break;
+                case 12:
+                    genre[i] = "Realistic";
+                    break;
+                case 13:
+                    genre[i] = "Romance";
+                    break;
+                case 14:
+                    genre[i] = "Saga";
+                    break;
+                case 15:
+                    genre[i] = "Satire";
+                    break;
+                case 16:
+                    genre[i] = "Science fiction";
+                    break;
+                case 17:
+                    genre[i] = "Slice of Life";
+                    break;
+                case 18:
+                    genre[i] = "Thriller";
+                    break;
+                case 19:
+                    genre[i] = "Urban";
+                    break;
+            }
+        }
+        if (genre[1] !== genre[0]) {
+            text += "Randomly generated genre splice: " + genre[0] + "/" + genre[1] + ".";
+        } else {
+            text += "Randomly generated genre: " + genre[0] + ".";
+        }
+        this.say(con, room, text);
+    },
 }
