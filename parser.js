@@ -312,7 +312,13 @@
                 }
                 if (config.logmain) {
                     var spl = message.split('\n');
-                    console.log(by.cyan + ': '.cyan + spl);
+                if (this.hasRank(by, '+')) { var sender = by.yellow};
+                if (this.hasRank(by, '%')) { var sender = by.cyan};
+                if (this.hasRank(by, '@')) { var sender = by.blue};
+                if (this.hasRank(by, '#')) { var sender = by.red};
+                if (this.hasRank(by, '~')) { var sender = by.green};
+                if (!this.hasRank(by, '+%@#~')) { var sender = by};
+                    console.log(room.cyan + ': '.cyan + sender + ': '.cyan + spl) } else {};
                 } else {};
                 if (message.substr(0, config.commandcharacter.length) !==
                     config.commandcharacter || toId(by) === toId(config
