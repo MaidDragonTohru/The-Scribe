@@ -11,14 +11,14 @@ exports.commands = {
      *
      * These commands are here to provide information about the bot.
      */
-    about: function(arg, by, room, con) {
+    about: function (arg, by, room, con) {
         if (this.hasRank(by, '#~') || room.charAt(0) === ',') {
             var text = '';
         } else {
             var text = '/pm ' + by + ', ';
         }
         text +=
-            'Writing Bot: fork of Roleplaying Bot by Morfent, with custom Writing Room commands AxeBane and SolarisFox. Github Repository: http://github.com/AxeBane/Axe-s-Writing-Bot';
+            'Writing Bot: fork of Roleplaying Bot by Morfent, with custom Writing Room commands AxeBane. Github Repository: http://github.com/AxeBane/Axe-s-Writing-Bot';
         this.say(con, room, text);
     },
     help: 'guide',
@@ -80,8 +80,7 @@ exports.commands = {
      */
     settings: 'set',
     set: function(arg, by, room, con) {
-        if (!this.hasRank(by, '%@&#~') || room.charAt(0) === ',') return
-            false;
+        if (!this.hasRank(by, '%@&#~') || room.charAt(0) === ',') return false;
         var settable = {
             joke: 1,
             autoban: 1,
@@ -839,34 +838,6 @@ exports.commands = {
         }
         this.say(con, room, text + randompokes.join(", ") + '. ' +
             rpreminder);
-        if (this.hasRank(by, '+')) {
-            var sender = by.yellow;
-            var roomRank = 'Voiced user '
-        }
-        if (this.hasRank(by, '%')) {
-            var sender = by.cyan;
-            var roomRank = 'Driver '
-        }
-        if (this.hasRank(by, '@')) {
-            var sender = by.blue;
-            var roomRank = 'Moderator '
-        }
-        if (this.hasRank(by, '#')) {
-            var sender = by.red;
-            var roomRank = 'Room Owner or Higher '
-        }
-        if (this.hasRank(by, '~')) {
-            var sender = by.green;
-            var roomRank = 'Admin or Bot Owner '
-        } else {
-            var sender = by;
-            var roomRank = 'Regular User '
-        };
-        console.log(roomRank + sender +
-            '  used the Random Pokemon command and got ' +
-            randompokes + '.');
-        var sender = ''
-        var roomRank = ''
     },
     plug: function(arg, by, room, con) {
         if (config.serverid !== 'showdown') return false;
@@ -935,8 +906,31 @@ exports.commands = {
             var text = '/pm ' + by + ', ';
         }
         this.say(con, room, text +
-            'Interested in becoming a voice? Check out the guideines for your chance at having a shot! http://goo.my/writingvoice or http://goo.my/writingvoicerap'
+            'Interested in becoming a voice? Check out the guideines for your chance at having a shot! http://bit.do/pswritingvoicerules or http://bit.do/pswritingvoicerap'
         );
+    },
+    pvb: 'possiblyverybuggy',
+    possiblyverybuggy: function(arg, by, room, con) {
+        if (config.serverid !== 'showdown' || !this.hasRank(by, '@#~'))
+            return false;
+        var self = this;
+        var theTimeout = 1000
+        var announce = setTimeout(function() {
+            var that = self;
+            var len = theTimeout;
+            for (var i = 0; i < len; i++) {
+                setTimeout(function(announce) {
+                    that.say(con, room, 'Testing.');
+                }, 15000 * i, that.theTimeout);
+            }
+            if (len === 1) {
+                self.say(con, room, 'Announcements finished.');
+            } else {
+                self.say(con, room, 'Announcements started.');
+            }
+            self.theTimeout = [];
+        }, 1000);
+        announce;
     },
     octevent: 'oe',
     octoberevent: 'oe',
@@ -946,8 +940,9 @@ exports.commands = {
         } else {
             var text = '/pm ' + by + ', ';
         }
-        this.say(con, room, text +
-            'This command currently does nothing. That is all.');
+        this.say(con, room, text + 'Attention, all writers! We’ve recently begun our new Event: Halloween Contest: Where Nightmares Come To Life! This time around, contestants are tasked with writing a story or poem with a Halloween theme to it, and that takes place within the Pokemon Universe.');
+        this.say(con, room, text + 'Be sure to check out our guidelines for the contest, where you’ll get a more in-depth explanation: (http://goo.gl/oGZXc3 ) Submissions will close on the 31st of October, so don’t forget to submit your entry! You may find our submission board here: (http://goo.gl/vpPmXX )');
+        this.say(con, room, text + 'If you have any further questions, please contact our Staff. With all that said, we wish you a happy Halloween, and don’t forget to have fun!');
     },
     idea: 'randomgenre',
     randomidea: 'randomgenre',
@@ -1011,7 +1006,7 @@ exports.commands = {
                     genre[i] = "Satire";
                     break;
                 case 16:
-                    genre[i] = "Science fiction";
+                    genre[i] = "Science Fiction";
                     break;
                 case 17:
                     genre[i] = "Slice of Life";
