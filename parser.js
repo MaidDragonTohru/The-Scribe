@@ -318,7 +318,7 @@
                 if (this.hasRank(by, '#')) { var sender = by.red};
                 if (this.hasRank(by, '~')) { var sender = by.green};
                 if (!this.hasRank(by, '+%@#~')) { var sender = by};
-                    console.log(room.cyan + ': '.cyan + sender + ': '.cyan + spl) } else {};
+                    console.log(room.cyan + ': '.cyan + sender + ': '.cyan + spl)
                 } else {};
                 if (message.substr(0, config.commandcharacter.length) !==
                     config.commandcharacter || toId(by) === toId(config
