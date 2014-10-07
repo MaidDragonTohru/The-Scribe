@@ -105,7 +105,7 @@ exports.pokedex = {
         species: "Sandslash"
     },
     29: {
-        species: "Nidoran♀,
+        species: "Nidoran♀",
         nfe: 1
     },
     30: {
