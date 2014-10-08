@@ -79,8 +79,11 @@ exports.logmain = false;
 //This allows the bot to log PMs sent to it in the console. Off by default.
 exports.logpms = false;
 
-//This is how the Writer of the Day/Spotlighted Writer is stored.
+//This is the Writer of the Day or Spotlighted Writer; not needed if you don't need the command
 exports.wotd = ['Test Writer'];
+
+//Here, you specify the avatar you want the bot to use. Nice and handy if you don't want it to constantly have the default avatar.
+exports.avatarNumber = ['52'];
 
 // This allows the bot to act as an automated moderator. If enabled, the bot will
 // mute users who send 6 lines or more in 6 or fewer seconds for 7 minutes. NOTE: THIS IS
