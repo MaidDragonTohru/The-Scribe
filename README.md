@@ -28,13 +28,18 @@ A bunch of autoban/unban commands. Pretty much self-explanatory. They ban users 
 
 *newbie*: Gives a newcomer to the room a nice friendly greeting~
 
+Drivers and up
+--------------
+
+Drivers can use any of the voice commands, however they will be broardcasted to the whole chat, as opposed to the bot PMing the user.
+
 Voices and up
 -------------
 *about*: Explains the bot in a nutshell and links here.
 
 *help, guide*: Links to this page.
 
-*idea, randomidea, randidea, ri, randstyle, randomstyle, rs, rg, randgenre, randomgenre*: Randomly generates either a single genre or a splicing of two genres. This is your best friend for when you're stuck on things to write~! (Voices and up)
+*idea, randomidea, randidea, ri, randstyle, randomstyle, rs, rg, randgenre, randomgenre*: Randomly generates either a single genre or a splicing of two genres. This is your best friend for when you're stuck on things to write~!
 
 *rt, gentype, randtype*: The same as above, except it randomly generates Pokémon types instead of genres.
 
