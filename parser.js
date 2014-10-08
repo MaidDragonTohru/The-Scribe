@@ -172,6 +172,7 @@
                                 continue;
                             }
                             cmds.push('|/join ' + room);
+                            cmds.push('|/avatar ' + config.avatarNumber);
                         }
                         for (var i in config.privaterooms) {
                             var room = toId(config.privaterooms[i]);
@@ -180,6 +181,7 @@
                                 continue;
                             }
                             cmds.push('|/join ' + room);
+                            cmds.push('|/avatar ' + config.avatarNumber);
                         }
                         if (config.serverid === 'showdown') {
                             this.RP.void = {};
@@ -318,8 +320,7 @@
                 if (this.hasRank(by, '#')) { var sender = by.red};
                 if (this.hasRank(by, '~')) { var sender = by.green};
                 if (!this.hasRank(by, '+%@#~')) { var sender = by};
-                    console.log(room.cyan + ': '.cyan + sender + ': '.cyan + spl)
-                } else {};
+                    console.log(room.cyan + ': '.cyan + sender + ': '.cyan + spl) } else {};
                 if (message.substr(0, config.commandcharacter.length) !==
                     config.commandcharacter || toId(by) === toId(config
                         .nick)) {
