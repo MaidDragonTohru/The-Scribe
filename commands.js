@@ -3,6 +3,9 @@
  *
  * @license MIT license
  */
+ 
+const MESSAGES_TIME_OUT = 7 * 24 * 60 * 60 * 1000;
+ 
 var http = require('http');
 var sys = require('sys');
 exports.commands = {
@@ -86,7 +89,8 @@ exports.commands = {
             autoban: 1,
             regexautoban: 1,
             banword: 1,
-            randpokemon: 1
+            randpokemon: 1,
+			message: 1
         };
         var modOpts = {
             flooding: 1,
@@ -1026,4 +1030,106 @@ exports.commands = {
         }
         this.say(con, room, text);
     },
+	 /**
+     * Messaging related commands
+	 *
+     */
+	mail: 'message',
+	msg: 'message',
+	message: function(arg, by, room, con) {
+		if (!this.settings.poeticlicense[toId(by)]) {
+			if (!this.canUse('message', room, by)) return this.say(con, room, '/msg ' + by + ', \\mail is only avalible to users ' + this.settings["message"][room] + ' and above and those with "roompaw".');
+			if (room.charAt(0) === ',' && !this.hasRank(by, '+%@#~')) return this.say(con, room, '\\mail cannot be used in PMs.');
+		}
+		var user = toId(arg.split(', ')[0]);
+		if (user.length > 18) return this.say(con, room, 'That\'s not a real username! >:I');
+		var message = by + ': ' + arg.substr(arg.split(', ')[0].length + 2);
+		if (message.length < by.length + 3) return this.say(con, room, 'You forgot to include the message! D:');
+		if (!this.messages) this.messages = {};
+		if (!this.messages[user]) {
+			this.messages[user] = {};
+			this.messages[user].timestamp = Date.now();
+		}
+		if (this.messages[user]["4"]) return this.say(con, room, user + '\'s message inbox is full.');
+		var msgNumber = -1;
+		for (var i in this.messages[user]) {
+			msgNumber++;
+		}
+		msgNumber = "" + msgNumber;
+		this.messages[user][msgNumber] = message;
+		this.writeMessages();
+		this.say(con, room, (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ') + 'message has been sent to ' + user + '.');
+	},
+	readmail: 'readmessages',
+	readmessages: function(arg, by, room, con) {
+		var text = (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ');
+		if (!this.messages[toId(by)]) return this.say(con, room, text + 'Your inbox is empty.');
+		for (var msgNumber in this.messages[toId(by)]) {
+			if (msgNumber === 'timestamp') continue;
+			this.say(con, room, text + this.messages[toId(by)][msgNumber]);
+		}
+		delete this.messages[toId(by)];
+		this.writeMessages();
+	},
+	clearmail: 'clearmessages',
+	clearmessages: function(arg, by, room, con) {
+		if (!this.hasRank(by, '#~')) return false;
+		if (!arg) return this.say(con, room, 'Specify whose mail to clear or \'all\' to clear all mail.');
+		if (!this.messages) return this.say(con, room, 'The message file is empty.');
+		if (arg === 'all') {
+			this.messages = {};
+			this.writeMessages();
+			this.say(con, room, 'All messages have been erased.');
+		} else if (arg === 'time') {
+			for (var user in this.messages) {
+				if (user["timestamp"] < Date.now() - MESSAGES_TIME_OUT) delete this.messages[user];
+			}
+			this.writeMessages();
+		} else {
+			var user = toId(arg);
+			if (!this.messages[user]) return this.say(con, room, user + ' does not have any pending messages.');
+			delete this.messages[user];
+			this.writeMessages();
+			this.say(con, room, 'Messages for ' + user + ' have been erased.');
+		}
+	},
+	pl: 'poeticlicense',
+	poeticlicense: function(arg, by, room, con) {
+		if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
+		if (!arg) return this.say(con, room, 'Who shall be poeticlicense\'d?');
+		var users = arg.split(', ');
+		var errors = [];
+		if (!this.settings.poeticlicense) this.settings.poeticlicense = {};
+		for (var i=0; i<users.length; i++) {
+			var user = toId(users[i]);
+			if (this.settings.poeticlicense[user]) { 
+				errors.push(users[i]); 
+				users.splice(i, 1);
+				continue;
+			}
+			this.settings.poeticlicense[user] = 1;
+		}
+		this.writeSettings();
+		if (errors.length != 0) this.say(con, room, errors.join(', ') + ' already have poeticlicense');
+		if (users.length != 0) this.say(con, room, '/modnote ' + users.join(', ') + ' has been given poeticlicense by ' + toId(by));
+	},
+	upl: 'poeticlicense',
+	unpoeticlicense: function(arg, by, room, con) {
+		if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
+		if (!arg) return this.say(con, room, 'Whose poeticlicense should be remove?');
+		var user = toId(arg);
+		if (!this.settings.poeticlicense) this.settings.poeticlicense = {};
+		if (!this.settings.poeticlicense[user]) return this.say(con, room, arg + ' does not have Roompaw.');
+		delete this.settings.poeticlicense[user];
+		this.writeSettings();
+		this.say(con, room, '/modnote ' + user + ' had poeticlicense removed by ' + toId(by));
+	},
+	vpl: 'viewpoeticlicense',
+	viewpoeticlicense: function(arg, by, room, con) {
+		if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
+		if (!this.settings.poeticlicense) return this.say(con, room, 'No users are poeticlicense\'d.');
+		var poeticlicenseList = Object.keys(this.settings.poeticlicense);
+		this.uploadToHastebin(con, room, by, "The following users have Poeticlicense:\n\n" + poeticlicenseList.join('\n'));
+		return;
+	}
 }
