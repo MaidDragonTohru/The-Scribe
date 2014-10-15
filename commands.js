@@ -1038,13 +1038,14 @@ exports.commands = {
 	msg: 'message',
 	message: function(arg, by, room, con) {
 		if (!this.settings.poeticlicense[toId(by)]) {
-			if (!this.canUse('message', room, by)) return this.say(con, room, '/msg ' + by + ', \\mail is only avalible to users ' + this.settings["message"][room] + ' and above and those with "roompaw".');
+			if (!this.canUse('message', room, by)) return this.say(con, room, '/msg ' + by + ', It seems as if you cannot use this command! Do you have a Poetic License?');
 			if (room.charAt(0) === ',' && !this.hasRank(by, '+%@#~')) return this.say(con, room, '\\mail cannot be used in PMs.');
 		}
 		var user = toId(arg.split(', ')[0]);
-		if (user.length > 18) return this.say(con, room, 'That\'s not a real username! >:I');
+		if (user.length > 18) return this.say(con, room, 'That\'s not a real username! It\'s too long! >:I');
+        if ((by) == '') return this.say(con, room, 'Please use the following format: ";mail user, message"');
 		var message = by + ': ' + arg.substr(arg.split(', ')[0].length + 2);
-		if (message.length < by.length + 3) return this.say(con, room, 'You forgot to include the message! D:');
+		if (message.length < by.length + 3) return this.say(con, room, 'You forgot to include the message! :o');
 		if (!this.messages) this.messages = {};
 		if (!this.messages[user]) {
 			this.messages[user] = {};
@@ -1058,8 +1059,9 @@ exports.commands = {
 		msgNumber = "" + msgNumber;
 		this.messages[user][msgNumber] = message;
 		this.writeMessages();
-		this.say(con, room, (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ') + 'message has been sent to ' + user + '.');
+		this.say(con, room, (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ') + 'Message has been sent to ' + user + '.');
 	},
+    checkmai: 'readmessages',
 	readmail: 'readmessages',
 	readmessages: function(arg, by, room, con) {
 		var text = (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ');
@@ -1096,7 +1098,7 @@ exports.commands = {
 	pl: 'poeticlicense',
 	poeticlicense: function(arg, by, room, con) {
 		if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
-		if (!arg) return this.say(con, room, 'Who shall be poeticlicense\'d?');
+		if (!arg) return this.say(con, room, 'To whom should I grant a Poetic Licence?');
 		var users = arg.split(', ');
 		var errors = [];
 		if (!this.settings.poeticlicense) this.settings.poeticlicense = {};
@@ -1110,13 +1112,13 @@ exports.commands = {
 			this.settings.poeticlicense[user] = 1;
 		}
 		this.writeSettings();
-		if (errors.length != 0) this.say(con, room, errors.join(', ') + ' already have poeticlicense');
-		if (users.length != 0) this.say(con, room, '/modnote ' + users.join(', ') + ' has been given poeticlicense by ' + toId(by));
+		if (errors.length != 0) this.say(con, room, errors.join(', ') + ' already have a Poetic License');
+		if (users.length != 0) this.say(con, room, '/modnote ' + users.join(', ') + ' has been given a Poetic License by ' + toId(by));
 	},
 	upl: 'poeticlicense',
 	unpoeticlicense: function(arg, by, room, con) {
 		if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
-		if (!arg) return this.say(con, room, 'Whose poeticlicense should be remove?');
+		if (!arg) return this.say(con, room, 'Whose Poetic License should be revoked?');
 		var user = toId(arg);
 		if (!this.settings.poeticlicense) this.settings.poeticlicense = {};
 		if (!this.settings.poeticlicense[user]) return this.say(con, room, arg + ' does not have Roompaw.');
@@ -1129,7 +1131,7 @@ exports.commands = {
 		if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
 		if (!this.settings.poeticlicense) return this.say(con, room, 'No users are poeticlicense\'d.');
 		var poeticlicenseList = Object.keys(this.settings.poeticlicense);
-		this.uploadToHastebin(con, room, by, "The following users have Poeticlicense:\n\n" + poeticlicenseList.join('\n'));
+		this.uploadToHastebin(con, room, by, "The following users possess a Poetic License:\n\n" + poeticlicenseList.join('\n'));
 		return;
 	}
 }
