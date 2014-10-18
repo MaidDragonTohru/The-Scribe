@@ -1039,7 +1039,7 @@ exports.commands = {
 	message: function(arg, by, room, con) {
 		if (!this.settings.poeticlicense[toId(by)]) {
 			if (!this.canUse('message', room, by)) return this.say(con, room, '/msg ' + by + ', It seems as if you cannot use this command! Do you have a Poetic License?');
-			if (room.charAt(0) === ',' && !this.hasRank(by, '+%@#~')) return this.say(con, room, '\\mail cannot be used in PMs.');
+			if (room.charAt(0) === ',' && !this.hasRank(by, '+%@#~')) return this.say(con, room, 'mail cannot be used in PMs.');
 		}
 		var user = toId(arg.split(', ')[0]);
 		if (user.length > 18) return this.say(con, room, 'That\'s not a real username! It\'s too long! >:I');
@@ -1061,7 +1061,7 @@ exports.commands = {
 		this.writeMessages();
 		this.say(con, room, (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ') + 'Message has been sent to ' + user + '.');
 	},
-    checkmai: 'readmessages',
+	checkmail: 'readmessages',
 	readmail: 'readmessages',
 	readmessages: function(arg, by, room, con) {
 		var text = (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ');
