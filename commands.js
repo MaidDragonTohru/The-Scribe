@@ -645,6 +645,18 @@ exports.commands = {
             'Writing Room\'s Website: http://pswriting.weebly.com/'
         );
     },
+    activities: function(arg, by, room, con) {
+        if (config.serverid !== 'showdown') return false;
+        if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !==
+            -1) || room.charAt(0) === ',') {
+            var text = '';
+        } else {
+            var text = '/pm ' + by + ', ';
+        }
+        this.say(con, room, text +
+            'Be sure to read through our list of official activities! http://pswriting.weebly.com/activities.html'
+        );
+    },
     newbie: function(arg, by, room, con) {
         if (config.serverid !== 'showdown' || room !== 'writing' || !
             this.hasRank(by, '@#~')) return false;
