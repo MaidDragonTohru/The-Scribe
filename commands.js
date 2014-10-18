@@ -89,7 +89,7 @@ exports.commands = {
             autoban: 1,
             regexautoban: 1,
             banword: 1,
-            randpokemon: 1,
+            randomcommands: 1,
 			message: 1
         };
         var modOpts = {
@@ -459,12 +459,18 @@ exports.commands = {
         }
         this.say(con, room, text);
     },
+	randomcommands function(arg, by, room, con) {
+		//dummy command for set
+	},
     rt: 'randtype',
     gentype: 'randtype',
     randomtype: 'randtype',
     randtype: function(arg, by, room, con) {
-        if (!this.hasRank(by, '+%@#~')) return false;
-        var text = '';
+        if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',')) {
+			var text = '';
+		} else {
+			text = '/pm ' + by + ', ';
+		}
         var type = [];
         for (i = 0; i < 2; i++) {
             type[i] = Math.floor(17 * Math.random()) + 1;
@@ -729,120 +735,205 @@ exports.commands = {
             bst + '';
         this.say(con, room, text);
     },
-    rollpokemon: 'randpokemon',
-    randpoke: 'randpokemon',
-    randompoke: 'randpokemon',
-    randompokemon: 'randpokemon',
-    randpokemon: function(arg, by, room, con) {
-        if (this.canUse('randomstats', room, by) || room.charAt(0) ===
-            ',') {
-            var text = '';
-            var rpreminder = '';
-        } else {
-            var text = '/pm ' + by + ', ';
-            var rpreminder =
-                'Don\'t forget that you could also use this command in PM. In fact, I\'d prefer that! ^.^\'';
-        }
-        var randompokes = [];
-        var pokequantity = '';
-        var pokeNum = '';
-        var Uber = '';
-        var legend = '';
-        var NFE = '';
-        var noUber = '';
-        var noNFE = '';
-        var noLegend = '';
-        if (!arg) {
-            pokequantity = 1;
-        } else {
-            var parameters = arg.toLowerCase().split(", ");
-            pokequantity = parameters[0];
-            if (isNaN(pokequantity) || pokequantity < 1 || pokequantity >
-                6) return this.say(con, room,
-                "Quantity of random pokemon must be between 1 and 6."
-            );
-            if (parameters.length > 1) {
-                if (parameters.indexOf('uber') > -1 && parameters.indexOf(
-                    '!uber') > -1) return this.say(con, room,
-                    'roll cannot contain both \'uber\' and \'!uber\'.'
-                );
-                if (parameters.indexOf('nfe') > -1 && parameters.indexOf(
-                    '!nfe') > -1) return this.say(con, room,
-                    'roll cannot contain both \'nfe\' and \'!nfe\'.'
-                );
-                if (parameters.indexOf('legendary') > -1 && parameters.indexOf(
-                    '!legendary') > -1) return this.say(con, room,
-                    'roll cannot contain both \'legend\' and \'!legend\'.'
-                );
-                if (parameters.indexOf('uber') > -1 && parameters.indexOf(
-                    '!legendary') > -1 && pokequantity > 3) return this
-                    .say(con, room,
-                        'Invalid generation conditions.');
-                for (j = 1; j < parameters.length; j++) {
-                    switch (parameters[j]) {
-                        case 'uber':
-                            Uber = 1;
-                            continue;
-                        case 'legendary':
-                            legend = 1;
-                            continue;
-                        case 'nfe':
-                            NFE = 1;
-                            continue;
-                        case '!uber':
-                            noUber = 1;
-                            continue;
-                        case '!legendary':
-                            noLegend = 1;
-                            continue;
-                        case '!nfe':
-                            noNFE = 1;
-                            continue;
-                        default:
-                            return this.say(con, room, 'Parameter \'' +
-                                parameters[j] +
-                                '\' not recognized.');
-                    }
-                }
-            }
-        }
-        if (pokequantity === 1 && room.charAt(0) !== ',' && this.hasRank(
-            by, '+%@#~')) text = '!dex ';
-        for (i = 0; i < pokequantity; i++) {
-            pokeNum = Math.floor(723 * Math.random());
-            if (Uber && !Pokedex[pokeNum].uber) {
-                i--;
-                continue;
-            }
-            if (legend && !Pokedex[pokeNum].legend) {
-                i--;
-                continue;
-            }
-            if (NFE && !Pokedex[pokeNum].nfe) {
-                i--;
-                continue;
-            }
-            if (noUber && Pokedex[pokeNum].uber) {
-                i--;
-                continue;
-            }
-            if (noLegend && Pokedex[pokeNum].legend) {
-                i--;
-                continue;
-            }
-            if (noNFE && Pokedex[pokeNum].nfe) {
-                i--;
-                continue;
-            }
-            if (randompokes.indexOf(Pokedex[pokeNum].species) > -1) {
-                i--;
-                continue;
-            }
-            randompokes.push(Pokedex[pokeNum].species);
-        }
-        this.say(con, room, text + randompokes.join(", ") + '. ' +
-            rpreminder);
-    },
+	rollpokemon: 'randpokemon',
+	randpoke: 'randpokemon',
+	randompoke: 'randpokemon',
+	randompokemon: 'randpokemon',
+	randpokemon: function(arg, by, room, con) {
+		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
+			var text = '';
+		} else {
+			var text = '/pm ' + by + ', ';
+		}
+		var randompokes = [];
+		var Uber = '';
+		var legend = '';
+		var NFE = '';
+		var noUber = '';
+		var noNFE = '';
+		var noLegend = '';
+		var mega = '';
+		var noMega = '';
+		var noForms = '';
+		var shiny = '';
+		var noDt = {"Unown":1,"Shellos":1,"Gastrodon":1,"Deerling":1,"Sawsbuck":1,"Vivillon":1,"Flabébé":1,"Floette":1,"Florges":1,"Furfrou":1};
+		if (!arg) {
+			var pokequantity = 1;
+		} else {
+			var parameters = arg.toLowerCase().split(", ");
+			var pokequantity = 1;
+			var hasBeenSet = '';
+			for (j=0; j<parameters.length; j++) {
+				if (parameters[j] == parseInt(parameters[j], 10)) {
+					if (hasBeenSet) return this.say(con, room, 'Please only specify number of pokemon once');
+					if (parameters[j] < 1 || parameters[j] > 6) return this.say(con, room, "Quantity of random pokemon must be between 1 and 6.");
+					pokequantity = parameters[j];
+					hasBeenSet = true;
+					continue;
+				}
+				switch (parameters[j]) {
+					case 'uber': Uber = 1; continue;
+					case 'legendary': legend = 1; continue;
+					case 'mega': mega = 1; continue;
+					case 'nfe': NFE = 1; continue;
+					case '!uber': noUber = 1; continue;
+					case '!legendary': noLegend = 1; continue;
+					case '!mega': noMega = 1; continue;
+					case '!nfe': noNFE = 1; continue;
+					case '!forms': noForms = 1; noMega = 1; continue;
+					case 'shiny': shiny = 1; continue;
+					default: return this.say(con, room, 'Parameter \'' + parameters[j] + '\' not recognized.');
+				}
+			}
+			if (Uber && noUber) return this.say(con, room, 'roll cannot contain both \'uber\' and \'!uber\'.');
+			if (NFE && noNFE) return this.say(con, room, 'roll cannot contain both \'nfe\' and \'!nfe\'.');
+			if (legend && noLegend) return this.say(con, room, 'roll cannot contain both \'legend\' and \'!legend\'.');
+			if (mega && noMega) return this.say(con, room, 'roll cannot contain both \'mega\' and \'!mega\'.');
+			if (Uber && noLegend && pokequantity > 3) return this.say(con, room, 'Invalid generation conditions.');
+			if (mega && Uber && pokequantity > 1) return this.say(con, room, 'Invalid generation conditions.');
+			if ((Uber || legend || mega) && NFE) return this.say(con, room, 'Invalid generation conditions.');
+		}
+		if (pokequantity == 1 && room.charAt(0) !== ',' && this.hasRank(by, '+%@#~')) text = '!dt ';
+		for (i=0; i<pokequantity; i++) {
+			var pokeNum = Math.floor(723 * Math.random());
+			if (Uber && !Pokedex[pokeNum].uber) {i--; continue;}
+			if (legend && !Pokedex[pokeNum].legend) {i--; continue;}
+			if (NFE && !Pokedex[pokeNum].nfe) {i--; continue;}
+			if (mega && !Pokedex[pokeNum].mega) {i--; continue;}
+			if (noUber && Pokedex[pokeNum].uber) {i--; continue;}
+			if (noLegend && Pokedex[pokeNum].legend) {i--; continue;}
+			if (noNFE && Pokedex[pokeNum].nfe) {i--; continue;}
+			if (randompokes.indexOf(Pokedex[pokeNum].species) > -1) {i--; continue;}
+			if (Pokedex[pokeNum].mega && !noMega) {
+				var buffer = Pokedex[pokeNum].species; 
+				var megaNum = (mega ? 0 : -1)
+				megaNum += Math.floor((Pokedex[pokeNum].mega.length + (mega ? 0 : 1)) * Math.random());
+				if (megaNum == -1) {
+					randompokes.push(buffer);
+				} else {
+					randompokes.push(buffer + '-' + Pokedex[pokeNum].mega[megaNum]);
+				}
+				continue;
+			}
+			if (Pokedex[pokeNum].forms && !noForms) {
+				var formNum = Math.floor(Pokedex[pokeNum].forms.length * Math.random());
+				if (Pokedex[pokeNum].forms[formNum] !== "norm") {
+					var buffer = Pokedex[pokeNum].species;
+					if (text === '!dt ' && noDt[buffer] && Pokedex[pokeNum].forms[formNum] !== "eternal-flower") text = '';
+					randompokes.push(buffer + '-__' + Pokedex[pokeNum].forms[formNum] + '__');
+					continue;
+				}
+			}
+			randompokes.push(Pokedex[pokeNum].species);
+		}
+		if  (shiny) {
+			for (k=0; k<randompokes.length; k++) {
+				if (Math.floor(2 * Math.random()) === 0) continue;
+				randompokes[k] = '``shiny`` ' + randompokes[k];
+			}
+		} else {
+			for (k=0; k<randompokes.length; k++) {
+				if (Math.floor(1364 * Math.random()) !== 0) continue;
+				randompokes[k] = '``shiny`` ' + randompokes[k];
+			}
+		}
+		this.say(con, room, text + randompokes.join(", "));
+	},
+	rl: 'randomlocation',
+	randscene: 'randomlocation',
+	randlocation: 'randomlocation',
+	randomlocation: function(arg, by, room, con) {
+		if (!(room in this.RP) && !room.charAt(0) === ',') return false;
+		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
+			var text = '';
+		} else {
+			var text = '/pm ' + by + ', ';
+		}
+		var adjectives = ["crystal","floating","eternal-dusk","sunset","snowy","rainy","sunny","chaotic","peaceful","colorful","gooey","fiery","jagged","glass","vibrant","rainbow","foggy",
+				"calm","demonic","polygonal","glistening","sexy","overgrown","frozen","dark","mechanical","mystic","steampunk","subterranean","polluted","bleak","dank","smooth","vast","pixelated",
+				"enigmatic","illusion","sketchy","spooky","flying","legendary","cubic","moist","oriental","fluffy"];
+		var locations = ["river","island","desert","forest","jungle","plains","mountains","mesa","cave","canyon","marsh","lake","plateau","tundra","volcano","valley","waterfall","atoll",
+				"asteroid","grove","treetops","cavern","beach","ocean","plains","heavens","abyss","city","crag","planetoid","harbour","evergreen","cabin","hill","field","ship","glacier","estuary",
+				"wasteland","sky","chamber","ruin","tomb","park","closet","terrace","air balloon"];
+		var adjNum = Math.floor(adjectives.length * Math.random());
+		var locNum = Math.floor(locations.length * Math.random());
+		this.say(con, room, text + 'Random scenery: **' + adjectives[adjNum] + ' ' + locations[locNum] + '**.');
+	},
+	rm: 'randommove',
+	randmove: 'randommove',
+	randommove: function(arg, by, room, con) {
+		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
+			var text = '';
+		} else {
+			var text = '/pm ' + by + ', ';
+		}
+		var types = {"normal":1,"fire":1,"water":1,"grass":1,"electric":1,"ice":1,"fighting":1,"poison":1,"ground":1,"flying":1,"psychic":1,"bug":1,"rock":1,"ghost":1,"dragon":1,"dark":1,"steel":1,"fairy":1};
+		var classes = {"physical":1,"special":1,"status":1};
+		var moveQuantity = 1;
+		var hasBeenSet = false;
+		var singleType = false; 
+		var singleClass = false;
+		
+		var parameters = arg.split(', ');
+		if (parameters.length > 10) return this.say(con, room, 'Please use 10 or fewer arguments.');
+		for (var i=0; i<parameters.length; i++) {
+			if (parameters[i] == parseInt(parameters[i], 10)) {
+				if (hasBeenSet) return this.say(con, room, 'Please only specify number of pokemon once');
+				if (parameters[i] < 1 || parameters[i] > 6) return this.say(con, room, "Quantity of random moves must be between 1 and 6.");
+				moveQuantity = parameters[i];
+				hasBeenSet = true;
+				continue;
+			}
+			var notGate = false; 
+			if (parameters[i].charAt(0) === '!') {
+				notGate = true;
+				parameters[i] = parameters[i].substr(1);
+			}
+			var parameter = toId(parameters[i]);
+			if (parameter in types) {
+				if (types[parameter] === 1 && !notGate) {
+					types[parameter] = 2;
+					singleType = true;
+				} else if (types[parameter] === 1 && notGate) {
+					types[parameter] = 0;
+				} else {
+					return this.say(con, room, 'Cannot include both \'' + parameters[i] + '\' and \'!' + parameters[i] + '\'.');
+				}
+			} else if (parameter in classes) {
+				if (classes[parameter] === 1 && !notGate) {
+					classes[parameter] = 2;
+					singleClass = true;
+				} else if (classes.parameter === 1 && notGate) {
+					classes[parameter] = 0;
+				} else {
+					return this.say(con, room, 'Cannot include both \'' + parameters[i] + '\' and \'!' + parameters[i] + '\'.');
+				}
+			} else {
+				return this.say(con, room, 'Parameter \'' + parameters[i] + '\' not recognized.');
+			}
+		}
+		if (singleType) {
+			if (moveQuantity > 3) return this.say(con, room, 'Invalid generation conditions.');
+			for (var set in types) {
+				if (types[set] == 1) types[set] = 0;
+			}
+		}
+		if (singleClass) {
+			for (var set in classes) {
+				if (classes[set] == 1) classes[set] = 0;
+			}
+		}
+		
+		var randomMoves = [];
+		for (var j=0; j<moveQuantity; j++) {
+			var roll = Math.floor(614 * Math.random()) + 1;
+			if (types[Movedex[roll].type] === 0) {j--; continue;}
+			if (classes[Movedex[roll].class] === 0) {j--; continue;}
+			if (randomMoves.indexOf(Movedex[roll].name) > -1) {j--; continue;}
+			randomMoves.push(Movedex[roll].name);
+		}
+		this.say(con, room, text + randomMoves.join(', '));
+	},
     plug: function(arg, by, room, con) {
         if (config.serverid !== 'showdown') return false;
         if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !==

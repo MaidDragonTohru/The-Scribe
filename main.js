@@ -125,6 +125,8 @@ if (!fs.existsSync('./config.js')) {
 
 global.config = require('./config.js');
 global.Pokedex = require('./pokedex.js').pokedex;
+global.Movedex = require('./movedex.js').movedex;
+
 global.cleanChatData = function(chatData) {
 	for (var user in chatData) {
 		for (var room in chatData[user]) {
