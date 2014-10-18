@@ -1061,7 +1061,7 @@ exports.commands = {
 		this.writeMessages();
 		this.say(con, room, (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ') + 'Message has been sent to ' + user + '.');
 	},
-	checkmail: 'readmessages',
+    checkmail: 'readmessages',
 	readmail: 'readmessages',
 	readmessages: function(arg, by, room, con) {
 		var text = (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ');
