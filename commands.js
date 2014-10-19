@@ -677,14 +677,12 @@ exports.commands = {
         this.say(con, room, text + 'I love you, ' + by + '.');
     },
     drive: function(arg, by, room, con) {
-        if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !==
-            -1) || room.charAt(0) === ',') {
+        if (this.hasRank(by, '+%@#~')){
             var text = '';
         } else {
             var text = '/pm ' + by + ', ';
         }
-        this.say(con, room, text +
-            'Community Drive: http://goo.my/writingarchive');
+        this.say(con, room, text + 'Community Drive: http://goo.my/writingarchive');
     },
     contests: 'events',
     contest: 'events',
@@ -948,15 +946,12 @@ exports.commands = {
 	},
     plug: function(arg, by, room, con) {
         if (config.serverid !== 'showdown') return false;
-        if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !==
-            -1) || room.charAt(0) === ',') {
+        if (this.hasRank(by, '+%@#~')) {
             var text = '';
         } else {
             var text = '/pm ' + by + ', ';
         }
-        this.say(con, room, text +
-            'Come join our Plug.dj~! http://plug.dj/ps-writing-room/'
-        );
+        this.say(con, room, text + 'Come join our Plug.dj~! http://plug.dj/ps-writing-room/');
     },
     faq: function(arg, by, room, con) {
         if (config.serverid !== 'showdown') return false;
@@ -967,7 +962,7 @@ exports.commands = {
             var text = '/pm ' + by + ', ';
         }
         this.say(con, room, text +
-            'Check out our Frequently Asked Questions page: http://goo.my/pswritingfaq'
+            'Check out our Frequently Asked Questions page: http://bit.do/PSWritingDriveFAQ'
         );
     },
     poems: function(arg, by, room, con) {
@@ -979,7 +974,7 @@ exports.commands = {
             var text = '/pm ' + by + ', ';
         }
         this.say(con, room, text +
-            'Writing Room Poems: http://goo.my/writingpoems');
+            'Writing Room Poems: http://bit.do/PSwritingpoems');
     },
     stories: function(arg, by, room, con) {
         if (config.serverid !== 'showdown') return false;
@@ -990,7 +985,7 @@ exports.commands = {
             var text = '/pm ' + by + ', ';
         }
         this.say(con, room, text +
-            'Writing Room Stories: http://goo.my/writingstories');
+            'Writing Room Stories: http://bit.do/PSwritingstories');
     },
     rules: function(arg, by, room, con) {
         if (config.serverid !== 'showdown') return false;
@@ -1006,8 +1001,7 @@ exports.commands = {
     },
     voice: function(arg, by, room, con) {
         if (config.serverid !== 'showdown') return false;
-        if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !==
-            -1) || room.charAt(0) === ',') {
+        if ((this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
             var text = '';
         } else {
             var text = '/pm ' + by + ', ';
@@ -1048,7 +1042,7 @@ exports.commands = {
             var text = '/pm ' + by + ', ';
         }
         this.say(con, room, text + 'Attention, all writers! We’ve recently begun our new Event: Halloween Contest: Where Nightmares Come To Life! This time around, contestants are tasked with writing a story or poem with a Halloween theme to it, and that takes place within the Pokemon Universe.');
-        this.say(con, room, text + 'Be sure to check out our guidelines for the contest, where you’ll get a more in-depth explanation: (http://goo.gl/oGZXc3 ) Submissions will close on the 31st of October, so don’t forget to submit your entry! You may find our submission board here: (http://goo.gl/vpPmXX )');
+        this.say(con, room, text + 'Be sure to check out our guidelines for the contest, where you’ll get a more in-depth explanation: (http://goo.gl/YblcUj ) Submissions will close on the 31st of October, so don’t forget to submit your entry! You may find our submission board here: (http://goo.gl/vpPmXX )');
         this.say(con, room, text + 'If you have any further questions, please contact our Staff. With all that said, we wish you a happy Halloween, and don’t forget to have fun!');
     },
     idea: 'randomgenre',
@@ -1140,7 +1134,7 @@ exports.commands = {
 	mail: 'message',
 	msg: 'message',
 	message: function(arg, by, room, con) {
-		if (!this.settings.poeticlicense[toId(by)]) {
+		if (!this.settings.poeticlicense[toId(by)] || (toId(by) !== 'axebane') ) {
 			if (!this.canUse('message', room, by)) return this.say(con, room, '/msg ' + by + ', It seems as if you cannot use this command! Do you have a Poetic License?');
 			if (room.charAt(0) === ',' && !this.hasRank(by, '+%@#~')) return this.say(con, room, 'mail cannot be used in PMs.');
 		}
@@ -1164,7 +1158,7 @@ exports.commands = {
 		this.writeMessages();
 		this.say(con, room, (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ') + 'Message has been sent to ' + user + '.');
 	},
-    checkmail: 'readmessages',
+    	checkmail: 'readmessages',
 	readmail: 'readmessages',
 	readmessages: function(arg, by, room, con) {
 		var text = (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ');
