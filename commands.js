@@ -919,7 +919,7 @@ exports.commands = {
 					return this.say(con, room, 'Cannot include both \'' + parameters[i] + '\' and \'!' + parameters[i] + '\'.');
 				}
 			} else {
-				return this.say(con, room, 'Parameter \'' + parameters[i] + '\' not recognized.');
+				return this.say(con, room, 'Pleae specify a parameter or check that you are spelling it correctly.');
 			}
 		}
 		if (singleType) {
