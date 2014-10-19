@@ -21,10 +21,18 @@ Room Owners and up
 
 *goodnight*: Forces the bot to leave all rooms, going to 'sleep'.
 
+*clearmail 'optional user' (or) all*: Used to delete all stored messages from either a certain user or everybody's respectively.
+
 Moderators and up
 -----------------
 
 A bunch of autoban/unban commands. Pretty much self-explanatory. They ban users on sight. This command isn't active, but is present.
+
+*pl, poeticlicense*: Used to give a user a Poetic License. This is classified as an unofficial rank, just below Voice.
+
+*upl, unpoeticlisense*: Used to revoke a user's Poetic License. 
+
+*vpl, viewpoeticlicense*: Makes the bot return a list of all users that possess a Poetic License VIA Private Messages.
 
 *newbie*: Gives a newcomer to the room a nice friendly greeting~
 
@@ -45,27 +53,36 @@ Voices and up
 
 *rs, randstats, randomstats 'optional BST'*: Randomly generates a stat build using the Pokémon format. If you didn't specify a BST to use, it'll pick a random one.
 
+*rl, randscene, randlocation, randomlocation*: Generates a random location description, using one adjective and one location type.
+
+*rm, randmove, randommove '"physical"' (or) '"special"' (or) '"status"' (or/and) 'Pokémon type'*: Generates a random move based on the parameters used. For instance: ";rm grass, physical" can return the move "Needle Arm".
+
 *setpoll '[Strawpoll][4] link'*: This command will set the specified [Strawpoll][4] poll as the current poll in the
 *setpoll* so that *poll* can list the poll that's been set in the *setpoll*. Geez! That's a lot of polls!
 
 *endpoll*: Ends the poll that was listed in the *setpoll*, preventing it from being accessed by the *poll* command. It'll also link back to the respective results page for that poll. This is why the *poll* needs to be a [Strawpoll][4] link.
 
-*rmpoll*: Removes the poll from the *poll* command without actually 'ending' it, sparing people the confusion and the bold abuse. .w.'
+*rmpoll*: Removes the poll from the *poll* command without actually 'ending' it, sparing people the confusion and the large, obnoxious bold. .w.'
 
 *voice*: Explains to the room how they can become a voice. 
+
+Commands users with a Poetic License can use
+--------------------------------------------
+
+*mail 'user,' 'message'*: This command sends a "mail" to another user on PS. They will see the message once they join the room or use the *readmail* command.
+
+*checkmail, readmail, readmessages*: This command, as stated above, is used to view all the unread messages you have in your Inbox. The messages are deleted afterwards, so don't lose them.
 
 Commands any user can use~!
 ---------------------------
 
-*seen 'user'*: The bot returns the last time that user was seen online (while the bot was online).
+*seen 'user'*: The bot returns the last time that user was seen online by the bot.
 
 *poll*: Lists the poll that was set in the *setpoll*. . . Let's not start that again.
 
-*writer, wotd*: PMs the user, assuming they're not ranked, the Writer of the Day.
+*writer, wotd*: PMs the user, assuming they're not ranked, the Spotlighted Writer.
 
 *site*: PMs the user, assuming they're not ranked, the Writing Room's website.
-
-*ping 'optional reason'*: Sends the creater of the bot a Private Message, assuming they're online, to get their ass into the room.
 
 *esupport*: For when you need a little love. ^.^
 
