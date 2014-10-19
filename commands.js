@@ -1043,7 +1043,6 @@ exports.commands = {
         }
         this.say(con, room, text + 'Attention, all writers! We’ve recently begun our new Event: Halloween Contest: Where Nightmares Come To Life! This time around, contestants are tasked with writing a story or poem with a Halloween theme to it, and that takes place within the Pokemon Universe.');
         this.say(con, room, text + 'Be sure to check out our guidelines for the contest, where you’ll get a more in-depth explanation: (http://goo.gl/YblcUj ) Submissions will close on the 31st of October, so don’t forget to submit your entry! You may find our submission board here: (http://goo.gl/vpPmXX )');
-        this.say(con, room, text + 'If you have any further questions, please contact our Staff. With all that said, we wish you a happy Halloween, and don’t forget to have fun!');
     },
     idea: 'randomgenre',
     randomidea: 'randomgenre',
