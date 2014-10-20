@@ -7,7 +7,7 @@ A chat bot for [Pokémon Showdown][1]. This bot has a number of commands, some h
 
 Commands
 ========
-Below is a list of commands for the bot. Note that this can occasionally become out of date as new commands are created or removed. () = Text not actually directly related to the actual command's use. Commas in a command's name indicate alternate names for the commands, which do exactly the same thing.
+Below is a list of commands for the bot. Note that this can occasionally become out of date as new commands are created or removed. Text within brackets (or paranthesies, if you're one of "those" people) is text not actually needed to be literally written, but more something that shows you what you should generally write in the space. Commas in a command's name indicate alternate names or aliases for the command, which do exactly the same thing as the other names.
 
 Room Owners and up
 ------------------
