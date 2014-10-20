@@ -7,7 +7,7 @@ A chat bot for [Pokémon Showdown][1]. This bot has a number of commands, some h
 
 Commands
 ========
-Below is a list of commands for the bot. Note that this can occasionally become out of date as new commands are created or removed. () = Text not actually directly related to the actual command's use. ' ' = User input. You don't actually need to type the ' ', just what's inside of them. Commas in a command's name indicate alternate names for the commands, which do exactly the same thing.
+Below is a list of commands for the bot. Note that this can occasionally become out of date as new commands are created or removed. () = Text not actually directly related to the actual command's use. Commas in a command's name indicate alternate names for the commands, which do exactly the same thing.
 
 Room Owners and up
 ------------------
@@ -15,13 +15,11 @@ Room Owners and up
 
 *js*: Manipulates basic JavaScript functions.
 
-*do 'text'*: Forces the bot to type whatever text is entered after *do*.
+*do <text>*: Forces the bot to type whatever text is entered after *do*.
 
 *reload*: Reloads the bot's commands, adding any updates without having to reboot it entirely.
 
-*goodnight*: Forces the bot to leave all rooms, going to 'sleep'.
-
-*clearmail 'optional user' (or) all*: Used to delete all stored messages from either a certain user or everybody's respectively.
+*clearmail <optional user> (or) all*: Used to delete all stored messages from either a certain user or everybody's respectively.
 
 Moderators and up
 -----------------
@@ -51,13 +49,13 @@ Voices and up
 
 *rt, gentype, randtype*: The same as above, except it randomly generates Pokémon types instead of genres.
 
-*rs, randstats, randomstats 'optional BST'*: Randomly generates a stat build using the Pokémon format. If you didn't specify a BST to use, it'll pick a random one.
+*rs, randstats, randomstats <optional BST>*: Randomly generates a stat build using the Pokémon format. If you didn't specify a BST to use, it'll pick a random one.
 
 *rl, randscene, randlocation, randomlocation*: Generates a random location description, using one adjective and one location type.
 
-*rm, randmove, randommove '"physical"' (or) '"special"' (or) '"status"' (or/and) 'Pokémon type'*: Generates a random move based on the parameters used. For instance: ";rm grass, physical" can return the move "Needle Arm".
+*rm, randmove, randommove <"physical"> (or) <"special"> (or) <"status"> (or/and) <Pokémon type>*: Generates a random move based on the parameters used. For instance: ";rm grass, physical" can return the move "Needle Arm".
 
-*setpoll '[Strawpoll][4] link'*: This command will set the specified [Strawpoll][4] poll as the current poll in the
+*setpoll <[Strawpoll][4] link>*: This command will set the specified [Strawpoll][4] poll as the current poll in the
 *setpoll* so that *poll* can list the poll that's been set in the *setpoll*. Geez! That's a lot of polls!
 
 *endpoll*: Ends the poll that was listed in the *setpoll*, preventing it from being accessed by the *poll* command. It'll also link back to the respective results page for that poll. This is why the *poll* needs to be a [Strawpoll][4] link.
@@ -69,14 +67,14 @@ Voices and up
 Commands users with a Poetic License can use
 --------------------------------------------
 
-*mail 'user,' 'message'*: This command sends a "mail" to another user on PS. They will see the message once they join the room or use the *readmail* command.
+*mail <user>, <message>*: This command sends a "mail" to another user on PS. They will see the message once they join the room or use the *readmail* command.
 
 *checkmail, readmail, readmessages*: This command, as stated above, is used to view all the unread messages you have in your Inbox. The messages are deleted afterwards, so don't lose them.
 
 Commands any user can use~!
 ---------------------------
 
-*seen 'user'*: The bot returns the last time that user was seen online by the bot.
+*seen <user>*: The bot returns the last time that user was seen online by the bot.
 
 *poll*: Lists the poll that was set in the *setpoll*. . . Let's not start that again.
 
@@ -96,7 +94,7 @@ Commands any user can use~!
 
 *rules*: A nice alternative to the /rules command. Useful if you want to tell multiple people at the same time and you're too much of a rebel to use the !rules command.
 
-*randpoke 'optional number between one and six'*: Generates a random Pokemon from the Pokedex. 
+*randpoke <optional number between one and six>*: Generates a random Pokemon from the Pokedex. If the number is left blank, then it will simply generate one.
 
 Installation
 ============
