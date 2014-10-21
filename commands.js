@@ -459,14 +459,14 @@ exports.commands = {
         }
         this.say(con, room, text);
     },
-	randomcommands function(arg, by, room, con) {
+	randomcommands: function(arg, by, room, con) {
 		//dummy command for set
 	},
     rt: 'randtype',
     gentype: 'randtype',
     randomtype: 'randtype',
     randtype: function(arg, by, room, con) {
-        if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',')) {
+        if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
 			var text = '';
 		} else {
 			text = '/pm ' + by + ', ';
@@ -1004,7 +1004,7 @@ exports.commands = {
     },
     voice: function(arg, by, room, con) {
         if (config.serverid !== 'showdown') return false;
-        if ((this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
+        if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
             var text = '';
         } else {
             var text = '/pm ' + by + ', ';
