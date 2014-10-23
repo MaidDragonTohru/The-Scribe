@@ -865,7 +865,7 @@ exports.commands = {
         			"distant","massive","exotic","tainted","filthy","flawless","forsaken","frigid","frosty","grand","grandiose","grotesque","harmful","harsh","hospitable","hot","jaded","meek","weird","awkward",
         			"silly","cursed","blessed"];
 		var locations = ["river","island","desert","forest","jungle","plains","mountains","mesa","cave","canyon","marsh","lake","plateau","tundra","volcano","valley","waterfall","atoll",
-				"asteroid","grove","treetops","cavern","beach","ocean","plains","heavens","abyss","city","crag","planetoid","harbour","evergreen","cabin","hill","field","ship","glacier","estuary",
+				"asteroid","grove","treetops","cavern","beach","ocean","plains","heavens","abyss","city","crag","planetoid","harbor","evergreen","cabin","hill","field","ship","glacier","estuary",
 				"wasteland","sky","chamber","ruin","tomb","park","closet","terrace","air balloon","shrine","room","swamp","road","path","gateway","school","building","vault","pool","statue","pit",
                 		"temple","lagoon","prison","harem","mine","catacombs"];
 		var adjNum = Math.floor(adjectives.length * Math.random());
