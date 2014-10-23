@@ -459,9 +459,21 @@ exports.commands = {
         }
         this.say(con, room, text);
     },
+    //This is a template for all Random Commands; please don't use this as an actual command.
 	randomcommands: function(arg, by, room, con) {
-		//dummy command for set
-	},
+		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
+			var text = '';
+		} else {
+			var text = '/pm ' + by + ', ';
+		}
+		var variableone = ["entity1","entity2"];
+		var variabletwo = ["entity1","entity2"];
+		var varoneNum = Math.floor(variableone.length * Math.random());
+		var vartwoNum = Math.floor(variabletwo.length * Math.random());
+		this.say(con, room, text + 'Random thing: __' + variableone[varoneNum] + ' ' + variabletwo[vartwoNum] + '__.');
+    },
+    //Random Commands Section!
+    //Place all 'random thing generator' commands in this section!
     rt: 'randtype',
     gentype: 'randtype',
     randomtype: 'randtype',
@@ -539,164 +551,6 @@ exports.commands = {
         }
         this.say(con, room, text);
     },
-    // Roleplaying commands
-    setpoll: function(arg, by, room, con) {
-        if (!this.canUse('setrp', room, by) || !(room in this.RP))
-            return false;
-        if (!arg) return this.say(con, room,
-            'Please enter a strawpoll link.');
-        this.RP[room].poll = arg;
-        this.say(con, room, 'The poll was set to ' + arg + '.');
-    },
-    sw: 'wotd',
-    writer: 'wotd',
-    wotd: function(arg, by, room, con) {
-        if (!this.canUse('setrp', room, by)) {
-            var text = '/pm ' + by + ', ';
-        } else {
-            var text = '';
-            var self = this;
-            config.wotdCalled = true;
-            setTimeout(function() {
-                delete config.wotdCalled;
-            }, 60 * 1000);
-        }
-        if (!config.wotd) return this.say(con, room, text +
-            'A Writer of the Day hasn\'t been set! :o');
-        this.say(con, room, text + 'Today\'s Spotlighted Writer is [[' +
-            config.wotd + ']].');
-    },
-    setdoc: function(arg, by, room, con) {
-        if (!this.canUse('setrp', room, by) || !(room in this.RP))
-            return false;
-        if (!arg) return this.say(con, room,
-            'Please enter a document link.');
-        this.RP[room].doc = arg;
-        this.say(con, room, 'The document was set to ' + arg + '.');
-    },
-    doc: function(arg, by, room, con) {
-        if (!(room in this.RP) || room.charAt(0) === ',') return false;
-        if (this.RP[room].docCalled) {
-            var text = '/pm ' + by + ', ';
-        } else {
-            var text = '';
-            var self = this;
-            this.RP[room].docCalled = true;
-            setTimeout(function() {
-                delete self.RP[room].docCalled;
-            }, 60 * 1000);
-        }
-        if (!this.RP[room].doc) return this.say(con, room, text +
-            'There is no document set.');
-        this.say(con, room, text +
-            'The current document for the RP is available at ' +
-            this.RP[room].doc + '.');
-    },
-    rmdoc: function(arg, by, room, con) {
-        if (!this.canUse('setrp', room, by) || !(room in this.RP))
-            return false;
-        if (!this.RP[room].doc) return this.say(con, room,
-            'There isn\'t a document to remove. :/');
-        this.say(con, room, 'The document has been removed.');
-        delete this.RP[room].doc;
-    },
-    poll: function(arg, by, room, con) {
-        if (!(room in this.RP) || room.charAt(0) === ',') return false;
-        if (this.RP[room].pollCalled) {
-            var text = '/pm ' + by + ', ';
-        } else {
-            var text = '';
-            var self = this;
-            this.RP[room].pollCalled = true;
-            setTimeout(function() {
-                delete self.RP[room].pollCalled;
-            }, 60 * 1000);
-        }
-        if (!this.RP[room].poll) return this.say(con, room, text +
-            'There is no poll.');
-        this.say(con, room, text + 'The current poll is available at ' +
-            this.RP[room].poll + '.');
-    },
-    endpoll: function(arg, by, room, con) {
-        if (!this.canUse('setrp', room, by)) return false;
-        if (!this.RP[room].poll) return this.say(con, room,
-            'There isn\'t a poll to remove.');
-        this.say(con, room, '**The poll has ended!** Results at ' +
-            this.RP[room].poll + '/r');
-        delete this.RP[room].poll;
-    },
-    rmpoll: function(arg, by, room, con) {
-        if (!this.canUse('setrp', room, by) || !(room in this.RP))
-            return false;
-        if (!this.RP[room].poll) return this.say(con, room,
-            'There isn\'t a poll to remove.');
-        this.say(con, room, 'The poll has been cleared.');
-        delete this.RP[room].poll;
-    },
-    site: function(arg, by, room, con) {
-        if (config.serverid !== 'showdown') return false;
-        if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !==
-            -1) || room.charAt(0) === ',') {
-            var text = '';
-        } else {
-            var text = '/pm ' + by + ', ';
-        }
-        this.say(con, room, text +
-            'Writing Room\'s Website: http://pswriting.weebly.com/'
-        );
-    },
-    activities: function(arg, by, room, con) {
-        if (config.serverid !== 'showdown') return false;
-        if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !==
-            -1) || room.charAt(0) === ',') {
-            var text = '';
-        } else {
-            var text = '/pm ' + by + ', ';
-        }
-        this.say(con, room, text +
-            'Be sure to read through our list of official activities! http://pswriting.weebly.com/activities.html'
-        );
-    },
-    newbie: function(arg, by, room, con) {
-        if (config.serverid !== 'showdown' || room !== 'writing' || !
-            this.hasRank(by, '@#~')) return false;
-        this.say(con, room,
-            'Welcome to the Writing room! In case you missed the big shiny box, please make sure to visit the room website and read the rules listed there: http://pswriting.weebly.com/rules.html'
-        );
-        this.say(con, room,
-            'Also, feel free to ask the staff any questions you may have. I\'m sure they\'d love to answer them!'
-        );
-    },
-    esupport: function(arg, by, room, con) {
-        if ((this.hasRank(by, '%@#~') && config.rprooms.indexOf(room) !==
-            -1) || room.charAt(0) === ',') {
-            var text = '';
-        } else {
-            var text = '/pm ' + by + ', ';
-        }
-        this.say(con, room, text + 'I love you, ' + by + '.');
-    },
-    drive: function(arg, by, room, con) {
-        if (this.hasRank(by, '+%@#~')){
-            var text = '';
-        } else {
-            var text = '/pm ' + by + ', ';
-        }
-        this.say(con, room, text + 'Community Drive: http://goo.my/writingarchive');
-    },
-    contests: 'events',
-    contest: 'events',
-    events: function(arg, by, room, con) {
-        if (config.serverid !== 'showdown') return true;
-        if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !==
-            -1) || room.charAt(0) === ',') {
-            var text = '';
-        } else {
-            var text = '/w ' + by + ', ';
-        }
-        this.say(con, room,
-            'The current Contests and Events for the Writing Room can be found here: http://pswriting.weebly.com/contests--events.html'
-        );
     },
     randstats: 'randomstats',
     rs: 'randomstats',
@@ -947,6 +801,187 @@ exports.commands = {
 		}
 		this.say(con, room, text + randomMoves.join(', '));
 	},
+    idea: 'randomgenre',
+    randomidea: 'randomgenre',
+    randidea: 'randomgenre',
+    ri: 'randomgenre',
+    randstyle: 'randomgenre',
+    randomstyle: 'randomgenre',
+    rs: 'randomgenre',
+    rg: 'randomgenre',
+    randgenre: 'randomgenre',
+    randomgenre: function(arg, by, room, con) {
+        if (!(room in this.RP) && !room.charAt(0) === ',') return false;
+        if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
+            var text = '';
+        } else {
+            var text = '/pm ' + by + ', ';
+        }
+        var genres = ["Action","Adventure","Comedy","Crime","Fantasy","Historical","Children's Book","Horror","Mystery",
+        "Philosophical","Political","Realistic","Romance","Saga","Satire","Science Fiction","Slice of Life","Thriller","Urban"];
+        var genNum = Math.floor(genres.length * Math.random());
+        var genNum2 = Math.floor(genres.length * Math.random());
+        this.say(con, room, text + 'Random genre splice: __' + genres[genNum] + ' ' + genres[genNum2] + '__.');
+    },
+    //End Random Commands
+    setpoll: function(arg, by, room, con) {
+        if (!this.canUse('setrp', room, by) || !(room in this.RP))
+            return false;
+        if (!arg) return this.say(con, room,
+            'Please enter a strawpoll link.');
+        this.RP[room].poll = arg;
+        this.say(con, room, 'The poll was set to ' + arg + '.');
+    },
+    sw: 'wotd',
+    writer: 'wotd',
+    wotd: function(arg, by, room, con) {
+        if (!this.canUse('setrp', room, by)) {
+            var text = '/pm ' + by + ', ';
+        } else {
+            var text = '';
+            var self = this;
+            config.wotdCalled = true;
+            setTimeout(function() {
+                delete config.wotdCalled;
+            }, 60 * 1000);
+        }
+        if (!config.wotd) return this.say(con, room, text +
+            'A Writer of the Day hasn\'t been set! :o');
+        this.say(con, room, text + 'Today\'s Spotlighted Writer is [[' +
+            config.wotd + ']].');
+    },
+    setdoc: function(arg, by, room, con) {
+        if (!this.canUse('setrp', room, by) || !(room in this.RP))
+            return false;
+        if (!arg) return this.say(con, room,
+            'Please enter a document link.');
+        this.RP[room].doc = arg;
+        this.say(con, room, 'The document was set to ' + arg + '.');
+    },
+    doc: function(arg, by, room, con) {
+        if (!(room in this.RP) || room.charAt(0) === ',') return false;
+        if (this.RP[room].docCalled) {
+            var text = '/pm ' + by + ', ';
+        } else {
+            var text = '';
+            var self = this;
+            this.RP[room].docCalled = true;
+            setTimeout(function() {
+                delete self.RP[room].docCalled;
+            }, 60 * 1000);
+        }
+        if (!this.RP[room].doc) return this.say(con, room, text +
+            'There is no document set.');
+        this.say(con, room, text +
+            'The current document for the RP is available at ' +
+            this.RP[room].doc + '.');
+    },
+    rmdoc: function(arg, by, room, con) {
+        if (!this.canUse('setrp', room, by) || !(room in this.RP))
+            return false;
+        if (!this.RP[room].doc) return this.say(con, room,
+            'There isn\'t a document to remove. :/');
+        this.say(con, room, 'The document has been removed.');
+        delete this.RP[room].doc;
+    },
+    poll: function(arg, by, room, con) {
+        if (!(room in this.RP) || room.charAt(0) === ',') return false;
+        if (this.RP[room].pollCalled) {
+            var text = '/pm ' + by + ', ';
+        } else {
+            var text = '';
+            var self = this;
+            this.RP[room].pollCalled = true;
+            setTimeout(function() {
+                delete self.RP[room].pollCalled;
+            }, 60 * 1000);
+        }
+        if (!this.RP[room].poll) return this.say(con, room, text +
+            'There is no poll.');
+        this.say(con, room, text + 'The current poll is available at ' +
+            this.RP[room].poll + '.');
+    },
+    endpoll: function(arg, by, room, con) {
+        if (!this.canUse('setrp', room, by)) return false;
+        if (!this.RP[room].poll) return this.say(con, room,
+            'There isn\'t a poll to remove.');
+        this.say(con, room, '**The poll has ended!** Results at ' +
+            this.RP[room].poll + '/r');
+        delete this.RP[room].poll;
+    },
+    rmpoll: function(arg, by, room, con) {
+        if (!this.canUse('setrp', room, by) || !(room in this.RP))
+            return false;
+        if (!this.RP[room].poll) return this.say(con, room,
+            'There isn\'t a poll to remove.');
+        this.say(con, room, 'The poll has been cleared.');
+        delete this.RP[room].poll;
+    },
+    site: function(arg, by, room, con) {
+        if (config.serverid !== 'showdown') return false;
+        if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !==
+            -1) || room.charAt(0) === ',') {
+            var text = '';
+        } else {
+            var text = '/pm ' + by + ', ';
+        }
+        this.say(con, room, text +
+            'Writing Room\'s Website: http://pswriting.weebly.com/'
+        );
+    },
+    activities: function(arg, by, room, con) {
+        if (config.serverid !== 'showdown') return false;
+        if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !==
+            -1) || room.charAt(0) === ',') {
+            var text = '';
+        } else {
+            var text = '/pm ' + by + ', ';
+        }
+        this.say(con, room, text +
+            'Be sure to read through our list of official activities! http://pswriting.weebly.com/activities.html'
+        );
+    },
+    newbie: function(arg, by, room, con) {
+        if (config.serverid !== 'showdown' || room !== 'writing' || !
+            this.hasRank(by, '@#~')) return false;
+        this.say(con, room,
+            'Welcome to the Writing room! In case you missed the big shiny box, please make sure to visit the room website and read the rules listed there: http://pswriting.weebly.com/rules.html'
+        );
+        this.say(con, room,
+            'Also, feel free to ask the staff any questions you may have. I\'m sure they\'d love to answer them!'
+        );
+    },
+    esupport: function(arg, by, room, con) {
+        if ((this.hasRank(by, '%@#~') && config.rprooms.indexOf(room) !==
+            -1) || room.charAt(0) === ',') {
+            var text = '';
+        } else {
+            var text = '/pm ' + by + ', ';
+        }
+        this.say(con, room, text + 'I love you, ' + by + '.');
+    },
+    drive: function(arg, by, room, con) {
+        if (this.hasRank(by, '+%@#~')){
+            var text = '';
+        } else {
+            var text = '/pm ' + by + ', ';
+        }
+        this.say(con, room, text + 'Community Drive: http://goo.my/writingarchive');
+    },
+    contests: 'events',
+    contest: 'events',
+    events: function(arg, by, room, con) {
+        if (config.serverid !== 'showdown') return true;
+        if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !==
+            -1) || room.charAt(0) === ',') {
+            var text = '';
+        } else {
+            var text = '/w ' + by + ', ';
+        }
+        this.say(con, room,
+            'The current Contests and Events for the Writing Room can be found here: http://pswriting.weebly.com/contests--events.html'
+        );
+    },
     plug: function(arg, by, room, con) {
         if (config.serverid !== 'showdown') return false;
         if (this.hasRank(by, '+%@#~')) {
@@ -1046,88 +1081,6 @@ exports.commands = {
         }
         this.say(con, room, text + 'Attention, all writers! We’ve recently begun our new Event: Halloween Contest: Where Nightmares Come To Life! This time around, contestants are tasked with writing a story or poem with a Halloween theme to it, and that takes place within the Pokemon Universe.');
         this.say(con, room, text + 'Be sure to check out our guidelines for the contest, where you’ll get a more in-depth explanation: (http://goo.gl/YblcUj ) Submissions will close on the 31st of October, so don’t forget to submit your entry! You may find our submission board here: (http://goo.gl/vpPmXX )');
-    },
-    idea: 'randomgenre',
-    randomidea: 'randomgenre',
-    randidea: 'randomgenre',
-    ri: 'randomgenre',
-    randstyle: 'randomgenre',
-    randomstyle: 'randomgenre',
-    rs: 'randomgenre',
-    rg: 'randomgenre',
-    randgenre: 'randomgenre',
-    randomgenre: function(arg, by, room, con) {
-        if (!this.hasRank(by, '+%@#~')) return false;
-        var text = '';
-        var genre = [];
-        for (i = 0; i < 2; i++) {
-            genre[i] = Math.floor(17 * Math.random()) + 1;
-            switch (genre[i]) {
-                case 1:
-                    genre[i] = "Action";
-                    break;
-                case 2:
-                    genre[i] = "Adventure";
-                    break;
-                case 3:
-                    genre[i] = "Comedy";
-                    break;
-                case 4:
-                    genre[i] = "Crime";
-                    break;
-                case 5:
-                    genre[i] = "Fantasy";
-                    break;
-                case 6:
-                    genre[i] = "Historical";
-                    break;
-                case 7:
-                    genre[i] = "Children's Book";
-                    break;
-                case 8:
-                    genre[i] = "Horror";
-                    break;
-                case 9:
-                    genre[i] = "Mystery";
-                    break;
-                case 10:
-                    genre[i] = "Philosophical";
-                    break;
-                case 11:
-                    genre[i] = "Political";
-                    break;
-                case 12:
-                    genre[i] = "Realistic";
-                    break;
-                case 13:
-                    genre[i] = "Romance";
-                    break;
-                case 14:
-                    genre[i] = "Saga";
-                    break;
-                case 15:
-                    genre[i] = "Satire";
-                    break;
-                case 16:
-                    genre[i] = "Science Fiction";
-                    break;
-                case 17:
-                    genre[i] = "Slice of Life";
-                    break;
-                case 18:
-                    genre[i] = "Thriller";
-                    break;
-                case 19:
-                    genre[i] = "Urban";
-                    break;
-            }
-        }
-        if (genre[1] !== genre[0]) {
-            text += "Randomly generated genre splice: " + genre[0] + "/" + genre[1] + ".";
-        } else {
-            text += "Randomly generated genre: " + genre[0] + ".";
-        }
-        this.say(con, room, text);
     },
 	 /**
      * Messaging related commands
