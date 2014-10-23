@@ -1197,7 +1197,7 @@ exports.commands = {
 	pl: 'poeticlicense',
 	poeticlicense: function(arg, by, room, con) {
 		if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
-		if (!arg) return this.say(con, room, 'To whom should I grant a Poetic Licence?');
+		if (!arg) return this.say(con, room, 'To whom should I grant a Poetic License?');
 		var users = arg.split(', ');
 		var errors = [];
 		if (!this.settings.poeticlicense) this.settings.poeticlicense = {};
@@ -1220,7 +1220,7 @@ exports.commands = {
 		if (!arg) return this.say(con, room, 'Whose Poetic License should be revoked?');
 		var user = toId(arg);
 		if (!this.settings.poeticlicense) this.settings.poeticlicense = {};
-		if (!this.settings.poeticlicense[user]) return this.say(con, room, arg + ' does not have Roompaw.');
+		if (!this.settings.poeticlicense[user]) return this.say(con, room, arg + ' does not have Poetic License.');
 		delete this.settings.poeticlicense[user];
 		this.writeSettings();
 		this.say(con, room, '/modnote ' + user + ' had their Poetic License removed by ' + toId(by));
