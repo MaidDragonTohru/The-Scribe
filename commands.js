@@ -961,10 +961,10 @@ exports.commands = {
         this.say(con, room, text + 'I love you, ' + by + '.');
     },
     drive: function(arg, by, room, con) {
-        if (this.hasRank(by, '+%@#~')){
-            var text = '';
-        } else {
+        if (!this.hasRank(by, '+%@#~')){
             var text = '/pm ' + by + ', ';
+        } else {
+            var text = '';
         }
         this.say(con, room, text + 'Community Drive: http://goo.my/writingarchive');
     },
