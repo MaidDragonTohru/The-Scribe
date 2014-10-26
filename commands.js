@@ -1089,7 +1089,7 @@ exports.commands = {
 	mail: 'message',
 	msg: 'message',
 	message: function(arg, by, room, con) {
-		if (!this.settings.poeticlicense[toId(by)] || (toId(by) !== 'axebane') ) {
+		if (!this.settings.poeticlicense[toId(by)] && !this.hasRank(by, '+%@#~') || (toId(by) !== 'axebane') ) {
 			if (!this.canUse('message', room, by)) return this.say(con, room, '/msg ' + by + ', It seems as if you cannot use this command! Do you have a Poetic License?');
 			if (room.charAt(0) === ',' && !this.hasRank(by, '+%@#~')) return this.say(con, room, 'mail cannot be used in PMs.');
 		}
@@ -1103,7 +1103,7 @@ exports.commands = {
 			this.messages[user] = {};
 			this.messages[user].timestamp = Date.now();
 		}
-		if (this.messages[user]["4"]) return this.say(con, room, user + '\'s message inbox is full.');
+		if (this.messages[user]["5"]) return this.say(con, room, user + '\'s message inbox is full.');
 		var msgNumber = -1;
 		for (var i in this.messages[user]) {
 			msgNumber++;
