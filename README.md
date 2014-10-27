@@ -9,8 +9,8 @@ Commands
 ========
 Below is a list of commands for the bot. Note that this can occasionally become out of date as new commands are created or removed. Text within brackets (or paranthesies, if you're one of "those" people) is text not actually needed to be literally written, but more something that shows you what you should generally write in the space. Semicolons in a command's name indicate alternate names or aliases for the command, which do exactly the same thing as the other names and do not need to be added to the command for it to work; please don't actually type a semicolon in the command, as that is what the Command Character is.
 
-Room Owners and up
-------------------
+Room Owners and Above
+---------------------
 `settings; set`: Toggles which commands can be used or not.
 
 `js`: Manipulates basic JavaScript functions.
@@ -22,7 +22,7 @@ Room Owners and up
 `clearmail <optional user> (or) all`: Used to delete all stored messages from either a certain user or everybody's respectively.
 
 Moderators and Above
------------------
+--------------------
 
 *A bunch of autoban/unban commands. Pretty much self-explanatory. They ban users on sight. This command isn't active, but is present.*
 
@@ -34,13 +34,13 @@ Moderators and Above
 
 `newbie`: Gives a newcomer to the room a nice friendly greeting~
 
-Drivers and up
---------------
+Drivers and Above
+-----------------
 
 Drivers can use any of the voice commands, however they will be broardcasted to the whole chat, as opposed to the bot PMing the user.
 
-Voices and up
--------------
+Voices and Above
+----------------
 `about`: Explains the bot in a nutshell and links here.
 
 `help; guide`: Links to this page.
