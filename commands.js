@@ -1081,10 +1081,30 @@ exports.commands = {
         }
         this.say(con, room, text + 'Attention, all writers! We’ve recently begun our new Event: Halloween Contest: Where Nightmares Come To Life! This time around, contestants are tasked with writing a story or poem with a Halloween theme to it, and that takes place within the Pokemon Universe.');
         this.say(con, room, text + 'Be sure to check out our guidelines for the contest, where you’ll get a more in-depth explanation: (http://goo.gl/YblcUj ) Submissions will close on the 8th of November, so don’t forget to submit your entry! You may find our submission board here: (http://goo.gl/vpPmXX )');
+    	
     },
-	 /**
+    announce: function(arg, by, room, con) {
+        arg = toId(arg);
+        if (arg === 'off') {
+                if (this.buzzer) clearInterval(this.buzzer);
+                return this.say(con, room, 'Announcements have been disabled.');
+        } else if (arg === 'on') {
+                var tips = ["Google Drive Tip: Don't forget to allow people to comment on your work when it's done! Click 'Share' and set permissions accordingly.",
+                "We like to play writing games, too! Click 'Activities' in our room introduction (the fancy box you saw when you joined) to see what games are available!",
+                "Looking for feedback? Ask writers for an R/R, or a 'review for review'. It's a win-win for both parties!",
+                "Questions on the (+) voice rank? Read Voice Guidelines for more info: http://goo.my/pswritingvoicerules", 
+                "Our Halloween Contest has been launched! Be sure to check out our guidelines for the contest, where you'll get a more in-depth explanation. http://goo.gl/YblcUj",
+                "Would you like to host your work on our cloud drive? Ask a staff member about getting your own folder!"];
+                var self = this;
+                this.buzzer = setInterval(function() {
+                        var num = Math.floor((Math.random() * tips.lenth) + 1);
+                        self.say(con, room, "Writing tip #" + num + ": " + tips[num]);
+                }, 60000);
+        }
+    },
+    /**
      * Messaging related commands
-	 *
+     *
      */
 	mail: 'message',
 	msg: 'message',
