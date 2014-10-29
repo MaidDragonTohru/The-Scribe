@@ -1084,6 +1084,7 @@ exports.commands = {
     	
     },
     announce: function(arg, by, room, con) {
+	if (!this.hasRank(by, '@#~')) return false;
         arg = toId(arg);
         if (arg === 'off') {
                 if (this.buzzer) clearInterval(this.buzzer);
