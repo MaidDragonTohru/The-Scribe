@@ -714,9 +714,9 @@ exports.commands = {
 		}
 		var adjectives = ["crystal","floating","eternal-dusk","sunset","snowy","rainy","sunny","chaotic","peaceful","colorful","gooey","fiery","jagged","glass","vibrant","rainbow","foggy",
 				"calm","demonic","polygonal","glistening","sexy","overgrown","frozen","dark","mechanical","mystic","steampunk","subterranean","polluted","bleak","dank","smooth","vast","pixelated",
-				"enigmatic","illusion","sketchy","spooky","flying","legendary","cubic","moist","oriental","fluffy","odd","fancy","strange","authentic","bustling","barren","cluttered","creepy","dangerous",
+				"enigmatic","illusionary","sketchy","spooky","flying","legendary","cubic","moist","oriental","fluffy","odd","fancy","strange","authentic","bustling","barren","cluttered","creepy","dangerous",
         			"distant","massive","exotic","tainted","filthy","flawless","forsaken","frigid","frosty","grand","grandiose","grotesque","harmful","harsh","hospitable","hot","jaded","meek","weird","awkward",
-        			"silly","cursed","blessed"];
+        			"silly","cursed","blessed","drought-stricken"];
 		var locations = ["river","island","desert","forest","jungle","plains","mountains","mesa","cave","canyon","marsh","lake","plateau","tundra","volcano","valley","waterfall","atoll",
 				"asteroid","grove","treetops","cavern","beach","ocean","plains","heavens","abyss","city","crag","planetoid","harbor","evergreen","cabin","hill","field","ship","glacier","estuary",
 				"wasteland","sky","chamber","ruin","tomb","park","closet","terrace","air balloon","shrine","room","swamp","road","path","gateway","school","building","vault","pool","statue","pit",
