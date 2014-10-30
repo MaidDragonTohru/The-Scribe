@@ -128,7 +128,7 @@ exports.commands = {
                 this.say(con, room, 'Moderation for ' + toId(opts[1]) +
                     ' in this room is now ' + toId(opts[2]).toUpperCase() +
                     '.');
-                return;
+                return;r
             } else {
                 this.say(con, room, 'Moderation for ' + toId(opts[1]) +
                     ' in this room is currently ' + (this.settings[
@@ -550,7 +550,6 @@ exports.commands = {
             text += "Randomly generated type: " + type[0] + ".";
         }
         this.say(con, room, text);
-    },
     },
     randstats: 'randomstats',
     rs: 'randomstats',
