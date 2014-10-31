@@ -1047,29 +1047,6 @@ exports.commands = {
             'Interested in becoming a voice? Check out the guideines for your chance at having a shot! http://bit.do/pswritingvoicerules or http://bit.do/pswritingvoicerap'
         );
     },
-    pvb: 'possiblyverybuggy',
-    possiblyverybuggy: function(arg, by, room, con) {
-        if (config.serverid !== 'showdown' || !this.hasRank(by, '@#~'))
-            return false;
-        var self = this;
-        var theTimeout = 1000
-        var announce = setTimeout(function() {
-            var that = self;
-            var len = theTimeout;
-            for (var i = 0; i < len; i++) {
-                setTimeout(function(announce) {
-                    that.say(con, room, 'Testing.');
-                }, 15000 * i, that.theTimeout);
-            }
-            if (len === 1) {
-                self.say(con, room, 'Announcements finished.');
-            } else {
-                self.say(con, room, 'Announcements started.');
-            }
-            self.theTimeout = [];
-        }, 1000);
-        announce;
-    },
     octevent: 'oe',
     octoberevent: 'oe',
     oe: function(arg, by, room, con) {
@@ -1098,7 +1075,11 @@ exports.commands = {
                 "Our Halloween Contest has been launched! Be sure to check out our guidelines for the contest, where you'll get a more in-depth explanation. http://goo.gl/YblcUj",
                 "Would you like to host your work on our cloud drive? Ask a staff member about getting your own folder!"];
                         var num = Math.floor((Math.random() * tips.lenth) + 1);
-                        self.say(con, room, "Writing tip #" + num + ": " + tips[num]);
+                    if (!self.hasRank(this.ranks[room] || ' ', '%@&#~') { 
+                    var preText = ‘’
+                    } else {
+                    var preText = "/wall "};
+                        self.say(con, room, preText + "Writing tip #" + num + ": " + tips[num]);
                 }, 3600000);
         }
     },
