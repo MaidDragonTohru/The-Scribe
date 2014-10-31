@@ -34,6 +34,8 @@ Moderators and Above
 
 `newbie`: Gives a newcomer to the room a nice friendly greeting~
 
+`announce on/off`: Used to toggle the state of the announcements for the room. Useful. ^.^
+
 Drivers and Above
 -----------------
 
