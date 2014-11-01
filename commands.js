@@ -1144,9 +1144,10 @@ exports.commands = {
 			this.say(con, room, 'All messages have been erased.');
 		} else if (arg === 'time') {
 			for (var user in this.messages) {
-				if (user["timestamp"] < Date.now() - MESSAGES_TIME_OUT) delete this.messages[user];
+				if (this.messages[user]["timestamp"] < (Date.now() - MESSAGES_TIME_OUT)) delete this.messages[user];
 			}
 			this.writeMessages();
+			this.say(con, room, 'Messages older than one week have been erased.');
 		} else {
 			var user = toId(arg);
 			if (!this.messages[user]) return this.say(con, room, user + ' does not have any pending messages.');
@@ -1155,6 +1156,24 @@ exports.commands = {
 			this.say(con, room, 'Messages for ' + user + ' have been erased.');
 		}
 	},
+	countmessages: 'countmail',
+	countmail: function(arg, by, room, con) {
+		if (!this.hasRank(by, '#~')) return false;
+		if (!this.messages) this.say(con, room, 'Messages.JSON is empty');
+		var messageCount = 0;
+		var oldestMessage = Date.now();
+		for (var user in this.messages) {
+			for (var message in this.messages[user]) {
+				if (message === 'timestamp') { 
+					if (this.messages[user]['timestamp'] < oldestMessage) oldestMessage = this.messages[user]['timestamp'];
+					continue;
+				}
+				messageCount++;
+			}
+		}
+		//convert oldestMessage to days
+		var day = Math.floor((Date.now() - oldestMessage) / (24 * 60 * 60 * 1000));
+		this.say(con, room, 'There are currently **' + messageCount + '** pending messages. The oldest message ' + (!day ? 'was left today.' : 'is __' + day + '__ days old.'));
 	pl: 'poeticlicense',
 	poeticlicense: function(arg, by, room, con) {
 		if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
