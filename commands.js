@@ -1056,17 +1056,18 @@ exports.commands = {
             var text = '/pm ' + by + ', ';
         }
         this.say(con, room, text + 'Attention, all writers! We’ve recently begun our new Event: Halloween Contest: Where Nightmares Come To Life! This time around, contestants are tasked with writing a story or poem with a Halloween theme to it, and that takes place within the Pokemon Universe.');
-        this.say(con, room, text + 'Be sure to check out our guidelines for the contest, where you’ll get a more in-depth explanation: (http://goo.gl/YblcUj ) Submissions will close on the 8th of November, so don’t forget to submit your entry! You may find our submission board here: (http://goo.gl/vpPmXX )');
-    	
-    },
+        this.say(con, room, text + 'Be sure to check out our guidelines for the contest, where you’ll get a more in-depth explanation: (http://goo.gl/YblcUj ) Submissions will close on the 8th of November, so don’t forget to submit your entry! You may find our submission board here: (http://goo.gl/vpPmXX )')
+   },
     announce: function(arg, by, room, con) {
 	if (!this.hasRank(by, '@#~')) return false;
         arg = toId(arg);
         if (arg === 'off') {
                 if (this.buzzer) clearInterval(this.buzzer);
                 return this.say(con, room, 'Announcements have been disabled.');
+            var isAnnouncing = false;
         } else if (arg === 'on') {
                 var self = this;
+            var isAnnouncing = true;
                 this.buzzer = setInterval(function() {
                 var tips = ["Google Drive Tip: Don't forget to allow people to comment on your work when it's done! Click 'Share' and set permissions accordingly.",
                 "We like to play writing games, too! Click 'Activities' in our room introduction (the fancy box you saw when you joined) to see what games are available!",
@@ -1075,12 +1076,18 @@ exports.commands = {
                 "Our Halloween Contest has been launched! Be sure to check out our guidelines for the contest, where you'll get a more in-depth explanation. http://goo.gl/YblcUj",
                 "Would you like to host your work on our cloud drive? Ask a staff member about getting your own folder!"];
                         var num = Math.floor((Math.random() * tips.lenth) + 1);
-                    if (!self.hasRank(this.ranks[room] || ' ', '%@&#~') { 
-                    var preText = ‘’
+                    if (!self.hasRank(this.ranks[room] || '%@&#~')) { 
+                    var preText = ''
                     } else {
                     var preText = "/wall "};
                         self.say(con, room, preText + "Writing tip #" + num + ": " + tips[num]);
                 }, 3600000);
+        } else if (arg == 'check') {
+            if (isAnnouncing == true) { 
+                this.say(con, room, 'Announcements are currently enabled. Use "announce off" to change this.');
+            } else if (is announcing == false) {
+                this.say(con, room, 'Announcements are currently disabled. Use "announce on" to change this.');
+            }
         }
     },
     /**
