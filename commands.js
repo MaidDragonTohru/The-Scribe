@@ -1085,7 +1085,7 @@ exports.commands = {
         } else if (arg == 'check') {
             if (isAnnouncing == true) { 
                 this.say(con, room, 'Announcements are currently enabled. Use "announce off" to change this.');
-            } else if (is announcing == false) {
+            } else if (isAnnouncing == false) {
                 this.say(con, room, 'Announcements are currently disabled. Use "announce on" to change this.');
             }
         }
