@@ -1156,33 +1156,19 @@ exports.commands = {
             if (arg === 'off') {
                 if (this.buzzer) clearInterval(this.buzzer);
                 return this.say(con, room, 'Announcements have been disabled.');
-                var isAnnouncing = false;
             } else if (arg === 'on') {
                 var self = this;
-                var isAnnouncing = true;
                 this.buzzer = setInterval(function() {
                     var tips = ["Google Drive Tip: Don't forget to allow people to comment on your work when it's done! Click 'Share' and set permissions accordingly.",
                         "We like to play writing games, too! Click 'Activities' in our room introduction (the fancy box you saw when you joined) to see what games are available!",
                         "Looking for feedback? Ask writers for an R/R, or a 'review for review'. It's a win-win for both parties!",
-                        "Questions on the (+) voice rank? Read Voice Guidelines for more info: http://bit.do/pswritingvoiceguidlines",
-                        "Our Halloween Contest has been launched! Be sure to check out our guidelines for the contest, where you'll get a more in-depth explanation. http://goo.gl/YblcUj",
+                        "Questions on the (+) voice rank? Read our Voice Guidelines at http://bit.do/pswritingvoiceguidlines for more information.",
+                        "Our Halloween Contest has been launched! Be sure to check out our guidelines for the contest at http://goo.gl/YblcUj to receive a more in-depth explanation!",
                         "Would you like to host your work on our cloud drive? Ask a staff member about getting your own folder!",
-                        "Be sure to have good grammar, or AxeBane will hunt you down! Or, you could ask one of our staff to check it for you, but that's boring..."
-                    ];
-                    var num = Math.floor((Math.random() * tips.lenth) + 1);
-                    if (!self.hasRank(this.ranks[room] || '%@&#~')) {
-                        var preText = ''
-                    } else {
-                        var preText = "/wall "
-                    };
-                    self.say(con, room, preText + "Writing Room Tip #" + num + ": " + tips[num]);
+                        "Be sure to keep your work's presentation up to par, or AxeBane will hunt you down! Or, you could ask one of our staff to take a look and check it for you, but that's boring."];
+                    var num = Math.floor((Math.random() * tips.length));
+                    self.say(con, room, "**Writing Room Tip #" + num + ":** " + tips[num]);
                 }, 1800000);
-            } else if (arg == 'check') {
-                if (isAnnouncing == true) {
-                    this.say(con, room, 'Announcements are currently enabled. Use "announce off" to change this.');
-                } else if (isAnnouncing == false) {
-                    this.say(con, room, 'Announcements are currently disabled. Use "announce on" to change this.');
-                }
             }
         },
         /**
@@ -1269,6 +1255,7 @@ exports.commands = {
             //convert oldestMessage to days
             var day = Math.floor((Date.now() - oldestMessage) / (24 * 60 * 60 * 1000));
             this.say(con, room, 'There are currently **' + messageCount + '** pending messages. The oldest message ' + (!day ? 'was left today.' : 'is __' + day + '__ days old.'));
+        },
             pl: 'poeticlicense',
                 poeticlicense: function(arg, by, room, con) {
                     if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
