@@ -1159,7 +1159,7 @@ exports.commands = {
             } else if (arg === 'on') {
                 var self = this;
                 this.buzzer = setInterval(function() {
-                    var tips = ["Google Drive Tip: Don't forget to allow people to comment on your work when it's done! Click 'Share' and set permissions accordingly.",
+                    var tips = ["Don't forget to allow people to comment on your work when it's done! Click 'Share' and set permissions accordingly.",
                         "We like to play writing games, too! Click 'Activities' in our room introduction (the fancy box you saw when you joined) to see what games are available!",
                         "Looking for feedback? Ask writers for an R/R, or a 'review for review'. It's a win-win for both parties!",
                         "Questions on the (+) voice rank? Read our Voice Guidelines at http://bit.do/pswritingvoiceguidlines for more information.",
