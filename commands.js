@@ -1256,43 +1256,43 @@ exports.commands = {
             var day = Math.floor((Date.now() - oldestMessage) / (24 * 60 * 60 * 1000));
             this.say(con, room, 'There are currently **' + messageCount + '** pending messages. The oldest message ' + (!day ? 'was left today.' : 'is __' + day + '__ days old.'));
         },
-            pl: 'poeticlicense',
-                poeticlicense: function(arg, by, room, con) {
-                    if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
-                    if (!arg) return this.say(con, room, 'To whom should I grant a Poetic License?');
-                    var users = arg.split(', ');
-                    var errors = [];
-                    if (!this.settings.poeticlicense) this.settings.poeticlicense = {};
-                    for (var i = 0; i < users.length; i++) {
+        pl: 'poeticlicense',
+        poeticlicense: function(arg, by, room, con) {
+                if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
+                if (!arg) return this.say(con, room, 'To whom should I grant a Poetic License?');
+                var users = arg.split(', ');
+                var errors = [];
+                if (!this.settings.poeticlicense) this.settings.poeticlicense = {};
+                for (var i = 0; i < users.length; i++) {
                         var user = toId(users[i]);
                         if (this.settings.poeticlicense[user]) {
                             errors.push(users[i]);
                             users.splice(i, 1);
                             continue;
-                        }
-                        this.settings.poeticlicense[user] = 1;
-                    }
-                    this.writeSettings();
-                    if (errors.length != 0) this.say(con, room, errors.join(', ') + ' already has a Poetic License');
-                    if (users.length != 0) this.say(con, room, '/modnote ' + users.join(', ') + ' has been given a Poetic License by ' + toId(by));
-                },
-                upl: 'unpoeticlicense',
-                unpoeticlicense: function(arg, by, room, con) {
-                    if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
-                    if (!arg) return this.say(con, room, 'Whose Poetic License should be revoked?');
-                    var user = toId(arg);
-                    if (!this.settings.poeticlicense) this.settings.poeticlicense = {};
-                    if (!this.settings.poeticlicense[user]) return this.say(con, room, arg + ' does not have Poetic License.');
-                    delete this.settings.poeticlicense[user];
-                    this.writeSettings();
-                    this.say(con, room, '/modnote ' + user + ' had their Poetic License removed by ' + toId(by));
-                },
-                vpl: 'viewpoeticlicense',
-                viewpoeticlicense: function(arg, by, room, con) {
-                    if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
-                    if (!this.settings.poeticlicense) return this.say(con, room, 'No users are poeticlicense\'d.');
-                    var poeticlicenseList = Object.keys(this.settings.poeticlicense);
-                    this.uploadToHastebin(con, room, by, "The following users possess a Poetic License:\n\n" + poeticlicenseList.join('\n'));
-                    return;
+                }
+                this.settings.poeticlicense[user] = 1;
+        }
+        this.writeSettings();
+        if (errors.length != 0) this.say(con, room, errors.join(', ') + ' already has a Poetic License');
+        if (users.length != 0) this.say(con, room, '/modnote ' + users.join(', ') + ' has been given a Poetic License by ' + toId(by));
+        },
+        upl: 'unpoeticlicense',
+        unpoeticlicense: function(arg, by, room, con) {
+                if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
+                if (!arg) return this.say(con, room, 'Whose Poetic License should be revoked?');
+                var user = toId(arg);
+                if (!this.settings.poeticlicense) this.settings.poeticlicense = {};
+                if (!this.settings.poeticlicense[user]) return this.say(con, room, arg + ' does not have Poetic License.');
+                delete this.settings.poeticlicense[user];
+                this.writeSettings();
+                this.say(con, room, '/modnote ' + user + ' had their Poetic License removed by ' + toId(by));
+        },
+        vpl: 'viewpoeticlicense',
+        viewpoeticlicense: function(arg, by, room, con) {
+                if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
+                if (!this.settings.poeticlicense) return this.say(con, room, 'No users are poeticlicense\'d.');
+                var poeticlicenseList = Object.keys(this.settings.poeticlicense);
+                this.uploadToHastebin(con, room, by, "The following users possess a Poetic License:\n\n" + poeticlicenseList.join('\n'));
+                return;
                 }
         }
