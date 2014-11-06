@@ -936,6 +936,7 @@ exports.commands = {
                     delete config.wotdCalled;
                 }, 60 * 1000);
             }
+<<<<<<< HEAD
             if (!config.wotd) return this.say(con, room, text +
                 'A Writer of the Day hasn\'t been set! :o');
             this.say(con, room, text + 'Today\'s Spotlighted Writer is [[' +
@@ -960,6 +961,118 @@ exports.commands = {
                 setTimeout(function() {
                     delete self.RP[room].docCalled;
                 }, 60 * 1000);
+=======
+        }
+        this.say(con, room, text);
+    },
+    /**
+     * General commands
+     *
+     * Add custom commands here.
+     */
+    seen: function(arg, by, room, con) { // this command is still a bit buggy
+        var text = (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ');
+        arg = toId(arg);
+        if (!arg || arg.length > 18) return this.say(con, room, text +
+            'Invalid username.');
+        if (arg === toId(by)) {
+            text += 'Have you looked in the mirror lately?';
+        } else if (arg === toId(config.nick)) {
+            text +=
+                'You might be either blind or illiterate. Might want to get that checked out.';
+        } else if (!this.chatData[arg] || !this.chatData[arg].seenAt) {
+            text += 'The user ' + arg + ' has never been seen.';
+        } else {
+            text += arg + ' was last seen ' + this.getTimeAgo(this.chatData[
+                arg].seenAt) + ' ago' + (this.chatData[arg].lastSeen ?
+                ', ' + this.chatData[arg].lastSeen : '.');
+        }
+        this.say(con, room, text);
+    },
+    //This is a template for all Random Commands; please don't use this as an actual command.
+	randomcommands: function(arg, by, room, con) {
+		return false; //remove this line when using this template
+		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
+			var text = '';
+		} else {
+			var text = '/pm ' + by + ', ';
+		}
+		var variableone = ["entity1","entity2"];
+		var variabletwo = ["entity1","entity2"];
+		var varoneNum = Math.floor(variableone.length * Math.random());
+		var vartwoNum = Math.floor(variabletwo.length * Math.random());
+		this.say(con, room, text + 'Random thing: __' + variableone[varoneNum] + ' ' + variabletwo[vartwoNum] + '__.');
+    },
+    //Random Commands Section!
+    //Place all 'random thing generator' commands in this section!
+    rt: 'randtype',
+    gentype: 'randtype',
+    randomtype: 'randtype',
+    randtype: function(arg, by, room, con) {
+        if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
+			var text = '';
+		} else {
+			text = '/pm ' + by + ', ';
+		}
+        var type = [];
+        for (i = 0; i < 2; i++) {
+            type[i] = Math.floor(17 * Math.random()) + 1;
+            switch (type[i]) {
+                case 1:
+                    type[i] = "Normal";
+                    break;
+                case 2:
+                    type[i] = "Fire";
+                    break;
+                case 3:
+                    type[i] = "Water";
+                    break;
+                case 4:
+                    type[i] = "Electric";
+                    break;
+                case 5:
+                    type[i] = "Grass";
+                    break;
+                case 6:
+                    type[i] = "Ice";
+                    break;
+                case 7:
+                    type[i] = "Fighting";
+                    break;
+                case 8:
+                    type[i] = "Poison";
+                    break;
+                case 9:
+                    type[i] = "Flying";
+                    break;
+                case 10:
+                    type[i] = "Ground";
+                    break;
+                case 11:
+                    type[i] = "Psychic";
+                    break;
+                case 12:
+                    type[i] = "Bug";
+                    break;
+                case 13:
+                    type[i] = "Rock";
+                    break;
+                case 14:
+                    type[i] = "Ghost";
+                    break;
+                case 15:
+                    type[i] = "Dragon";
+                    break;
+                case 16:
+                    type[i] = "Dark";
+                    break;
+                case 17:
+                    type[i] = "Steel";
+                    break;
+                case 18:
+                    type[i] = "Fairy";
+                    break;
+>>>>>>> 02470400cb2867cc5b1f293ae183af307c3fa62c
             }
             if (!this.RP[room].doc) return this.say(con, room, text +
                 'There is no document set.');
@@ -1057,6 +1170,7 @@ exports.commands = {
             } else {
                 var text = '';
             }
+<<<<<<< HEAD
             this.say(con, room, text + 'Community Drive: http://bit.do/pswritingarchives');
         },
         contests: 'events',
@@ -1154,6 +1268,525 @@ exports.commands = {
             if (!this.hasRank(by, '@#~')) return false;
             arg = toId(arg);
             if (arg === 'off') {
+=======
+        }
+        ranStats = this.shuffle(stat);
+        text += 'Random stats: HP:' + ranStats[0] + ' Atk:' + ranStats[
+                1] + ' Def:' + ranStats[2] + ' SpA:' + ranStats[3] +
+            ' SpD:' + ranStats[4] + ' Spe:' + ranStats[5] + ' BST:' +
+            bst + '';
+        this.say(con, room, text);
+    },
+	rollpokemon: 'randpokemon',
+	randpoke: 'randpokemon',
+	randompoke: 'randpokemon',
+	randompokemon: 'randpokemon',
+	randpokemon: function(arg, by, room, con) {
+		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
+			var text = '';
+		} else {
+			var text = '/pm ' + by + ', ';
+		}
+		var randompokes = [];
+		/**	OBJECT KEY
+		 *  0 = will reject roll if it has property
+		 *  1 = property will not affect roll
+		 *  2 = roll will be rejected if it lacks this property
+		 */
+		var conditions = {"uber":1,"legend":1,"nfe":1,"mega":1,"forms":1,"shiny":1};
+		var types = {"normal":1,"fire":1,"water":1,"grass":1,"electric":1,"ice":1,"fighting":1,"poison":1,"ground":1,"flying":1,"psychic":1,"bug":1,"rock":1,"ghost":1,"dragon":1,"dark":1,"steel":1,"fairy":1};
+		var singleType = false;
+		var noDt = {"Unown":1,"Shellos":1,"Gastrodon":1,"Deerling":1,"Sawsbuck":1,"Vivillon":1,"Flabebe":1,"Floette":1,"Florges":1,"Furfrou":1};
+		
+		var pokequantity = 1;
+		if (arg) {
+			var parameters = arg.toLowerCase().split(", ");
+			var hasBeenSet = false;
+			for (j=0; j<parameters.length; j++) {
+				if (parameters[j] == parseInt(parameters[j], 10)) {
+					if (hasBeenSet) return this.say(con, room, 'Please only specify number of pokemon once');
+					if (parameters[j] < 1 || parameters[j] > 6) return this.say(con, room, "Quantity of random pokemon must be between 1 and 6.");
+					pokequantity = parameters[j];
+					hasBeenSet = true;
+					continue;
+				}
+				var notGate = false;
+				if (parameters[j].charAt(0) === '!') {
+					notGate = true;
+					parameters[j] = parameters[j].substr(1);
+				}
+				//argument alias list
+				switch (parameters[j]) {
+					case "legendary": parameters[j] = "legend"; break;
+					case "fe": parameters[j] = "nfe"; notGate = !notGate; break;
+					case "ubers": parameters[j] = "uber"; break;
+				}
+				
+				if (parameters[j] in conditions) {
+					if (conditions[parameters[j]] !== 1) return this.say(con, room, 'Cannot include both \'' + parameters[j] + '\' and \'!' + parameters[j] + '\'.');
+					if (notGate) {
+						if (parameters[j] === 'forms') conditions.mega = 0;
+						conditions[parameters[j]] = 0;
+					} else {
+						conditions[parameters[j]] = 2;
+					}
+					continue;
+				}
+				if (parameters[j].indexOf(' type') > -1) parameters[j] = parameters[j].substr(0, parameters[j].length - 5);
+				if (parameters[j] in types) {
+					if (types[parameters[j]] !== 1) return this.say(con, room, 'Cannot include both \'' + parameters[j] + '\' and \'!' + parameters[j] + '\'.');
+					if (notGate) {
+						types[parameters[j]] = 0;
+					} else {
+						types[parameters[j]] = 2;
+						singleType = true;
+					}
+					continue;
+				} else {
+					return this.say(con, room, 'Parameter \'' + parameters[j] + '\' not recognized.');
+				}
+			}
+			
+			//More complex checks to prevent it getting stuck searching for combinations that don't exist
+			if (conditions.forms === 2 && singleType) return this.say(con, room, 'The parameter \'forms\' must be used by itself.');
+			if (conditions.uber === 2 && conditions.legend === 0 && pokequantity > 3) return this.say(con, room, 'Invalid generation conditions.');
+			if (conditions.mega === 2 && conditions.uber === 2 && pokequantity > 1) return this.say(con, room, 'Invalid generation conditions.');
+			if (conditions.nfe === 2 && (conditions.uber === 2 || conditions.legend === 2 || conditions.mega === 2)) return this.say(con, room, 'Invalid generation conditions.');
+			
+			if (singleType) {
+				if (conditions.uber === 2 || conditions.legend === 2 || conditions.mega === 2) return this.say(con, room, 'Invalid generation conditions.');
+				for (var set in types) {
+					if (types[set] === 1) types[set] = 0;
+				}
+			}
+		}
+		if (pokequantity == 1 && room.charAt(0) !== ',' && this.hasRank(by, '+%@#~')) text = '!dt ';
+		
+		var attempt = -1;
+		var dexNumbers = [];
+		if (parameters.length > 0) {
+			//create an array for all dex numbers and then shuffle it
+			for (g=0; g<722; g++) {
+				dexNumbers.push(g);
+			}
+			dexNumbers = this.shuffle(dexNumbers);
+		}
+		for (i=0; i<pokequantity; i++) {
+			attempt++;
+			if (attempt > 721) {
+				console.log('randpoke fail: ' + parameters);
+				text = (room.charAt(0) === ',') ? '' : '/pm ' + by + ', ';
+				return this.say(con, room, text + 'could not find ' + pokequantity + ' unique Pokemon with ``' + parameters.join(', ') + '``');
+			}
+			var skipPoke = false;
+			if (parameters.length > 0) {
+				var pokeNum = dexNumbers[attempt];
+			} else {
+				var pokeNum = Math.floor(722 * Math.random());
+			}
+			if (conditions.uber === 2 && !Pokedex[pokeNum].uber) {i--; continue;}
+			if (conditions.legend === 2 && !Pokedex[pokeNum].legend) {i--; continue;}
+			if (conditions.nfe === 2 && !Pokedex[pokeNum].nfe) {i--; continue;}
+			if (conditions.mega === 2 && !Pokedex[pokeNum].mega) {i--; continue;}
+			if (conditions.forms === 2 && !Pokedex[pokeNum].forms) {i--; continue;}
+			if (conditions.uber === 0 && Pokedex[pokeNum].uber) {i--; continue;}
+			if (conditions.legend === 0 && Pokedex[pokeNum].legend) {i--; continue;}
+			if (conditions.nfe === 0 && Pokedex[pokeNum].nfe) {i--; continue;}
+			for (h=0; h<Pokedex[pokeNum].type.length; h++) {
+				var currentType = Pokedex[pokeNum].type[h].toLowerCase();
+				if (types[currentType] !== 0) break;
+				skipPoke = true;
+			}
+			if (skipPoke) {i--; continue;}
+			if (Pokedex[pokeNum].mega && conditions.mega !== 0) {
+				var buffer = Pokedex[pokeNum].species; 
+				var megaNum = (conditions.mega === 2 ? 0 : -1)
+				megaNum += Math.floor((Pokedex[pokeNum].mega.length + (conditions.mega === 2 ? 0 : 1)) * Math.random());
+				if (megaNum == -1) {
+					randompokes.push(buffer);
+				} else {
+					randompokes.push(buffer + '-' + Pokedex[pokeNum].mega[megaNum]);
+				}
+				continue;
+			}
+			if (Pokedex[pokeNum].forms && conditions.forms !== 0) {
+				var formNum = Math.floor(Pokedex[pokeNum].forms.length * Math.random());
+				if (Pokedex[pokeNum].forms[formNum] !== "norm") {
+					var buffer = Pokedex[pokeNum].species;
+					if (text === '!dt ' && noDt[buffer] && Pokedex[pokeNum].forms[formNum] !== "eternal-flower") text = '';
+					randompokes.push(buffer + '-__' + Pokedex[pokeNum].forms[formNum] + '__');
+					continue;
+				}
+			}
+			randompokes.push(Pokedex[pokeNum].species);
+		}
+		for (k=0; k<randompokes.length; k++) {
+			if (Math.floor(((conditions.shiny === 2) ? 2 : 1364) * Math.random()) !== 0) continue;
+			randompokes[k] = '``shiny`` ' + randompokes[k];
+		}
+		this.say(con, room, text + randompokes.join(", "));
+	},
+	rl: 'randomlocation',
+	randscene: 'randomlocation',
+	randlocation: 'randomlocation',
+	randomlocation: function(arg, by, room, con) {
+		if (!(room in this.RP) && !room.charAt(0) === ',') return false;
+		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
+			var text = '';
+		} else {
+			var text = '/pm ' + by + ', ';
+		}
+		var adjectives = ["crystal","floating","eternal-dusk","sunset","snowy","rainy","sunny","chaotic","peaceful","colorful","gooey","fiery","jagged","glass","vibrant","rainbow","foggy",
+				"calm","demonic","polygonal","glistening","sexy","overgrown","frozen","dark","mechanical","mystic","steampunk","subterranean","polluted","bleak","dank","smooth","vast","pixelated",
+				"enigmatic","illusionary","sketchy","spooky","flying","legendary","cubic","moist","oriental","fluffy","odd","fancy","strange","authentic","bustling","barren","cluttered","creepy","dangerous",
+        			"distant","massive","exotic","tainted","filthy","flawless","forsaken","frigid","frosty","grand","grandiose","grotesque","harmful","harsh","hospitable","hot","jaded","meek","weird","awkward",
+        			"silly","cursed","blessed","drought-stricken"];
+		var locations = ["river","island","desert","forest","jungle","plains","mountains","mesa","cave","canyon","marsh","lake","plateau","tundra","volcano","valley","waterfall","atoll",
+				"asteroid","grove","treetops","cavern","beach","ocean","plains","heavens","abyss","city","crag","planetoid","harbor","evergreen","cabin","hill","field","ship","glacier","estuary",
+				"wasteland","sky","chamber","ruin","tomb","park","closet","terrace","air balloon","shrine","room","swamp","road","path","gateway","school","building","vault","pool","statue","pit",
+                		"temple","lagoon","prison","harem","mine","catacombs"];
+		var adjNum = Math.floor(adjectives.length * Math.random());
+		var locNum = Math.floor(locations.length * Math.random());
+		this.say(con, room, text + 'Random scenery: __' + adjectives[adjNum] + ' ' + locations[locNum] + '__.');
+	},
+	rm: 'randommove',
+	randmove: 'randommove',
+	randommove: function(arg, by, room, con) {
+		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
+			var text = '';
+		} else {
+			var text = '/pm ' + by + ', ';
+		}
+		var types = {"normal":1,"fire":1,"water":1,"grass":1,"electric":1,"ice":1,"fighting":1,"poison":1,"ground":1,"flying":1,"psychic":1,"bug":1,"rock":1,"ghost":1,"dragon":1,"dark":1,"steel":1,"fairy":1};
+		var classes = {"physical":1,"special":1,"status":1};
+		var moveQuantity = 1;
+		var hasBeenSet = false;
+		var singleType = false; 
+		var singleClass = false;
+		
+		var parameters = arg.split(', ');
+		if (parameters.length > 10) return this.say(con, room, 'Please use 10 or fewer arguments.');
+		for (var i=0; i<parameters.length; i++) {
+			if (parameters[i] == parseInt(parameters[i], 10)) {
+				if (hasBeenSet) return this.say(con, room, 'Please only specify number of pokemon once');
+				if (parameters[i] < 1 || parameters[i] > 6) return this.say(con, room, "Quantity of random moves must be between 1 and 6.");
+				moveQuantity = parameters[i];
+				hasBeenSet = true;
+				continue;
+			}
+			var notGate = false; 
+			if (parameters[i].charAt(0) === '!') {
+				notGate = true;
+				parameters[i] = parameters[i].substr(1);
+			}
+			var parameter = toId(parameters[i]);
+			if (parameter in types) {
+				if (types[parameter] === 1 && !notGate) {
+					types[parameter] = 2;
+					singleType = true;
+				} else if (types[parameter] === 1 && notGate) {
+					types[parameter] = 0;
+				} else {
+					return this.say(con, room, 'Cannot include both \'' + parameters[i] + '\' and \'!' + parameters[i] + '\'.');
+				}
+			} else if (parameter in classes) {
+				if (classes[parameter] === 1 && !notGate) {
+					classes[parameter] = 2;
+					singleClass = true;
+				} else if (classes.parameter === 1 && notGate) {
+					classes[parameter] = 0;
+				} else {
+					return this.say(con, room, 'Cannot include both \'' + parameters[i] + '\' and \'!' + parameters[i] + '\'.');
+				}
+			} else {
+				return this.say(con, room, 'Pleae specify a parameter or check that you are spelling it correctly.');
+			}
+		}
+		if (singleType) {
+			if (moveQuantity > 3) return this.say(con, room, 'Invalid generation conditions.');
+			for (var set in types) {
+				if (types[set] == 1) types[set] = 0;
+			}
+		}
+		if (singleClass) {
+			for (var set in classes) {
+				if (classes[set] == 1) classes[set] = 0;
+			}
+		}
+		
+		var randomMoves = [];
+		for (var j=0; j<moveQuantity; j++) {
+			var roll = Math.floor(614 * Math.random()) + 1;
+			if (types[Movedex[roll].type] === 0) {j--; continue;}
+			if (classes[Movedex[roll].class] === 0) {j--; continue;}
+			if (randomMoves.indexOf(Movedex[roll].name) > -1) {j--; continue;}
+			randomMoves.push(Movedex[roll].name);
+		}
+		this.say(con, room, text + randomMoves.join(', '));
+	},
+    idea: 'randomgenre',
+    randomidea: 'randomgenre',
+    randidea: 'randomgenre',
+    ri: 'randomgenre',
+    randstyle: 'randomgenre',
+    randomstyle: 'randomgenre',
+    rs: 'randomgenre',
+    rg: 'randomgenre',
+    randgenre: 'randomgenre',
+    randomgenre: function(arg, by, room, con) {
+        if (!(room in this.RP) && !room.charAt(0) === ',') return false;
+        if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
+            var text = '';
+        } else {
+            var text = '/pm ' + by + ', ';
+        }
+        var genres = ["Action","Adventure","Comedy","Crime","Fantasy","Historical","Children's Book","Horror","Mystery",
+        "Philosophical","Political","Realistic","Romance","Saga","Satire","Science Fiction","Slice of Life","Thriller","Urban"];
+        var genNum = Math.floor(genres.length * Math.random());
+        var genNum2 = Math.floor(genres.length * Math.random());
+        this.say(con, room, text + 'Random genre splice: __' + genres[genNum] + ' ' + genres[genNum2] + '__.');
+    },
+    //End Random Commands
+    setpoll: function(arg, by, room, con) {
+        if (!this.canUse('setrp', room, by) || !(room in this.RP))
+            return false;
+        if (!arg) return this.say(con, room,
+            'Please enter a strawpoll link.');
+        this.RP[room].poll = arg;
+        this.say(con, room, 'The poll was set to ' + arg + '.');
+    },
+    sw: 'wotd',
+    writer: 'wotd',
+    wotd: function(arg, by, room, con) {
+        if (!this.canUse('setrp', room, by)) {
+            var text = '/pm ' + by + ', ';
+        } else {
+            var text = '';
+            var self = this;
+            config.wotdCalled = true;
+            setTimeout(function() {
+                delete config.wotdCalled;
+            }, 60 * 1000);
+        }
+        if (!config.wotd) return this.say(con, room, text +
+            'A Writer of the Day hasn\'t been set! :o');
+        this.say(con, room, text + 'Today\'s Spotlighted Writer is [[' +
+            config.wotd + ']].');
+    },
+    setdoc: function(arg, by, room, con) {
+        if (!this.canUse('setrp', room, by) || !(room in this.RP))
+            return false;
+        if (!arg) return this.say(con, room,
+            'Please enter a document link.');
+        this.RP[room].doc = arg;
+        this.say(con, room, 'The document was set to ' + arg + '.');
+    },
+    doc: function(arg, by, room, con) {
+        if (!(room in this.RP) || room.charAt(0) === ',') return false;
+        if (this.RP[room].docCalled) {
+            var text = '/pm ' + by + ', ';
+        } else {
+            var text = '';
+            var self = this;
+            this.RP[room].docCalled = true;
+            setTimeout(function() {
+                delete self.RP[room].docCalled;
+            }, 60 * 1000);
+        }
+        if (!this.RP[room].doc) return this.say(con, room, text +
+            'There is no document set.');
+        this.say(con, room, text +
+            'The current document for the RP is available at ' +
+            this.RP[room].doc + '.');
+    },
+    rmdoc: function(arg, by, room, con) {
+        if (!this.canUse('setrp', room, by) || !(room in this.RP))
+            return false;
+        if (!this.RP[room].doc) return this.say(con, room,
+            'There isn\'t a document to remove. :/');
+        this.say(con, room, 'The document has been removed.');
+        delete this.RP[room].doc;
+    },
+    poll: function(arg, by, room, con) {
+        if (!(room in this.RP) || room.charAt(0) === ',') return false;
+        if (this.RP[room].pollCalled) {
+            var text = '/pm ' + by + ', ';
+        } else {
+            var text = '';
+            var self = this;
+            this.RP[room].pollCalled = true;
+            setTimeout(function() {
+                delete self.RP[room].pollCalled;
+            }, 60 * 1000);
+        }
+        if (!this.RP[room].poll) return this.say(con, room, text +
+            'There is no poll.');
+        this.say(con, room, text + 'The current poll is available at ' +
+            this.RP[room].poll + '.');
+    },
+    endpoll: function(arg, by, room, con) {
+        if (!this.canUse('setrp', room, by)) return false;
+        if (!this.RP[room].poll) return this.say(con, room,
+            'There isn\'t a poll to remove.');
+        this.say(con, room, '**The poll has ended!** Results at ' +
+            this.RP[room].poll + '/r');
+        delete this.RP[room].poll;
+    },
+    rmpoll: function(arg, by, room, con) {
+        if (!this.canUse('setrp', room, by) || !(room in this.RP))
+            return false;
+        if (!this.RP[room].poll) return this.say(con, room,
+            'There isn\'t a poll to remove.');
+        this.say(con, room, 'The poll has been cleared.');
+        delete this.RP[room].poll;
+    },
+    site: function(arg, by, room, con) {
+        if (config.serverid !== 'showdown') return false;
+        if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !==
+            -1) || room.charAt(0) === ',') {
+            var text = '';
+        } else {
+            var text = '/pm ' + by + ', ';
+        }
+        this.say(con, room, text +
+            'Writing Room\'s Website: http://pswriting.weebly.com/'
+        );
+    },
+    activities: function(arg, by, room, con) {
+        if (config.serverid !== 'showdown') return false;
+        if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !==
+            -1) || room.charAt(0) === ',') {
+            var text = '';
+        } else {
+            var text = '/pm ' + by + ', ';
+        }
+        this.say(con, room, text +
+            'Be sure to read through our list of official activities! http://pswriting.weebly.com/activities.html'
+        );
+    },
+    newbie: function(arg, by, room, con) {
+        if (config.serverid !== 'showdown' || room !== 'writing' || !
+            this.hasRank(by, '@#~')) return false;
+        this.say(con, room,
+            'Welcome to the Writing room! In case you missed the big shiny box, please make sure to visit the room website and read the rules listed there: http://pswriting.weebly.com/rules.html'
+        );
+        this.say(con, room,
+            'Also, feel free to ask the staff any questions you may have. I\'m sure they\'d love to answer them!'
+        );
+    },
+    esupport: function(arg, by, room, con) {
+        if ((this.hasRank(by, '%@#~') && config.rprooms.indexOf(room) !==
+            -1) || room.charAt(0) === ',') {
+            var text = '';
+        } else {
+            var text = '/pm ' + by + ', ';
+        }
+        this.say(con, room, text + 'I love you, ' + by + '.');
+    },
+    drive: function(arg, by, room, con) {
+        if (!this.hasRank(by, '+%@#~')){
+            var text = '/pm ' + by + ', ';
+        } else {
+            var text = '';
+        }
+        this.say(con, room, text + 'Community Drive: http://bit.do/pswritingarchives');
+    },
+    contests: 'events',
+    contest: 'events',
+    events: function(arg, by, room, con) {
+        if (config.serverid !== 'showdown') return true;
+        if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !==
+            -1) || room.charAt(0) === ',') {
+            var text = '';
+        } else {
+            var text = '/w ' + by + ', ';
+        }
+        this.say(con, room,
+            'The current Contests and Events for the Writing Room can be found here: http://pswriting.weebly.com/contests--events.html'
+        );
+    },
+    plug: function(arg, by, room, con) {
+        if (config.serverid !== 'showdown') return false;
+        if (this.hasRank(by, '+%@#~')) {
+            var text = '';
+        } else {
+            var text = '/pm ' + by + ', ';
+        }
+        this.say(con, room, text + 'Come join our Plug.dj~! http://plug.dj/ps-writing-room/');
+    },
+    faq: function(arg, by, room, con) {
+        if (config.serverid !== 'showdown') return false;
+        if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !==
+            -1) || room.charAt(0) === ',') {
+            var text = '';
+        } else {
+            var text = '/pm ' + by + ', ';
+        }
+        this.say(con, room, text +
+            'Check out our Frequently Asked Questions page: http://bit.do/PSWritingDriveFAQ'
+        );
+    },
+    poems: function(arg, by, room, con) {
+        if (config.serverid !== 'showdown') return false;
+        if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !==
+            -1) || room.charAt(0) === ',') {
+            var text = '';
+        } else {
+            var text = '/pm ' + by + ', ';
+        }
+        this.say(con, room, text +
+            'Writing Room Poems: http://bit.do/PSwritingpoems');
+    },
+    stories: function(arg, by, room, con) {
+        if (config.serverid !== 'showdown') return false;
+        if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !==
+            -1) || room.charAt(0) === ',') {
+            var text = '';
+        } else {
+            var text = '/pm ' + by + ', ';
+        }
+        this.say(con, room, text +
+            'Writing Room Stories: http://bit.do/PSwritingstories');
+    },
+    rules: function(arg, by, room, con) {
+        if (config.serverid !== 'showdown') return false;
+        if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !==
+            -1) || room.charAt(0) === ',') {
+            var text = '';
+        } else {
+            var text = '/pm ' + by + ', ';
+        }
+        this.say(con, room, text +
+            'Please read our Rules page: http://pswriting.weebly.com/rules.html ^.^'
+        );
+    },
+    voice: function(arg, by, room, con) {
+        if (config.serverid !== 'showdown') return false;
+        if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
+            var text = '';
+        } else {
+            var text = '/pm ' + by + ', ';
+        }
+        this.say(con, room, text +
+            'Interested in becoming a voice? Check out the guideines for your chance at having a shot! http://bit.do/pswritingvoicerules or http://bit.do/pswritingvoicerap'
+        );
+    },
+    octevent: 'oe',
+    octoberevent: 'oe',
+    oe: function(arg, by, room, con) {
+        if (this.hasRank(by, '+%@#~')) {
+            var text = '';
+        } else {
+            var text = '/pm ' + by + ', ';
+        }
+        this.say(con, room, text + 'Attention, all writers! We’ve recently begun our new Event: Halloween Contest: Where Nightmares Come To Life! This time around, contestants are tasked with writing a story or poem with a Halloween theme to it, and that takes place within the Pokemon Universe.');
+        this.say(con, room, text + 'Be sure to check out our guidelines for the contest, where you’ll get a more in-depth explanation: (http://goo.gl/YblcUj ) Submissions will close on the 8th of November, so don’t forget to submit your entry! You may find our submission board here: (http://goo.gl/vpPmXX )')
+   },
+    announce: function(arg, by, room, con) {
+	if (!this.hasRank(by, '@#~')) return false;
+        arg = toId(arg);
+        if (arg === 'off') {
+>>>>>>> 02470400cb2867cc5b1f293ae183af307c3fa62c
                 if (this.buzzer) clearInterval(this.buzzer);
                 return this.say(con, room, 'Announcements have been disabled.');
             } else if (arg === 'on') {
