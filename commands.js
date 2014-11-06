@@ -461,6 +461,7 @@ exports.commands = {
     },
     //This is a template for all Random Commands; please don't use this as an actual command.
 	randomcommands: function(arg, by, room, con) {
+		return false; //remove this line when using this template
 		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
 			var text = '';
 		} else {
@@ -609,23 +610,20 @@ exports.commands = {
 			var text = '/pm ' + by + ', ';
 		}
 		var randompokes = [];
-		var Uber = '';
-		var legend = '';
-		var NFE = '';
-		var noUber = '';
-		var noNFE = '';
-		var noLegend = '';
-		var mega = '';
-		var noMega = '';
-		var noForms = '';
-		var shiny = '';
-		var noDt = {"Unown":1,"Shellos":1,"Gastrodon":1,"Deerling":1,"Sawsbuck":1,"Vivillon":1,"Flabébé":1,"Floette":1,"Florges":1,"Furfrou":1};
-		if (!arg) {
-			var pokequantity = 1;
-		} else {
+		/**	OBJECT KEY
+		 *  0 = will reject roll if it has property
+		 *  1 = property will not affect roll
+		 *  2 = roll will be rejected if it lacks this property
+		 */
+		var conditions = {"uber":1,"legend":1,"nfe":1,"mega":1,"forms":1,"shiny":1};
+		var types = {"normal":1,"fire":1,"water":1,"grass":1,"electric":1,"ice":1,"fighting":1,"poison":1,"ground":1,"flying":1,"psychic":1,"bug":1,"rock":1,"ghost":1,"dragon":1,"dark":1,"steel":1,"fairy":1};
+		var singleType = false;
+		var noDt = {"Unown":1,"Shellos":1,"Gastrodon":1,"Deerling":1,"Sawsbuck":1,"Vivillon":1,"Flabebe":1,"Floette":1,"Florges":1,"Furfrou":1};
+		
+		var pokequantity = 1;
+		if (arg) {
 			var parameters = arg.toLowerCase().split(", ");
-			var pokequantity = 1;
-			var hasBeenSet = '';
+			var hasBeenSet = false;
 			for (j=0; j<parameters.length; j++) {
 				if (parameters[j] == parseInt(parameters[j], 10)) {
 					if (hasBeenSet) return this.say(con, room, 'Please only specify number of pokemon once');
@@ -634,43 +632,98 @@ exports.commands = {
 					hasBeenSet = true;
 					continue;
 				}
+				var notGate = false;
+				if (parameters[j].charAt(0) === '!') {
+					notGate = true;
+					parameters[j] = parameters[j].substr(1);
+				}
+				//argument alias list
 				switch (parameters[j]) {
-					case 'uber': Uber = 1; continue;
-					case 'legendary': legend = 1; continue;
-					case 'mega': mega = 1; continue;
-					case 'nfe': NFE = 1; continue;
-					case '!uber': noUber = 1; continue;
-					case '!legendary': noLegend = 1; continue;
-					case '!mega': noMega = 1; continue;
-					case '!nfe': noNFE = 1; continue;
-					case '!forms': noForms = 1; noMega = 1; continue;
-					case 'shiny': shiny = 1; continue;
-					default: return this.say(con, room, 'Parameter \'' + parameters[j] + '\' not recognized.');
+					case "legendary": parameters[j] = "legend"; break;
+					case "fe": parameters[j] = "nfe"; notGate = !notGate; break;
+					case "ubers": parameters[j] = "uber"; break;
+				}
+				
+				if (parameters[j] in conditions) {
+					if (conditions[parameters[j]] !== 1) return this.say(con, room, 'Cannot include both \'' + parameters[j] + '\' and \'!' + parameters[j] + '\'.');
+					if (notGate) {
+						if (parameters[j] === 'forms') conditions.mega = 0;
+						conditions[parameters[j]] = 0;
+					} else {
+						conditions[parameters[j]] = 2;
+					}
+					continue;
+				}
+				if (parameters[j].indexOf(' type') > -1) parameters[j] = parameters[j].substr(0, parameters[j].length - 5);
+				if (parameters[j] in types) {
+					if (types[parameters[j]] !== 1) return this.say(con, room, 'Cannot include both \'' + parameters[j] + '\' and \'!' + parameters[j] + '\'.');
+					if (notGate) {
+						types[parameters[j]] = 0;
+					} else {
+						types[parameters[j]] = 2;
+						singleType = true;
+					}
+					continue;
+				} else {
+					return this.say(con, room, 'Parameter \'' + parameters[j] + '\' not recognized.');
 				}
 			}
-			if (Uber && noUber) return this.say(con, room, 'roll cannot contain both \'uber\' and \'!uber\'.');
-			if (NFE && noNFE) return this.say(con, room, 'roll cannot contain both \'nfe\' and \'!nfe\'.');
-			if (legend && noLegend) return this.say(con, room, 'roll cannot contain both \'legend\' and \'!legend\'.');
-			if (mega && noMega) return this.say(con, room, 'roll cannot contain both \'mega\' and \'!mega\'.');
-			if (Uber && noLegend && pokequantity > 3) return this.say(con, room, 'Invalid generation conditions.');
-			if (mega && Uber && pokequantity > 1) return this.say(con, room, 'Invalid generation conditions.');
-			if ((Uber || legend || mega) && NFE) return this.say(con, room, 'Invalid generation conditions.');
+			
+			//More complex checks to prevent it getting stuck searching for combinations that don't exist
+			if (conditions.forms === 2 && singleType) return this.say(con, room, 'The parameter \'forms\' must be used by itself.');
+			if (conditions.uber === 2 && conditions.legend === 0 && pokequantity > 3) return this.say(con, room, 'Invalid generation conditions.');
+			if (conditions.mega === 2 && conditions.uber === 2 && pokequantity > 1) return this.say(con, room, 'Invalid generation conditions.');
+			if (conditions.nfe === 2 && (conditions.uber === 2 || conditions.legend === 2 || conditions.mega === 2)) return this.say(con, room, 'Invalid generation conditions.');
+			
+			if (singleType) {
+				if (conditions.uber === 2 || conditions.legend === 2 || conditions.mega === 2) return this.say(con, room, 'Invalid generation conditions.');
+				for (var set in types) {
+					if (types[set] === 1) types[set] = 0;
+				}
+			}
 		}
 		if (pokequantity == 1 && room.charAt(0) !== ',' && this.hasRank(by, '+%@#~')) text = '!dt ';
+		
+		var attempt = -1;
+		var dexNumbers = [];
+		if (parameters.length > 0) {
+			//create an array for all dex numbers and then shuffle it
+			for (g=0; g<722; g++) {
+				dexNumbers.push(g);
+			}
+			dexNumbers = this.shuffle(dexNumbers);
+		}
 		for (i=0; i<pokequantity; i++) {
-			var pokeNum = Math.floor(723 * Math.random());
-			if (Uber && !Pokedex[pokeNum].uber) {i--; continue;}
-			if (legend && !Pokedex[pokeNum].legend) {i--; continue;}
-			if (NFE && !Pokedex[pokeNum].nfe) {i--; continue;}
-			if (mega && !Pokedex[pokeNum].mega) {i--; continue;}
-			if (noUber && Pokedex[pokeNum].uber) {i--; continue;}
-			if (noLegend && Pokedex[pokeNum].legend) {i--; continue;}
-			if (noNFE && Pokedex[pokeNum].nfe) {i--; continue;}
-			if (randompokes.indexOf(Pokedex[pokeNum].species) > -1) {i--; continue;}
-			if (Pokedex[pokeNum].mega && !noMega) {
+			attempt++;
+			if (attempt > 721) {
+				console.log('randpoke fail: ' + parameters);
+				text = (room.charAt(0) === ',') ? '' : '/pm ' + by + ', ';
+				return this.say(con, room, text + 'could not find ' + pokequantity + ' unique Pokemon with ``' + parameters.join(', ') + '``');
+			}
+			var skipPoke = false;
+			if (parameters.length > 0) {
+				var pokeNum = dexNumbers[attempt];
+			} else {
+				var pokeNum = Math.floor(722 * Math.random());
+			}
+			if (conditions.uber === 2 && !Pokedex[pokeNum].uber) {i--; continue;}
+			if (conditions.legend === 2 && !Pokedex[pokeNum].legend) {i--; continue;}
+			if (conditions.nfe === 2 && !Pokedex[pokeNum].nfe) {i--; continue;}
+			if (conditions.mega === 2 && !Pokedex[pokeNum].mega) {i--; continue;}
+			if (conditions.forms === 2 && !Pokedex[pokeNum].forms) {i--; continue;}
+			if (conditions.uber === 0 && Pokedex[pokeNum].uber) {i--; continue;}
+			if (conditions.legend === 0 && Pokedex[pokeNum].legend) {i--; continue;}
+			if (conditions.nfe === 0 && Pokedex[pokeNum].nfe) {i--; continue;}
+			for (h=0; h<Pokedex[pokeNum].type.length; h++) {
+				var currentType = Pokedex[pokeNum].type[h].toLowerCase();
+				if (types[currentType] !== 0) break;
+				skipPoke = true;
+			}
+			if (skipPoke) {i--; continue;}
+			if (Pokedex[pokeNum].mega && conditions.mega !== 0) {
 				var buffer = Pokedex[pokeNum].species; 
-				var megaNum = (mega ? 0 : -1)
-				megaNum += Math.floor((Pokedex[pokeNum].mega.length + (mega ? 0 : 1)) * Math.random());
+				var megaNum = (conditions.mega === 2 ? 0 : -1)
+				megaNum += Math.floor((Pokedex[pokeNum].mega.length + (conditions.mega === 2 ? 0 : 1)) * Math.random());
 				if (megaNum == -1) {
 					randompokes.push(buffer);
 				} else {
@@ -678,7 +731,7 @@ exports.commands = {
 				}
 				continue;
 			}
-			if (Pokedex[pokeNum].forms && !noForms) {
+			if (Pokedex[pokeNum].forms && conditions.forms !== 0) {
 				var formNum = Math.floor(Pokedex[pokeNum].forms.length * Math.random());
 				if (Pokedex[pokeNum].forms[formNum] !== "norm") {
 					var buffer = Pokedex[pokeNum].species;
@@ -689,16 +742,9 @@ exports.commands = {
 			}
 			randompokes.push(Pokedex[pokeNum].species);
 		}
-		if  (shiny) {
-			for (k=0; k<randompokes.length; k++) {
-				if (Math.floor(2 * Math.random()) === 0) continue;
-				randompokes[k] = '``shiny`` ' + randompokes[k];
-			}
-		} else {
-			for (k=0; k<randompokes.length; k++) {
-				if (Math.floor(1364 * Math.random()) !== 0) continue;
-				randompokes[k] = '``shiny`` ' + randompokes[k];
-			}
+		for (k=0; k<randompokes.length; k++) {
+			if (Math.floor(((conditions.shiny === 2) ? 2 : 1364) * Math.random()) !== 0) continue;
+			randompokes[k] = '``shiny`` ' + randompokes[k];
 		}
 		this.say(con, room, text + randompokes.join(", "));
 	},
