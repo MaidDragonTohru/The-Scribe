@@ -1541,6 +1541,7 @@ exports.commands = {
         "Philosophical","Political","Realistic","Romance","Saga","Satire","Science Fiction","Slice of Life","Thriller","Urban"];
         var genNum = Math.floor(genres.length * Math.random());
         var genNum2 = Math.floor(genres.length * Math.random());
+        while(genNum2 !== genNum) { genNum2 = Math.floor(genres.length * Math.random()); }
         this.say(con, room, text + 'Random genre splice: __' + genres[genNum] + ' ' + genres[genNum2] + '__.');
     },
     //End Random Commands
