@@ -936,7 +936,6 @@ exports.commands = {
                     delete config.wotdCalled;
                 }, 60 * 1000);
             }
-<<<<<<< HEAD
             if (!config.wotd) return this.say(con, room, text +
                 'A Writer of the Day hasn\'t been set! :o');
             this.say(con, room, text + 'Today\'s Spotlighted Writer is [[' +
@@ -1072,7 +1071,6 @@ exports.commands = {
                 case 18:
                     type[i] = "Fairy";
                     break;
->>>>>>> 02470400cb2867cc5b1f293ae183af307c3fa62c
             }
             if (!this.RP[room].doc) return this.say(con, room, text +
                 'There is no document set.');
@@ -1170,7 +1168,6 @@ exports.commands = {
             } else {
                 var text = '';
             }
-<<<<<<< HEAD
             this.say(con, room, text + 'Community Drive: http://bit.do/pswritingarchives');
         },
         contests: 'events',
@@ -1786,7 +1783,6 @@ exports.commands = {
 	if (!this.hasRank(by, '@#~')) return false;
         arg = toId(arg);
         if (arg === 'off') {
->>>>>>> 02470400cb2867cc5b1f293ae183af307c3fa62c
                 if (this.buzzer) clearInterval(this.buzzer);
                 return this.say(con, room, 'Announcements have been disabled.');
             } else if (arg === 'on') {
