@@ -1145,7 +1145,7 @@ exports.commands = {
         },
         newbie: function(arg, by, room, con) {
             if (config.serverid !== 'showdown' && room !== 'writing' && !this.hasRank(by, '@#~') {
-                	var text = '/msg The Scribe, ';
+                	var text = '/msg ' + by + ', ';
                 } else if (config.serverid == 'showdown' && room == 'writing' && this.hasRank(by, '@#~') {
                 	var text = '';
                 } else if (!config.serverid == 'showdown' && room !== 'writing' && this.hasRank(by, '@#~')) return false;
