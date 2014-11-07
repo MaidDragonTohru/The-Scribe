@@ -1144,13 +1144,15 @@ exports.commands = {
             );
         },
         newbie: function(arg, by, room, con) {
-            if (config.serverid !== 'showdown' || room !== 'writing' || !
-                this.hasRank(by, '@#~')) return false;
-            this.say(con, room,
-                'Welcome to the Writing room! In case you missed the big shiny box, please make sure to visit the room website and read the rules listed there: http://pswriting.weebly.com/rules.html'
+            if (config.serverid !== 'showdown' && room !== 'writing' && !this.hasRank(by, '@#~') {
+                	var text = '/msg The Scribe, ';
+                } else if (config.serverid == 'showdown' && room == 'writing' && this.hasRank(by, '@#~') {
+                	var text = '';
+                } else if (!config.serverid == 'showdown' && room !== 'writing' && this.hasRank(by, '@#~'))
+                }
+            this.say(con, room, text + 'Welcome to the Writing room! In case you missed the big shiny box, please make sure to visit the room website and read the rules listed there: http://pswriting.weebly.com/rules.html'
             );
-            this.say(con, room,
-                'Also, feel free to ask the staff any questions you may have. I\'m sure they\'d love to answer them!'
+            this.say(con, room, text + 'Also, feel free to ask the staff any questions you may have. I\'m sure they\'d love to answer them!'
             );
         },
         esupport: function(arg, by, room, con) {
