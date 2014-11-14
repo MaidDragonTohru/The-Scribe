@@ -1252,17 +1252,6 @@ exports.commands = {
                 'Interested in becoming a voice? Check out the guideines for your chance at having a shot! http://bit.do/pswritingvoicerules or http://bit.do/pswritingvoicerap'
             );
         },
-        octevent: 'oe',
-        octoberevent: 'oe',
-        oe: function(arg, by, room, con) {
-            if (this.hasRank(by, '+%@#~')) {
-                var text = '';
-            } else {
-                var text = '/pm ' + by + ', ';
-            }
-            this.say(con, room, text + 'Attention, all writers! We’ve recently begun our new Event: Halloween Contest: Where Nightmares Come To Life! This time around, contestants are tasked with writing a story or poem with a Halloween theme to it, and that takes place within the Pokemon Universe.');
-            this.say(con, room, text + 'Be sure to check out our guidelines for the contest, where you’ll get a more in-depth explanation: (http://goo.gl/YblcUj ) Submissions will close on the 8th of November, so don’t forget to submit your entry! You may find our submission board here: (http://goo.gl/vpPmXX )')
-        },
         announce: function(arg, by, room, con) {
             if (!this.hasRank(by, '@#~')) return false;
             arg = toId(arg);
