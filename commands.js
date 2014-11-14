@@ -1285,7 +1285,7 @@ exports.commands = {
 		var types = {"normal":1,"fire":1,"water":1,"grass":1,"electric":1,"ice":1,"fighting":1,"poison":1,"ground":1,"flying":1,"psychic":1,"bug":1,"rock":1,"ghost":1,"dragon":1,"dark":1,"steel":1,"fairy":1};
 		var singleType = false;
 		var noDt = {"Unown":1,"Shellos":1,"Gastrodon":1,"Deerling":1,"Sawsbuck":1,"Vivillon":1,"Flabebe":1,"Floette":1,"Florges":1,"Furfrou":1};
-		
+
 		var pokequantity = 1;
 		if (arg) {
 			var parameters = arg.toLowerCase().split(", ");
@@ -1309,7 +1309,7 @@ exports.commands = {
 					case "fe": parameters[j] = "nfe"; notGate = !notGate; break;
 					case "ubers": parameters[j] = "uber"; break;
 				}
-				
+
 				if (parameters[j] in conditions) {
 					if (conditions[parameters[j]] !== 1) return this.say(con, room, 'Cannot include both \'' + parameters[j] + '\' and \'!' + parameters[j] + '\'.');
 					if (notGate) {
@@ -1334,13 +1334,13 @@ exports.commands = {
 					return this.say(con, room, 'Parameter \'' + parameters[j] + '\' not recognized.');
 				}
 			}
-			
+
 			//More complex checks to prevent it getting stuck searching for combinations that don't exist
 			if (conditions.forms === 2 && singleType) return this.say(con, room, 'The parameter \'forms\' must be used by itself.');
 			if (conditions.uber === 2 && conditions.legend === 0 && pokequantity > 3) return this.say(con, room, 'Invalid generation conditions.');
 			if (conditions.mega === 2 && conditions.uber === 2 && pokequantity > 1) return this.say(con, room, 'Invalid generation conditions.');
 			if (conditions.nfe === 2 && (conditions.uber === 2 || conditions.legend === 2 || conditions.mega === 2)) return this.say(con, room, 'Invalid generation conditions.');
-			
+
 			if (singleType) {
 				if (conditions.uber === 2 || conditions.legend === 2 || conditions.mega === 2) return this.say(con, room, 'Invalid generation conditions.');
 				for (var set in types) {
@@ -1349,7 +1349,7 @@ exports.commands = {
 			}
 		}
 		if (pokequantity == 1 && room.charAt(0) !== ',' && this.hasRank(by, '+%@#~')) text = '!dt ';
-		
+
 		var attempt = -1;
 		var dexNumbers = [];
 		if (parameters.length > 0) {
@@ -1387,7 +1387,7 @@ exports.commands = {
 			}
 			if (skipPoke) {i--; continue;}
 			if (Pokedex[pokeNum].mega && conditions.mega !== 0) {
-				var buffer = Pokedex[pokeNum].species; 
+				var buffer = Pokedex[pokeNum].species;
 				var megaNum = (conditions.mega === 2 ? 0 : -1)
 				megaNum += Math.floor((Pokedex[pokeNum].mega.length + (conditions.mega === 2 ? 0 : 1)) * Math.random());
 				if (megaNum == -1) {
@@ -1410,7 +1410,7 @@ exports.commands = {
 		}
 		for (k=0; k<randompokes.length; k++) {
 			if (Math.floor(((conditions.shiny === 2) ? 2 : 1364) * Math.random()) !== 0) continue;
-			randompokes[k] = '``shiny`` ' + randompokes[k];
+			randompokes[k] = '``Shiny`` ' + randompokes[k];
 		}
 		this.say(con, room, text + randompokes.join(", "));
 	},
@@ -1449,9 +1449,9 @@ exports.commands = {
 		var classes = {"physical":1,"special":1,"status":1};
 		var moveQuantity = 1;
 		var hasBeenSet = false;
-		var singleType = false; 
+		var singleType = false;
 		var singleClass = false;
-		
+
 		var parameters = arg.split(', ');
 		if (parameters.length > 10) return this.say(con, room, 'Please use 10 or fewer arguments.');
 		for (var i=0; i<parameters.length; i++) {
@@ -1462,7 +1462,7 @@ exports.commands = {
 				hasBeenSet = true;
 				continue;
 			}
-			var notGate = false; 
+			var notGate = false;
 			if (parameters[i].charAt(0) === '!') {
 				notGate = true;
 				parameters[i] = parameters[i].substr(1);
@@ -1501,7 +1501,7 @@ exports.commands = {
 				if (classes[set] == 1) classes[set] = 0;
 			}
 		}
-		
+
 		var randomMoves = [];
 		for (var j=0; j<moveQuantity; j++) {
 			var roll = Math.floor(614 * Math.random()) + 1;
@@ -1781,129 +1781,282 @@ exports.commands = {
                     self.say(con, room, "**Writing Room Tip #" + num + ":** " + tips[num]);
                 }, 1800000);
             }
-        },
+    },
         /**
          * Messaging related commands
          *
          */
-        mail: 'message',
-        msg: 'message',
-        message: function(arg, by, room, con) {
-            if (!this.settings.poeticlicense[toId(by)] && !this.hasRank(by, '+%@#~') || (toId(by) !== 'axebane')) {
-                if (!this.canUse('message', room, by)) return this.say(con, room, '/msg ' + by + ', It seems as if you cannot use this command! Do you have a Poetic License?');
-                if (room.charAt(0) === ',' && !this.hasRank(by, '+%@#~')) return this.say(con, room, 'mail cannot be used in PMs.');
+    mail: 'message',
+    msg: 'message',
+    message: function(arg, by, room, con) {
+        if (!this.settings.poeticlicense[toId(by)] && !this.hasRank(by, '+%@#~') || (toId(by) !== 'axebane')) {
+            if (!this.canUse('message', room, by)) return this.say(con, room, '/msg ' + by + ', It seems as if you cannot use this command! Do you have a Poetic License?');
+            if (room.charAt(0) === ',' && !this.hasRank(by, '+%@#~')) return this.say(con, room, 'mail cannot be used in PMs.');
             }
-            var user = toId(arg.split(', ')[0]);
-            if (user.length > 18) return this.say(con, room, 'That\'s not a real username! It\'s too long! >:I');
-            if ((by) == '') return this.say(con, room, 'Please use the following format: ";mail user, message"');
-            var message = by + ': ' + arg.substr(arg.split(', ')[0].length + 2);
-            if (message.length < by.length + 3) return this.say(con, room, 'You forgot to include the message! :o');
-            if (!this.messages) this.messages = {};
-            if (!this.messages[user]) {
-                this.messages[user] = {};
-                this.messages[user].timestamp = Date.now();
-            }
-            if (this.messages[user]["5"]) return this.say(con, room, user + '\'s message inbox is full.');
-            var msgNumber = -1;
-            for (var i in this.messages[user]) {
-                msgNumber++;
-            }
+        var user = toId(arg.split(', ')[0]);
+        if (user.length > 18) return this.say(con, room, 'That\'s not a real username! It\'s too long! >:I');
+        if ((by) == '') return this.say(con, room, 'Please use the following format: ";mail user, message"');
+        var message = by + ': ' + arg.substr(arg.split(', ')[0].length + 2);
+        if (message.length < by.length + 3) return this.say(con, room, 'You forgot to include the message! :o');
+        if (!this.messages) this.messages = {};
+        if (!this.messages[user]) {
+            this.messages[user] = {};
+            this.messages[user].timestamp = Date.now();
+        }
+        if (this.messages[user]["5"]) return this.say(con, room, user + '\'s message inbox is full.');
+        var msgNumber = -1;
+        for (var i in this.messages[user]) {
+            msgNumber++;
+        }
             msgNumber = "" + msgNumber;
-            this.messages[user][msgNumber] = message;
+        this.messages[user][msgNumber] = message;
+        this.writeMessages();
+        this.say(con, room, (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ') + 'Message has been sent to ' + user + '.');
+    },
+    checkmail: 'readmessages',
+    readmail: 'readmessages',
+    readmessages: function(arg, by, room, con) {
+        var text = (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ');
+        if (!this.messages[toId(by)]) return this.say(con, room, text + 'Your inbox is empty.');
+        for (var msgNumber in this.messages[toId(by)]) {
+            if (msgNumber === 'timestamp') continue;
+            this.say(con, room, text + this.messages[toId(by)][msgNumber]);
+        }
+        delete this.messages[toId(by)];
+        this.writeMessages();
+    },
+    clearmail: 'clearmessages',
+    clearmessages: function(arg, by, room, con) {
+        if (!this.hasRank(by, '#~')) return false;
+        if (!arg) return this.say(con, room, 'Specify whose mail to clear or \'all\' to clear all mail.');
+        if (!this.messages) return this.say(con, room, 'The message file is empty.');
+        if (arg === 'all') {
+            this.messages = {};
             this.writeMessages();
-            this.say(con, room, (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ') + 'Message has been sent to ' + user + '.');
-        },
-        checkmail: 'readmessages',
-        readmail: 'readmessages',
-        readmessages: function(arg, by, room, con) {
-            var text = (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ');
-            if (!this.messages[toId(by)]) return this.say(con, room, text + 'Your inbox is empty.');
-            for (var msgNumber in this.messages[toId(by)]) {
-                if (msgNumber === 'timestamp') continue;
-                this.say(con, room, text + this.messages[toId(by)][msgNumber]);
-            }
-            delete this.messages[toId(by)];
-            this.writeMessages();
-        },
-        clearmail: 'clearmessages',
-        clearmessages: function(arg, by, room, con) {
-            if (!this.hasRank(by, '#~')) return false;
-            if (!arg) return this.say(con, room, 'Specify whose mail to clear or \'all\' to clear all mail.');
-            if (!this.messages) return this.say(con, room, 'The message file is empty.');
-            if (arg === 'all') {
-                this.messages = {};
-                this.writeMessages();
-                this.say(con, room, 'All messages have been erased.');
-            } else if (arg === 'time') {
-                for (var user in this.messages) {
-                    if (this.messages[user]["timestamp"] < (Date.now() - MESSAGES_TIME_OUT)) delete this.messages[user];
-                }
-                this.writeMessages();
-                this.say(con, room, 'Messages older than one week have been erased.');
-            } else {
-                var user = toId(arg);
-                if (!this.messages[user]) return this.say(con, room, user + ' does not have any pending messages.');
-                delete this.messages[user];
-                this.writeMessages();
-                this.say(con, room, 'Messages for ' + user + ' have been erased.');
-            }
-        },
-        countmessages: 'countmail',
-        countmail: function(arg, by, room, con) {
-            if (!this.hasRank(by, '#~')) return false;
-            if (!this.messages) this.say(con, room, 'Messages.JSON is empty');
-            var messageCount = 0;
-            var oldestMessage = Date.now();
+            this.say(con, room, 'All messages have been erased.');
+        } else if (arg === 'time') {
             for (var user in this.messages) {
-                for (var message in this.messages[user]) {
-                    if (message === 'timestamp') {
-                        if (this.messages[user]['timestamp'] < oldestMessage) oldestMessage = this.messages[user]['timestamp'];
+                if (this.messages[user]["timestamp"] < (Date.now() - MESSAGES_TIME_OUT)) delete this.messages[user];
+            }
+            this.writeMessages();
+            this.say(con, room, 'Messages older than one week have been erased.');
+        } else {
+            var user = toId(arg);
+            if (!this.messages[user]) return this.say(con, room, user + ' does not have any pending messages.');
+            delete this.messages[user];
+            this.writeMessages();
+            this.say(con, room, 'Messages for ' + user + ' have been erased.');
+        }
+    },
+    countmessages: 'countmail',
+    countmail: function(arg, by, room, con) {
+        if (!this.hasRank(by, '#~')) return false;
+        if (!this.messages) this.say(con, room, 'Messages.JSON is empty');
+        var messageCount = 0;
+        var oldestMessage = Date.now();
+        for (var user in this.messages) {
+            for (var message in this.messages[user]) {
+                if (message === 'timestamp') {
+                      if (this.messages[user]['timestamp'] < oldestMessage) oldestMessage = this.messages[user]['timestamp'];
+                    continue;
+                }
+                messageCount++;
+            }
+        }
+        //convert oldestMessage to days
+        var day = Math.floor((Date.now() - oldestMessage) / (24 * 60 * 60 * 1000));
+        this.say(con, room, 'There are currently **' + messageCount + '** pending messages. The oldest message ' + (!day ? 'was left today.' : 'is __' + day + '__ days old.'));
+    },
+    pl: 'poeticlicense',
+    poeticlicense: function(arg, by, room, con) {
+            if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
+            if (!arg) return this.say(con, room, 'To whom should I grant a Poetic License?');
+            var users = arg.split(', ');
+            var errors = [];
+            if (!this.settings.poeticlicense) this.settings.poeticlicense = {};
+            for (var i = 0; i < users.length; i++) {
+                    var user = toId(users[i]);
+                    if (this.settings.poeticlicense[user]) {
+                        errors.push(users[i]);
+                        users.splice(i, 1);
                         continue;
-                    }
-                    messageCount++;
+            }
+            this.settings.poeticlicense[user] = 1;
+    }
+    this.writeSettings();
+    if (errors.length != 0) this.say(con, room, errors.join(', ') + ' already has a Poetic License');
+    if (users.length != 0) this.say(con, room, '/modnote ' + users.join(', ') + ' has been given a Poetic License by ' + toId(by));
+    },
+    upl: 'unpoeticlicense',
+    unpoeticlicense: function(arg, by, room, con) {
+            if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
+            if (!arg) return this.say(con, room, 'Whose Poetic License should be revoked?');
+            var user = toId(arg);
+            if (!this.settings.poeticlicense) this.settings.poeticlicense = {};
+            if (!this.settings.poeticlicense[user]) return this.say(con, room, arg + ' does not have Poetic License.');
+            delete this.settings.poeticlicense[user];
+            this.writeSettings();
+            this.say(con, room, '/modnote ' + user + ' had their Poetic License removed by ' + toId(by));
+    },
+    vpl: 'viewpoeticlicense',
+    viewpoeticlicense: function(arg, by, room, con) {
+            if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
+            if (!this.settings.poeticlicense) return this.say(con, room, 'No users are poeticlicense\'d.');
+            var poeticlicenseList = Object.keys(this.settings.poeticlicense);
+            this.uploadToHastebin(con, room, by, "The following users possess a Poetic License:\n\n" + poeticlicenseList.join('\n'));
+            return;
+            }
+            /**
+            * These are commands related to the new Choose Your Own Adventure game I'm putting together! Possibly very buggy!
+            *
+            */
+    },
+    debugroom: function(arg, by, room, con) {
+        if (!this.hasRank(by, '%@#~')) return false;
+        arg = toId(arg);
+        if (!settings.cyoa.gRoom) settings.cyoa.gRoom = {};
+        settings.cyoa.gRoom = arg;
+        this.say(con, room, "The CYOA room has been changed to: " + arg)
+        this.writeSettings();
+    },
+    //Currently useless.
+    debugstats: function(arg, by, room, con) {
+        if (!this.hasRank(by, '@#~')) return false;
+        arg = toId(arg);
+        var player = arg
+        if (!settings.cyoa.stats) return false;
+        if (!arg) this.say(con, room, "Please include the name of a player.");
+        if (arg != settings.cyoa.stats[player]) this.say(con, room, "That's not a valid playername, sorry.");
+    },
+    cyoa: function(arg, by, room, con) {
+    //Pre-Game Checking System, useful if this is the first time the command is ran.
+    //-----------------------------------------------------------------------------------------------
+        arg = toId(arg);
+        var user = toId(by);
+        var self = this;
+        var timesPlayed = this.settings.cyoa.stats.timesPlayed;
+        if (!settings.cyoa) {
+            this.settings.cyoa = {};
+            this.writeSettings();
+        }
+        if (!settings.cyoa.gRoom) {
+            this.settings.cyoa.gRoom = {};
+            this.writeSettings();
+        }
+        if (!settings.cyoa.inventory) {
+            settings.cyoa.inventory = {};
+            this.writeSettings();
+        }
+        if (!settings.cyoa.stats) {
+            this.settings.cyoa.stats = [timesPlayed=0]; //These are the "flags" in the code that a new player will get. Useful for setting little details that you don't want to reset.
+            this.writeSettings();
+        }
+        if (!settings.cyoa.flags) {
+            this.settings.cyoa.flags = [hasfoundKey=false,hasFoundWater=false,isPoisoned=false,gender="male",morality=5,player=by]; //And these are the variable flags that will reset at the end of every run.
+            this.writeSettings();
+        }
+        //Morality system setup. Very basic ATM.
+        if (settings.cyoa.flags.morality == 5) {
+            var morality = "neutral";
+        } else if (settings.cyoa.flags.morality < 5) {
+            var morality = "dark";
+        } else if (settings.cyoa.flags.morality > 5) {
+            var morality = "light";
+        }
+    //And here's the actual game.
+        if (arg == 'start') {
+            if (!this.hasRank(by, '+%@#~')) return false;
+            this.say(con, room, "The Choose Your Own Adventure Game has been started!");
+            this.say(con, room, "You awaken in a dark room, lit only by a single lightbulb. Looking around, you manage to make out three doors; one [red], one [yellow], and one [green]. Which do you enter?");
+            this.settings.cyoa.gRoom = 'darkRoom';
+        }
+        //Green Door Arc!
+        //-----------------------------------------------------------------------------------------------
+        if (arg == 'green' && settings.cyoa.gRoom == 'darkRoom') {
+            this.settings.cyoa.gRoom = 'greenDoor';
+            this.say(con, room, "You enter the Green Door, and are greeted by an Old Man. He smiles at you, and asks, 'What can I do for you, young chap?' he seems somewhat docile, though it's possibly a trap... Do you [listen], or [run]?");
+        }
+            if (arg == 'listen' && settings.cyoa.gRoom == 'greenDoor') {
+                this.say(con, room, "You decided to listen to the Old Man. He watches as you sit, smiling slightly. 'I'm so glad you decided to stay', he says, 'It was getting so lonely here...' he continues. The Old Man reaches forward, and taps you on the forehead. You can't move! Smiling, the Old Man says, 'Welcome to my collection.");
+                this.say(con, room, "You end up living the rest of your life as a living statue in that one room. You can never see or do much, apart from stare at your new owner. Game Over!");
+            this.settings.cyoa.gRoom = {};
+            }
+            if (arg == 'run' && settings.cyoa.gRoom == 'greenDoor') {
+                this.say(con, room, "You decided to flee! You turn tail and head back out the door, not looking to see if you're being followed. However, you didn't end up back where you came! Instead, you're now standing in the middle of a barren wasteland! Huh.");
+                this.say(con, room, "Glancing around, you notice that you've two options: 1) [Search] for help, or 2) [Wait] for someone to come help you. Maybe that Old Man from earlier would've helped you in this strange place...");
+                this.settings.cyoa.gRoom = 'wasteland';
+            }
+            if (arg == 'search' && settings.cyoa.gRoom == 'wasteland') {
+                this.say(con, room, "You decide to search for someone to help you. There's a fifty-fifty chance that this could end positively or negatively. Are you sure you want to [continue], " + by + "? You can always [flee] now.");
+                this.settings.cyoa.gRoom = 'wastelandChoice';
+            }
+            if (arg == 'continue' && settings.cyoa.gRoom == 'wastelandChoice') {
+                this.say(con, room, "Nodding in determination, you press onwards, hoping that you are prepared for whatever you may have to face.");
+                var outcome = Math.floor(Math.random() * 99 + 1);
+                if (outcome > 50) {
+                    this.say(con, room, "Looks like you were lucky! Nothing too horrible happened to you, though you did see your fair share of cacti. Abruptly, a figure comes into sight. You've been lucky thus far, should we [approach] them and see if they're friendly, or [run] back to whence you came?");
+                    self.settings.cyoa.gRoom = 'wastelandLucky';
+                } else if (outcome <= 50) {
+                    this.say(con, room, "Luck wasn't with you, it seems... The moment you stepped out to far, your foot sank into the ground! Looks like you're caught in a sinkhole...");
+                    this.say(con, room, "That sucking feeling is probably the owner of the sinkhole that's currently draining out your blood. Don't worry; the sand has an odd anaesthetic quality, so you won't feel a thing! Downside is that it's Game Over.");
+                    self.settings.cyoa.gRoom = '';
                 }
             }
-            //convert oldestMessage to days
-            var day = Math.floor((Date.now() - oldestMessage) / (24 * 60 * 60 * 1000));
-            this.say(con, room, 'There are currently **' + messageCount + '** pending messages. The oldest message ' + (!day ? 'was left today.' : 'is __' + day + '__ days old.'));
-        },
-        pl: 'poeticlicense',
-        poeticlicense: function(arg, by, room, con) {
-                if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
-                if (!arg) return this.say(con, room, 'To whom should I grant a Poetic License?');
-                var users = arg.split(', ');
-                var errors = [];
-                if (!this.settings.poeticlicense) this.settings.poeticlicense = {};
-                for (var i = 0; i < users.length; i++) {
-                        var user = toId(users[i]);
-                        if (this.settings.poeticlicense[user]) {
-                            errors.push(users[i]);
-                            users.splice(i, 1);
-                            continue;
+            if (arg == 'run' && settings.cyoa.gRoom == 'wastelandChoice' || arg == 'run' && settings.cyoa.gRoom == 'wastelandLucky') {
+                this.say(con, room, "You chicken out at the last second and head back to where you first entered this strange wasteland, not knowing nor caring about what you've possibly left behind. You're now back where you started, and can either [search] once more, or [wait].");
+                this.settings.cyoa.gRoom = 'wasteland';
+            }
+            if (arg == 'approach' && settings.cyoa.gRoom == 'wastelandLucky') {
+                this.say(con, room, "You decide to approach the figure to see if they're friendly. Interestingly, they don't react until you attempt to touch them, at which point they fall to the ground. This person is died standing up.");
+                this.settings.cyoa.inventory = settings.cyoa.inventory + "Odd Key";
+                this.settings.cyoa.inventory = settings.cyoa.inventory + "Water Bottle";
+                this.say(con, room, "The up-side, however, is that you did manage find a rather strange-looking brass key. It doesn't look like it'll fit into any conventional lock... Due to the fact that almost all keys are useful in situations like your own, you decide to slip it into your pocket.");
+                this.say(con, room, "Oh, and you found some water in the man's backpack! Good on you! May as well take the backpack, too. You slip the container of water into the front pocket for the backpack, and sling it over your shoulder. Now, you can either press [further], or go [back].");
+            }
+            if (arg == 'wait' && settings.cyoa.gRoom == 'wasteland') {
+                this.say(con, room, "You decide to wait, sitting down on the harsh land's surface, and daydreaming about life...");
+                if (settings.cyoa.flags.hasfoundKey === true) {
+                    this.say(con, room, "Abruptly, the key in your hand starts glowing! Your vision wavers slightly as a 'normal-looking' wooden door forms right before your eyes! It has a [keyhole] on it!");
+                    this.settings.cyoa.gRoom = 'wastelandDoor';
+                } else if (!settings.cyoa.flags.hasfoundKey === true) {
+                    this.say(con, room, "After some time, you give up waiting and head out to find some help.")
+                    this.say(con, room, "You decide to search for someone to help you. There's a fifty-fifty chance that this could end positively or negatively. Are you sure you want to [continue], " + by + "? You can always [flee] now.");
+                    this.settings.cyoa.gRoom = 'wastelandChoice';
                 }
-                this.settings.poeticlicense[user] = 1;
+            }
+            if (arg == 'keyhole' && settings.cyoa.gRoom == 'wastelandDoor') {
+                this.say(con, room, "You approach the door, glowing key in hand. Pausing, you tentatively slot it into the golden keyhole. You're cautious, as you do not trust this twisted place in the slightest. Who even placed you here? Why are you here? With these questions burning in your mind, you insert the key and turn it...");
+                this.say(con, room, "TO BE CONTINUED... Game Over, for now!"); //I'll continue this later.
+                this.settings.cyoa.gRoom = {};
+                this.timesplayed + 1;
         }
+        //Red Door Arc!
+        //-----------------------------------------------------------------------------------------------
+        if (arg == 'red' && settings.cyoa.gRoom == 'darkRoom') {
+            settings.cyoa.gRoom = 'redDoor';
+            this.say(con, room, "You have decided to enter the Red Door, and you encounter...");
+            this.say(con, room, "Placeholder: Absolutely nothing. You walked right into a void of absolute nothingness! Game Over!");
+            settings.cyoa.gRoom = {};
+        }
+        //Yellow Door Arc!
+        //-----------------------------------------------------------------------------------------------
+        if (arg == 'yellow' && settings.cyoa.gRoom == 'darkRoom') {
+            settings.cyoa.gRoom = 'ylwDoor';
+            this.say(con, room, "You have decided to enter the Yellow Door, and you encounter...");
+            this.say(con, room, "Placeholder: A giant talking Bannana! He hits you over the head with a baseball bat whilst yelling something about Peanut Butter and Jelly! Game Over!");
+            settings.cyoa.gRoom = {};
+        }
+        //Code for if someone is dumb and leaves the command blank. e-e
+        if (arg === '') {
+            this.say(con, room, "Please include an argument after 'cyoa'. Thank you! ^.^");
+        }
+        //Code for ending the whole fiasco.
+        if (arg == 'stop' || arg == 'end') {
+            if (this.hasRank(by, '%@#~')) {
+            this.say(con, room, "The game has ended!");
+            settings.cyoa.gRoom = {}
+            this.timesPlayed + 1;
+            } else return false;
+        } else {};
         this.writeSettings();
-        if (errors.length != 0) this.say(con, room, errors.join(', ') + ' already has a Poetic License');
-        if (users.length != 0) this.say(con, room, '/modnote ' + users.join(', ') + ' has been given a Poetic License by ' + toId(by));
-        },
-        upl: 'unpoeticlicense',
-        unpoeticlicense: function(arg, by, room, con) {
-                if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
-                if (!arg) return this.say(con, room, 'Whose Poetic License should be revoked?');
-                var user = toId(arg);
-                if (!this.settings.poeticlicense) this.settings.poeticlicense = {};
-                if (!this.settings.poeticlicense[user]) return this.say(con, room, arg + ' does not have Poetic License.');
-                delete this.settings.poeticlicense[user];
-                this.writeSettings();
-                this.say(con, room, '/modnote ' + user + ' had their Poetic License removed by ' + toId(by));
-        },
-        vpl: 'viewpoeticlicense',
-        viewpoeticlicense: function(arg, by, room, con) {
-                if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
-                if (!this.settings.poeticlicense) return this.say(con, room, 'No users are poeticlicense\'d.');
-                var poeticlicenseList = Object.keys(this.settings.poeticlicense);
-                this.uploadToHastebin(con, room, by, "The following users possess a Poetic License:\n\n" + poeticlicenseList.join('\n'));
-                return;
-                }
-        }
+    }
