@@ -960,7 +960,6 @@ exports.commands = {
                 setTimeout(function() {
                     delete self.RP[room].docCalled;
                 }, 60 * 1000);
-=======
         }
         this.say(con, room, text);
     },
@@ -1076,8 +1075,8 @@ exports.commands = {
                 'There is no document set.');
             this.say(con, room, text +
                 'The current document for the RP is available at ' +
-                this.RP[room].doc + '.');
-        },
+                this.RP[room].doc + '.');}
+    },
         rmdoc: function(arg, by, room, con) {
             if (!this.canUse('setrp', room, by) || !(room in this.RP))
                 return false;
@@ -1144,12 +1143,11 @@ exports.commands = {
             );
         },
         newbie: function(arg, by, room, con) {
-            if (config.serverid == 'showdown' && room == 'writing' && !this.hasRank(by, '+%@#~') {
+            if (config.serverid == 'showdown' && room == 'writing' && !this.hasRank(by, '+%@#~')) {
                 	var text = '/msg ' + by + ', ';
-                } else if (config.serverid == 'showdown' && room == 'writing' && this.hasRank(by, '+%@#~') {
+                } else if (config.serverid == 'showdown' && room == 'writing' && this.hasRank(by, '+%@#~')) {
                 	var text = '';
                 } else return false;
-            }
             this.say(con, room, text + 'Welcome to the Writing room! In case you missed the big shiny box, please make sure to visit the room website and read the rules listed there: http://pswriting.weebly.com/rules.html'
             );
             this.say(con, room, text + 'Also, feel free to ask the staff any questions you may have. I\'m sure they\'d love to answer them!'
@@ -1256,7 +1254,6 @@ exports.commands = {
             if (!this.hasRank(by, '@#~')) return false;
             arg = toId(arg);
             if (arg === 'off') {
-=======
         }
         ranStats = this.shuffle(stat);
         text += 'Random stats: HP:' + ranStats[0] + ' Atk:' + ranStats[
@@ -1905,7 +1902,6 @@ exports.commands = {
             var poeticlicenseList = Object.keys(this.settings.poeticlicense);
             this.uploadToHastebin(con, room, by, "The following users possess a Poetic License:\n\n" + poeticlicenseList.join('\n'));
             return;
-            }
             /**
             * These are commands related to the new Choose Your Own Adventure game I'm putting together! Possibly very buggy!
             *
@@ -1930,11 +1926,10 @@ exports.commands = {
     },
     cyoa: function(arg, by, room, con) {
     //Pre-Game Checking System, useful if this is the first time the command is ran.
-    //-----------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------
         arg = toId(arg);
         var user = toId(by);
         var self = this;
-        var timesPlayed = this.settings.cyoa.stats.timesPlayed;
         if (!settings.cyoa) {
             this.settings.cyoa = {};
             this.writeSettings();
@@ -1944,16 +1939,15 @@ exports.commands = {
             this.writeSettings();
         }
         if (!settings.cyoa.inventory) {
-            settings.cyoa.inventory = {};
+            this.settings.cyoa.inventory = {};
             this.writeSettings();
         }
         if (!settings.cyoa.stats) {
-            this.settings.cyoa.stats = [timesPlayed=0]; //These are the "flags" in the code that a new player will get. Useful for setting little details that you don't want to reset.
+            this.settings.cyoa.stats = {}; //These are the "flags" in the code that a new player will get. Useful for setting little details that you don't want to reset.
             this.writeSettings();
         }
         if (!settings.cyoa.flags) {
-            this.settings.cyoa.flags = [hasfoundKey=false,hasFoundWater=false,isPoisoned=false,gender="male",morality=5,player=by]; //And these are the variable flags that will reset at the end of every run.
-            this.writeSettings();
+            this.settings.cyoa.flags = [hasFoundKey=false,hasFoundWater=false,isPoisoned=false,gender="male",morality=5]; //And these are the variable flags that will reset at the end of every run.
         }
         //Morality system setup. Very basic ATM.
         if (settings.cyoa.flags.morality == 5) {
@@ -1971,7 +1965,7 @@ exports.commands = {
             this.settings.cyoa.gRoom = 'darkRoom';
         }
         //Green Door Arc!
-        //-----------------------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------
         if (arg == 'green' && settings.cyoa.gRoom == 'darkRoom') {
             this.settings.cyoa.gRoom = 'greenDoor';
             this.say(con, room, "You enter the Green Door, and are greeted by an Old Man. He smiles at you, and asks, 'What can I do for you, young chap?' he seems somewhat docile, though it's possibly a trap... Do you [listen], or [run]?");
@@ -1994,7 +1988,7 @@ exports.commands = {
                 this.say(con, room, "Nodding in determination, you press onwards, hoping that you are prepared for whatever you may have to face.");
                 var outcome = Math.floor(Math.random() * 99 + 1);
                 if (outcome > 50) {
-                    this.say(con, room, "Looks like you were lucky! Nothing too horrible happened to you, though you did see your fair share of cacti. Abruptly, a figure comes into sight. You've been lucky thus far, should we [approach] them and see if they're friendly, or [run] back to whence you came?");
+                    this.say(con, room, "Looks like you were lucky! Nothing too horrible happened to you, though you did see your fair share of cacti. Abruptly, a figure comes into sight. You've been lucky thus far, should you [approach] them and see if they're friendly, or [run] back to whence you came?");
                     self.settings.cyoa.gRoom = 'wastelandLucky';
                 } else if (outcome <= 50) {
                     this.say(con, room, "Luck wasn't with you, it seems... The moment you stepped out to far, your foot sank into the ground! Looks like you're caught in a sinkhole...");
@@ -2015,10 +2009,10 @@ exports.commands = {
             }
             if (arg == 'wait' && settings.cyoa.gRoom == 'wasteland') {
                 this.say(con, room, "You decide to wait, sitting down on the harsh land's surface, and daydreaming about life...");
-                if (settings.cyoa.flags.hasfoundKey === true) {
+                if (settings.cyoa.flags.hasFoundKey === true) {
                     this.say(con, room, "Abruptly, the key in your hand starts glowing! Your vision wavers slightly as a 'normal-looking' wooden door forms right before your eyes! It has a [keyhole] on it!");
                     this.settings.cyoa.gRoom = 'wastelandDoor';
-                } else if (!settings.cyoa.flags.hasfoundKey === true) {
+                } else if (!settings.cyoa.flags.hasFoundKey === true) {
                     this.say(con, room, "After some time, you give up waiting and head out to find some help.")
                     this.say(con, room, "You decide to search for someone to help you. There's a fifty-fifty chance that this could end positively or negatively. Are you sure you want to [continue], " + by + "? You can always [flee] now.");
                     this.settings.cyoa.gRoom = 'wastelandChoice';
@@ -2028,23 +2022,23 @@ exports.commands = {
                 this.say(con, room, "You approach the door, glowing key in hand. Pausing, you tentatively slot it into the golden keyhole. You're cautious, as you do not trust this twisted place in the slightest. Who even placed you here? Why are you here? With these questions burning in your mind, you insert the key and turn it...");
                 this.say(con, room, "TO BE CONTINUED... Game Over, for now!"); //I'll continue this later.
                 this.settings.cyoa.gRoom = {};
-                this.timesplayed + 1;
+                this.timesPlayed + 1;
         }
         //Red Door Arc!
-        //-----------------------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------
         if (arg == 'red' && settings.cyoa.gRoom == 'darkRoom') {
             settings.cyoa.gRoom = 'redDoor';
             this.say(con, room, "You have decided to enter the Red Door, and you encounter...");
             this.say(con, room, "Placeholder: Absolutely nothing. You walked right into a void of absolute nothingness! Game Over!");
-            settings.cyoa.gRoom = {};
+            this.settings.cyoa.gRoom = {};
         }
         //Yellow Door Arc!
-        //-----------------------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------
         if (arg == 'yellow' && settings.cyoa.gRoom == 'darkRoom') {
-            settings.cyoa.gRoom = 'ylwDoor';
+            this.settings.cyoa.gRoom = 'ylwDoor';
             this.say(con, room, "You have decided to enter the Yellow Door, and you encounter...");
             this.say(con, room, "Placeholder: A giant talking Bannana! He hits you over the head with a baseball bat whilst yelling something about Peanut Butter and Jelly! Game Over!");
-            settings.cyoa.gRoom = {};
+            this.settings.cyoa.gRoom = {};
         }
         //Code for if someone is dumb and leaves the command blank. e-e
         if (arg === '') {
@@ -2054,9 +2048,9 @@ exports.commands = {
         if (arg == 'stop' || arg == 'end') {
             if (this.hasRank(by, '%@#~')) {
             this.say(con, room, "The game has ended!");
-            settings.cyoa.gRoom = {}
-            this.timesPlayed + 1;
+            this.settings.cyoa.gRoom = {}
             } else return false;
         } else {};
         this.writeSettings();
     }
+}
