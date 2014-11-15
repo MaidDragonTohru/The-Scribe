@@ -32,8 +32,6 @@ Moderators and Above
 
 `vpl; viewpoeticlicense`: Makes the bot return a list of all users that possess a Poetic License VIA Private Messages.
 
-`newbie`: Gives a newcomer to the room a nice friendly greeting~
-
 `announce on/off`: Used to toggle the state of the announcements for the room. Useful. ^.^
 
 Drivers and Above
@@ -97,6 +95,8 @@ Commands any user can use~!
 `rules`: A nice alternative to the /rules command. Useful if you want to tell multiple people at the same time and you're too much of a rebel to use the !rules command.
 
 `randpoke <optional number between one and six>`: Generates a random Pokemon from the Pokedex. If the number is left blank, then it will simply generate one.
+
+`newbie`: Gives a newcomer to the room a nice friendly greeting~
 
 Installation
 ============
