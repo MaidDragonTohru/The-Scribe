@@ -138,6 +138,7 @@ Credits:
  - TalkTakesTime (Original Bot and a bit of troubleshooting)
  - Quinella (Original Bot)
  - Morfent (Modified Original Bot)
+ - sirDonovan (Our wonderful VPN Host~ <3) Love ya, Dono.
  - AxeBane (Development)
  - Solarisfox (Development)
 
