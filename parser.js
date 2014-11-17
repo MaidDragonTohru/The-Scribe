@@ -135,11 +135,11 @@ exports.parse = {
 						send(connection, '|/trn ' + config.nick + ',0,' + data);
 					}.bind(this));
 				}.bind(this));
-				
+
 				req.on('error', function(err) {
 					error('login error: ' + sys.inspect(err));
 				});
-				
+
 				if (data) {
 					req.write(data);
 				}
@@ -165,6 +165,7 @@ exports.parse = {
 						continue;
 					}
 					cmds.push('|/join ' + room);
+					cmds.push('|/avatar ' + config.avatarNumber);
 				}
 				for (var i in config.privaterooms) {
 					var room = toId(config.privaterooms[i]);
@@ -172,6 +173,7 @@ exports.parse = {
 						continue;
 					}
 					cmds.push('|/join ' + room);
+					cmds.push('|/avatar ' + config.avatarNumber);
 				}
 				if (config.serverid === 'showdown') {
 					this.RP.void = {};
@@ -185,7 +187,7 @@ exports.parse = {
 						this.RP[toId(config.rprooms[i])] = {};
 					}
 				}
-				
+
 				var self = this;
 				if (cmds.length > 4) {
 					self.nextJoin = 0;
@@ -347,7 +349,7 @@ exports.parse = {
 		if (!this.settings.blacklist[room]) this.settings.blacklist[room] = {};
 
 		if (this.settings.blacklist[room][user]) return false;
-		this.settings.blacklist[room][user] = 1; 
+		this.settings.blacklist[room][user] = 1;
 		return true;
 	},
 	unblacklistUser: function(user, room) {
