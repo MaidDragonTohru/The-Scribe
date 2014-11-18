@@ -1263,6 +1263,21 @@ exports.commands = {
 			this.settings.cyoa.inventory = settings.cyoa.inventory + "Water Bottle";
 			this.say(con, room, "The up-side, however, is that you did manage find a rather strange-looking brass key. It doesn't look like it'll fit into any conventional lock... Due to the fact that almost all keys are useful in situations like your own, you decide to slip it into your pocket.");
 			this.say(con, room, "Oh, and you found some water in the man's backpack! Good on you! May as well take the backpack, too. You slip the container of water into the front pocket for the backpack, and sling it over your shoulder. Now, you can either press [further], or go [back].");
+			this.settings.cyoa.gRoom = 'wastelandItems';
+		}
+		if (arg == 'further' && settings.cyoa.gRoom == 'wastelandItems' || arg == 'back' && settings.cyoa.gRoom == 'wastelandItems') {
+			if (arg == 'further') var text = 'venture further';
+			if (arg == 'back') var text = 'head backwards, venturing';
+			this.say(con, room, "You decide to " + text + " into this arid wasteland once more, pressing through the piercing heat, unsure about whether or not you will encounter danger. Let us hope, you your sake, you do not.");
+			if (outcome => 50) {
+				this.say(con, room, "Looks like you were lucky! Nothing too horrible happened to you, though you did see __much__ more than your fair share of cacti.");
+				this.say(con, room, "Somehow, though, you managed to end up back where you came... Looks like the only thing you should do now is [wait]. Venturing out at this point would be dangerous; you might've encountered some rabid wolves or something.");
+				self.settings.cyoa.gRoom = 'wasteland';
+			} else if (outcome < 50) {
+				this.say(con, room, "Ack! As you were walking, you encounted a pack of wolves! Lunging at you, they attack! Prepare for combat!");
+				self.settings.cyoa.gRoom = 'wastelandBattle';
+				this.say(con, room, "Combat system still under construction. For now, this is the end.");
+			}
 		}
 		if (arg == 'wait' && settings.cyoa.gRoom == 'wasteland') {
 			this.say(con, room, "You decide to wait, sitting down on the harsh land's surface, and daydreaming about life...");
@@ -1277,7 +1292,7 @@ exports.commands = {
 		}
 		if (arg == 'keyhole' && settings.cyoa.gRoom == 'wastelandDoor') {
 			this.say(con, room, "You approach the door, glowing key in hand. Pausing, you tentatively slot it into the golden keyhole. You're cautious, as you do not trust this twisted place in the slightest. Who even placed you here? Why are you here? With these questions burning in your mind, you insert the key and turn it...");
-			this.say(con, room, "TO BE CONTINUED... Game Over, for now!"); //I'll continue this later.
+			this.say(con, room, "TO BE CONTINUED...! Game Over, for now!"); //I'll continue this later.
 			this.settings.cyoa.gRoom = {};
 			this.timesPlayed + 1;
 		}
