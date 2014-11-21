@@ -1165,21 +1165,22 @@ exports.commands = {
 
 	debugroom: function(arg, by, room, con) {
 		if (!this.hasRank(by, '%@#~')) return false;
-		arg = toId(arg);
 		if (!settings.cyoa.gRoom) settings.cyoa.gRoom = {};
+		if (arg == '') { return false }
+		else {
 		settings.cyoa.gRoom = arg;
 		this.say(con, room, "The CYOA room has been changed to: " + arg);
 		this.writeSettings();
+		}
 	},
 
 	//Currently useless.
-	debugstats: function(arg, by, room, con) {
-		if (!this.hasRank(by, '@#~')) return false;
-		arg = toId(arg);
+	debugflags: function(arg, by, room, con) {
+		if (!this.hasRank(by, '%@#~')) return false;
 		var player = arg
-		if (!settings.cyoa.stats) return false;
+		if (!settings.cyoa.flags) return false;
 		if (!arg) this.say(con, room, "Please include the name of a player.");
-		if (arg != settings.cyoa.stats[player]) this.say(con, room, "That's not a valid playername, sorry.");
+		if (arg != settings.cyoa.flags) this.say(con, room, "That's not a valid playername, sorry.");
 	},
 	cyoa: function(arg, by, room, con) {
 		//Pre-Game Checking System, useful if this is the first time the command is ran.
@@ -1200,11 +1201,11 @@ exports.commands = {
 			this.writeSettings();
 		}
 		if (!settings.cyoa.stats) {
-			this.settings.cyoa.stats = {}; //These are the "flags" in the code that a new player will get. Useful for setting little details that you don't want to reset.
+			this.settings.cyoa.stats = []; //These are the "flags" in the code that a new player will get. Useful for setting little details that you don't want to reset.
 			this.writeSettings();
 		}
 		if (!settings.cyoa.flags) {
-			this.settings.cyoa.flags = [hasFoundKey=false,hasFoundWater=false,isPoisoned=false,gender="male",morality=5]; //And these are the variable flags that will reset at the end of every run.
+			this.settings.cyoa.flags = ["hasFoundKey"=false,"hasFoundWater"=false,"isPoisoned"=false,"gender"="male","morality"=5]; //And these are the variable flags that will reset at the end of every run.
 		}
 		//Morality system setup. Very basic ATM.
 		if (settings.cyoa.flags.morality == 5) {
@@ -1269,7 +1270,8 @@ exports.commands = {
 			if (arg == 'further') var text = 'venture further';
 			if (arg == 'back') var text = 'head backwards, venturing';
 			this.say(con, room, "You decide to " + text + " into this arid wasteland once more, pressing through the piercing heat, unsure about whether or not you will encounter danger. Let us hope, you your sake, you do not.");
-			if (outcome => 50) {
+			var outcome = Math.floor(Math.random() * 99 + 1);
+			if (outcome >= 50) {
 				this.say(con, room, "Looks like you were lucky! Nothing too horrible happened to you, though you did see __much__ more than your fair share of cacti.");
 				this.say(con, room, "Somehow, though, you managed to end up back where you came... Looks like the only thing you should do now is [wait]. Venturing out at this point would be dangerous; you might've encountered some rabid wolves or something.");
 				self.settings.cyoa.gRoom = 'wasteland';
