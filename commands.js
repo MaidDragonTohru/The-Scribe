@@ -962,7 +962,7 @@ exports.commands = {
 		} else {
 			var text = '/pm ' + by + ', ';
 		}
-		this.say(con, room, text + 'Come join our Plug.dj~! http://plug.dj/ps-writing-room/');
+		this.say(con, room, text + 'Come join our Plug.dj~! https://plug.dj/pokemon-showdown-writing-room');
 	},
 	faq: function(arg, by, room, con) {
 		if (config.serverid !== 'showdown') return false;
