@@ -1041,7 +1041,7 @@ exports.commands = {
 	msg: 'message',
 	message: function(arg, by, room, con) {
 		if (!this.settings.poeticlicense[toId(by)] && !this.hasRank(by, '+%@#~') || (toId(by) !== 'axebane')) {
-			if (!this.canUse('message', room, by)) return this.say(con, room, '/msg ' + by + ', It seems as if you cannot use this command! Do you have a Poetic License?');
+			if (!this.canUse('message', room, by) && !this.settings.poeticlicense[toId(by)]) return this.say(con, room, '/msg ' + by + ', Messaging is not enabled in this room for your rank.');
 			if (room.charAt(0) === ',' && !this.hasRank(by, '+%@#~')) return this.say(con, room, 'mail cannot be used in PMs.');
 		}
 		var user = toId(arg.split(', ')[0]);
