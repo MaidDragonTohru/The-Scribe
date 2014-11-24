@@ -270,7 +270,7 @@ exports.parse = {
 		if (room.charAt(0) === ',' && message.substr(0,8) === '/invite ' && this.hasRank(by, '%@&~') && !(config.serverid === 'showdown' && toId(message.substr(8)) === 'lobby')) {
 			this.say(connection, '', '/join ' + message.substr(8));
 		}
-		if (config.logmain) {
+		if (config.logmain && room.substr(0, 1) !== ',') {
 			var spl = message.split('\n');
 			if (this.hasRank(by, '+')) { var sender = by.yellow};
 			if (this.hasRank(by, '%')) { var sender = by.cyan};
@@ -280,10 +280,13 @@ exports.parse = {
 			if (!this.hasRank(by, '+%@#~')) { var sender = by};
 			console.log(room.cyan + ': '.cyan + sender + ': '.cyan + spl);
 		}
+		if (config.logpms && room.substr(0, 1) === ',') {
+			var spl = message.split('\n');
+			console.log("Private Message from ".red + by.cyan + ": ".cyan + spl);
+		}
 		if (message.substr(0, config.commandcharacter.length) !== config.commandcharacter || toId(by) === toId(config.nick)) {
 			return;
 		}
-
 		message = message.substr(config.commandcharacter.length);
 		var index = message.indexOf(' ');
 		var arg = '';
