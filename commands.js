@@ -826,11 +826,6 @@ exports.commands = {
 
 	//End Random Commands
 
-	setpoll: function(arg, by, room, con) {
-		if (!this.canUse('setrp', room, by) || !(room in this.RP)) return false;
-		if (!arg) return this.say(con, room, 'Please enter a strawpoll link.');
-		this.RP[room].poll = arg;
-		this.say(con, room, 'The poll was set to ' + arg + '.');
 	},
 	sw: 'wotd',
 	writer: 'wotd',
@@ -847,59 +842,6 @@ exports.commands = {
 		}
 		if (!config.wotd) return this.say(con, room, text + 'A Writer of the Day hasn\'t been set! :o');
 		this.say(con, room, text + 'Today\'s Spotlighted Writer is [[' + config.wotd + ']].');
-	},
-	setdoc: function(arg, by, room, con) {
-		if (!this.canUse('setrp', room, by) || !(room in this.RP)) return false;
-		if (!arg) return this.say(con, room, 'Please enter a document link.');
-		this.RP[room].doc = arg;
-		this.say(con, room, 'The document was set to ' + arg + '.');
-	},
-	doc: function(arg, by, room, con) {
-		if (!(room in this.RP) || room.charAt(0) === ',') return false;
-		if (this.RP[room].docCalled) {
-			var text = '/pm ' + by + ', ';
-		} else {
-			var text = '';
-			var self = this;
-			this.RP[room].docCalled = true;
-			setTimeout(function() {
-				delete self.RP[room].docCalled;
-			}, 60 * 1000);
-		}
-		this.say(con, room, text);
-	},
-	rmdoc: function(arg, by, room, con) {
-		if (!this.canUse('setrp', room, by) || !(room in this.RP)) return false;
-		if (!this.RP[room].doc) return this.say(con, room, 'There isn\'t a document to remove. :/');
-		this.say(con, room, 'The document has been removed.');
-		delete this.RP[room].doc;
-	},
-	poll: function(arg, by, room, con) {
-		if (!(room in this.RP) || room.charAt(0) === ',') return false;
-		if (this.RP[room].pollCalled) {
-			var text = '/pm ' + by + ', ';
-		} else {
-			var text = '';
-			var self = this;
-			this.RP[room].pollCalled = true;
-			setTimeout(function() {
-				delete self.RP[room].pollCalled;
-			}, 60 * 1000);
-		}
-		if (!this.RP[room].poll) return this.say(con, room, text + 'There is no poll.');
-		this.say(con, room, text + 'The current poll is available at ' + this.RP[room].poll + '.');
-	},
-	endpoll: function(arg, by, room, con) {
-		if (!this.canUse('setrp', room, by)) return false;
-		if (!this.RP[room].poll) return this.say(con, room, 'There isn\'t a poll to remove.');
-		this.say(con, room, '**The poll has ended!** Results at ' + this.RP[room].poll + '/r');
-		delete this.RP[room].poll;
-	},
-	rmpoll: function(arg, by, room, con) {
-		if (!this.canUse('setrp', room, by) || !(room in this.RP)) return false;
-		if (!this.RP[room].poll) return this.say(con, room, 'There isn\'t a poll to remove.');
-		this.say(con, room, 'The poll has been cleared.');
-		delete this.RP[room].poll;
 	},
 	site: function(arg, by, room, con) {
 		if (config.serverid !== 'showdown') return false;
@@ -1162,7 +1104,6 @@ exports.commands = {
 	 * These are commands related to the new Choose Your Own Adventure game I'm putting together! Possibly very buggy!
 	 *
 	 */
-
 	debugroom: function(arg, by, room, con) {
 		if (!this.hasRank(by, '%@#~')) return false;
 		if (!settings.cyoa.gRoom) settings.cyoa.gRoom = {};
@@ -1197,7 +1138,7 @@ exports.commands = {
 			this.writeSettings();
 		}
 		if (!settings.cyoa.inventory) {
-			this.settings.cyoa.inventory = {};
+			this.settings.cyoa.inventory = [];
 			this.writeSettings();
 		}
 		if (!settings.cyoa.stats) {
