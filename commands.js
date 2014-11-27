@@ -102,12 +102,12 @@ exports.commands = {
 		var opts = arg.split(',');
 		var cmd = toId(opts[0]);
 		if (cmd === 'mod' || cmd === 'm' || cmd === 'modding') {
-			if (!opts[1] || !toId(opts[1]) || !(toId(opts[1]) in modOpts)) return this.say(con, room, 'Incorrect command: correct syntax is ;set mod, [' + Object.keys(modOpts).join('/') + '](, [on/off])');
+			if (!opts[1] || !toId(opts[1]) || !(toId(opts[1]) in modOpts)) return this.say(con, room, 'Incorrect command: correct syntax is ' + config.commandcharacter + 'set mod, [' + Object.keys(modOpts).join('/') + '](, [on/off])');
 			if (!this.settings['modding']) this.settings['modding'] = {};
 			if (!this.settings['modding'][room]) this.settings['modding'][room] = {};
 			if (opts[2] && toId(opts[2])) {
 				if (!this.hasRank(by, '#~')) return false;
-				if (!(toId(opts[2]) in {on: 1, off: 1})) return this.say(con, room, 'Incorrect command: correct syntax is ;set mod, [' + Object.keys(modOpts).join('/') + '](, [on/off])');
+				if (!(toId(opts[2]) in {on: 1, off: 1})) return this.say(con, room, 'Incorrect command: correct syntax is ' + config.commandcharacter + 'set mod, [' + Object.keys(modOpts).join('/') + '](, [on/off])');
 				if (toId(opts[2]) === 'off') {
 					this.settings['modding'][room][toId(opts[1])] = 0;
 				} else {
@@ -130,7 +130,7 @@ exports.commands = {
 					if (cmd in settable) {
 						break;
 					} else {
-						this.say(con, room, 'The settings for ;' + opts[0] + ' cannot be changed.');
+						this.say(con, room, 'The settings for ' + config.commandcharacter + opts[0] + ' cannot be changed.');
 						return;
 					}
 				} else {
@@ -139,7 +139,7 @@ exports.commands = {
 				}
 				failsafe++;
 				if (failsafe > 5) {
-					this.say(con, room, 'The command ";' + opts[0] + '" could not be found.');
+					this.say(con, room, 'The command "' + config.commandcharacter + ' + opts[0] + '" could not be found.');
 					return;
 				}
 			}
@@ -158,13 +158,13 @@ exports.commands = {
 			if (!opts[1] || !opts[1].trim()) {
 				var msg = '';
 				if (!this.settings[cmd] || (!this.settings[cmd][room] && this.settings[cmd][room] !== false)) {
-					msg = ';' + cmd + ' is available for users of rank ' + ((cmd === 'autoban' || cmd === 'banword') ? '#' : config.defaultrank) + ' and above.';
+					msg = config.commandcharacter + cmd + ' is available for users of rank ' + ((cmd === 'autoban' || cmd === 'banword') ? '#' : config.defaultrank) + ' and above.';
 				} else if (this.settings[cmd][room] in settingsLevels) {
-					msg = ';' + cmd + ' is available for users of rank ' + this.settings[cmd][room] + ' and above.';
+					msg = config.commandcharacter + cmd + ' is available for users of rank ' + this.settings[cmd][room] + ' and above.';
 				} else if (this.settings[cmd][room] === true) {
-					msg = ';' + cmd + ' is available for all users in this room.';
+					msg = config.commandcharacter + cmd + ' is available for all users in this room.';
 				} else if (this.settings[cmd][room] === false) {
-					msg = ';' + cmd + ' is not available for use in this room.';
+					msg = config.commandcharacter + cmd + ' is not available for use in this room.';
 				}
 				this.say(con, room, msg);
 				return;
