@@ -139,7 +139,7 @@ exports.commands = {
 				}
 				failsafe++;
 				if (failsafe > 5) {
-					this.say(con, room, 'The command "' + config.commandcharacter + ' + opts[0] + '" could not be found.');
+					this.say(con, room, 'The command "' + config.commandcharacter + opts[0] + '" could not be found.');
 					return;
 				}
 			}
