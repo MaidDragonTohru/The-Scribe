@@ -275,10 +275,9 @@ exports.commands = {
 	viewautobans: 'viewblacklist',
 	viewblacklist: function(arg, by, room, con) {
 		if (!this.canUse('autoban', room, by) || room.charAt(0) === ',') return false;
-
 		var text = '';
 		if (!this.settings.blacklist || !this.settings.blacklist[room]) {
-			text = 'No users are blacklisted in this room.';
+			text = 'No users seem to be blacklisted in this room.';
 		} else {
 			if (arg.length) {
 				var nick = toId(arg);
