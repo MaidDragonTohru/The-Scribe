@@ -24,7 +24,21 @@ Room Owners and Above
 Moderators and Above
 --------------------
 
-*A bunch of autoban/unban commands. Pretty much self-explanatory. They ban users on sight. This command isn't active, but is present.*
+`blacklist; ban; ab`: Used to add a user to the bot's autoban list.
+
+`unblacklist; unban; unab`: Used to remove a user from the bot's autoban list.
+
+`rab regexab; regexautoban`: Used to ban any user with a particular string of letters in their name; use [Regular Expressions.][6]
+
+`unrab; unregexab; regexautoban`: Used to remove the string set with the `rab` command.
+
+`vab; viewbans; viewautobans; viewblacklist`: Used to get the bot to Private Message you with a list of every autobanned user.
+
+`banphrase; banword`: Used to set a particular word as "banned", meaning that the bot will mute on the sight of it.
+
+`unbanphrase; unbanword`: Used to undo the above.
+
+`viewbannedphrases; viewbannedwords ;vab`: Used to get the bot to Private Message the sender a list of every banned phrase or word.
 
 `pl; poeticlicense`: Used to give a user a Poetic License. This is classified as an unofficial rank, just below Voice.
 
@@ -54,13 +68,6 @@ Voices and Above
 `rl; randscene; randlocation; randomlocation`: Generates a random location description, using one adjective and one location type.
 
 `rm; randmove; randommove <"physical"> (or) <"special"> (or) <"status"> (or/and) <Pokémon type>`: Generates a random move based on the parameters used. For instance: ";rm grass, physical" can return the move "Needle Arm".
-
-`setpoll <[Strawpoll][4] link>`: This command will set the specified [Strawpoll][4] poll as the current poll in the
-`setpoll` so that `poll` can list the poll that's been set in the `setpoll`. Geez! That's a lot of polls!
-
-`endpoll`: Ends the poll that was set by the `setpoll` command, preventing it from being accessed by the `poll` command. It'll also link back to the respective results page for that poll. This is why the poll needs to be a [Strawpoll][4] link.
-
-`rmpoll`: Removes the poll from the `poll` command without actually 'ending' it, sparing people the confusion and the large, obnoxious bold. .w.'
 
 `voice`: Explains to the room how they can become a voice. 
 
@@ -127,6 +134,7 @@ Some information will be shown, and will automatically join the room(s) you spec
   [2]: http://nodejs.org/
   [3]: https://github.com/Zarel/Pokemon-Showdown
   [4]: http://www.strawpoll.me/
+  [6]: http://en.wikipedia.org/wiki/Regular_expression
 
 Development
 ===========
@@ -138,8 +146,8 @@ Credits:
  - TalkTakesTime (Original Bot and a bit of troubleshooting)
  - Quinella (Original Bot)
  - Morfent (Modified Original Bot)
+ - AxeBane (Owner)
  - sirDonovan (Our wonderful VPN Host~ <3) Love ya, Dono.
- - AxeBane (Development)
  - Solarisfox (Development)
 
 License
