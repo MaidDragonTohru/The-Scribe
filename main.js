@@ -119,7 +119,7 @@ if (!('existsSync' in fs)) {
 }
 
 if (!fs.existsSync('./config.js')) {
-	error('config.js doesn\'t exist; are you sure you copied config-example.js to config.js?');
+	error('config.js doesn\'t exist; are you sure you copied or renamed config-example.js to config.js?');
 	process.exit(-1);
 }
 
