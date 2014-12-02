@@ -402,7 +402,7 @@ exports.commands = {
 
 	//Random Commands Section!
 	//Place all 'random thing generator' commands in this section!
-    	rt: 'randtype',
+    rt: 'randtype',
 	gentype: 'randtype',
 	randomtype: 'randtype',
 	randtype: function(arg, by, room, con) {
@@ -411,17 +411,21 @@ exports.commands = {
 		} else {
 			var text = '/pm ' + by + ', ';
 		}
+        arg = toId(arg);
+        if (arg != 'single' && arg != 'dual' && arg != '') { this.say(con, room, text + "Please input either 'single' or 'dual' as arguments, or leave it blank for a random decision. Continuing as if you left it blank.") };
         var variableone = ["Normal","Fire","Water","Electric","Grass","Ice","Fighting","Poison","Flying","Ground","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy"];
 		var varoneNum = Math.floor(variableone.length * Math.random());
         var vartwoNum = Math.floor(variableone.length * Math.random());
         var dualType = Math.floor(2 * Math.random()) + 1;
         var firstType = variableone[varoneNum];
         var secondType = variableone[vartwoNum];
-        if (dualType !== 1 && firstType != secondType) {
+        if (dualType !== 1 && firstType != secondType || arg == 'dual' && firstType != secondType) {
         this.say(con, room, text + 'Randomly generated type combination: __' + firstType + '/' + secondType + '__.');
-        } else if (dualType === 1) {
+        } else if (dualType === 1 || arg == 'single') {
 		this.say(con, room, text + 'Randomly generated type: __' + firstType + '__.');
-        	} 
+        } else if (arg == 'dual' && firstType == secondType) {
+        	this.say(con, room, text + 'Randomly generated type combination: __' + firstType + '/' + secondType = '__. Note: There\'s a small chance that this could be a double-up. This will be fixed in the future.');
+		}
 	},
 	randstats: 'randomstats',
 	rs: 'randomstats',
