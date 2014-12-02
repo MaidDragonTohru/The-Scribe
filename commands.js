@@ -20,7 +20,7 @@ exports.commands = {
 		} else {
 			var text = '/pm ' + by + ', ';
 		}
-		text += 'Writing Bot: fork of Roleplaying Bot by Morfent, with custom Writing Room commands AxeBane. Github Repository: http://github.com/AxeBane/Axe-s-Writing-Bot';
+		text += 'Writing Bot: fork of Roleplaying Bot by Morfent, customised for use in room __Writing__ by AxeBane. Github Repository: http://github.com/AxeBane/Axe-s-Writing-Bot';
 		this.say(con, room, text);
 	},
 	help: 'guide',
