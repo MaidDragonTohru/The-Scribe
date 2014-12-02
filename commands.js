@@ -825,7 +825,6 @@ exports.commands = {
 
 	//End Random Commands
 
-	},
 	sw: 'wotd',
 	writer: 'wotd',
 	wotd: function(arg, by, room, con) {
