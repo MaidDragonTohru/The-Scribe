@@ -402,81 +402,26 @@ exports.commands = {
 
 	//Random Commands Section!
 	//Place all 'random thing generator' commands in this section!
-	rt: 'randtype',
+    	rt: 'randtype',
 	gentype: 'randtype',
 	randomtype: 'randtype',
 	randtype: function(arg, by, room, con) {
 		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
 			var text = '';
 		} else {
-			text = '/pm ' + by + ', ';
+			var text = '/pm ' + by + ', ';
 		}
-		var type = [];
-		for (i = 0; i < 2; i++) {
-			type[i] = Math.floor(17 * Math.random()) + 1;
-			switch (type[i]) {
-				case 1:
-					type[i] = "Normal";
-					break;
-				case 2:
-					type[i] = "Fire";
-					break;
-				case 3:
-					type[i] = "Water";
-					break;
-				case 4:
-					type[i] = "Electric";
-					break;
-				case 5:
-					type[i] = "Grass";
-					break;
-				case 6:
-					type[i] = "Ice";
-					break;
-				case 7:
-					type[i] = "Fighting";
-					break;
-				case 8:
-					type[i] = "Poison";
-					break;
-				case 9:
-					type[i] = "Flying";
-					break;
-				case 10:
-					type[i] = "Ground";
-					break;
-				case 11:
-					type[i] = "Psychic";
-					break;
-				case 12:
-					type[i] = "Bug";
-					break;
-				case 13:
-					type[i] = "Rock";
-					break;
-				case 14:
-					type[i] = "Ghost";
-					break;
-				case 15:
-					type[i] = "Dragon";
-					break;
-				case 16:
-					type[i] = "Dark";
-					break;
-				case 17:
-					type[i] = "Steel";
-					break;
-				case 18:
-					type[i] = "Fairy";
-					break;
-			}
-		}
-		if (type[1] !== type[0]) {
-			text += "Randomly generated type: " + type[0] + "/" + type[1] + ".";
-		} else {
-			text += "Randomly generated type: " + type[0] + ".";
-		}
-		this.say(con, room, text);
+        var variableone = ["Normal","Fire","Water","Electric","Grass","Ice","Fighting","Poison","Flying","Ground","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy"];
+		var varoneNum = Math.floor(variableone.length * Math.random());
+        var vartwoNum = Math.floor(variableone.length * Math.random());
+        var dualType = Math.floor(2 * Math.random()) + 1;
+        var firstType = variableone[varoneNum];
+        var secondType = variableone[vartwoNum];
+        if (dualType !== 1 && firstType != secondType) {
+        this.say(con, room, text + 'Randomly generated type combination: __' + firstType + '/' + secondType + '__.');
+        } else if (dualType === 1) {
+		this.say(con, room, text + 'Randomly generated type: __' + firstType + '__.');
+        	} 
 	},
 	randstats: 'randomstats',
 	rs: 'randomstats',
