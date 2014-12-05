@@ -801,7 +801,7 @@ exports.commands = {
 	},
 	activities: function(arg, by, room, con) {
 		if (config.serverid !== 'showdown') return false;
-		if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !== -1) || room.charAt(0) === ',') {
+		if ((this.hasRank(by, '+%@#~')) {
 			var text = '';
 		} else {
 			var text = '/pm ' + by + ', ';
