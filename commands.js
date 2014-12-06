@@ -911,9 +911,11 @@ exports.commands = {
 					"We like to play writing games, too! Click 'Activities' in our room introduction (the fancy box you saw when you joined) to see what games are available!",
 					"Looking for feedback? Ask writers for an R/R, or a 'review for review'. It's a win-win for both parties!",
 					"Questions on the (+) voice rank? Read our Voice Guidelines at http://bit.do/pswritingvoiceguidlines for more information.",
-					"Our Halloween Contest has been launched! Be sure to check out our guidelines for the contest at http://goo.gl/YblcUj to receive a more in-depth explanation!",
+					"Our Halloween contest has ended! Check out http://bit.do/pscontestresults for more info on the turnout, and thank you to all that participated!",
 					"Would you like to host your work on our cloud drive? Ask a staff member about getting your own folder!",
-					"Be sure to keep your work's presentation up to par, or AxeBane will hunt you down! Or, you could ask one of our staff to take a look and check it for you, but that's boring."
+					"Be sure to keep your work's presentation up to par, or AxeBane will hunt you down! Or, you could ask one of our staff to take a look and check it for you, but that's boring.",
+					"Hey, you. Yes, you! Do __you__ want to improve the room? If you answered 'no', then go sit in the naughty corner. If you said 'yes', on the other hand, then go ahead and click the shiny 'submit and idea' button in the roominto!",
+					"Want to play a writing game? Ask one of our friendly staff to host one, or if you think you're up to it, try hosting yourself! It's a great way to gain a good reputation!"
 				];
 				var num = Math.floor((Math.random() * tips.length));
 				self.say(con, room, "**Writing Room Tip #" + num + ":** " + tips[num]);
