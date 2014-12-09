@@ -665,7 +665,7 @@ exports.pokedex = {
 663:{species:"Talonflame",type:["Fire","Flying"]},
 664:{species:"Scatterbug",type:["Bug"],nfe:1},
 665:{species:"Spewpa",type:["Bug"],nfe:1},
-666:{species:"Vivillon",type:["Bug","Flying"],forms:["archipelago","continental","elegant","garden","high plains","icy snow","jungle","marine","meadow","modern","monsoon","ocean","polar","river","sandstorm","savannah","sun","tundra","poké ball","fancy"]},
+666:{species:"Vivillon",type:["Bug","Flying"],forms:["archipelago","continental","elegant","garden","high plains","icy snow","jungle","marine","meadow","modern","monsoon","ocean","polar","river","sandstorm","savannah","sun","tundra","poke ball","fancy"]},
 667:{species:"Litleo",type:["Fire","Normal"],nfe:1},
 668:{species:"Pyroar",type:["Fire","Normal"]},
 669:{species:"Flabebe",type:["Fairy"],forms:["red","yellow","orange","blue","white"],nfe:1},
