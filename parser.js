@@ -249,6 +249,15 @@ exports.parse = {
 				var by = spl[2];
 				if (this.room && this.isBlacklisted(toId(by), this.room)) this.say(connection, this.room, '/roomban ' + by + ', Blacklisted user');
 				this.updateSeen(by, spl[1], this.room || 'lobby');
+				// Send pending mail
+				if (this.room && this.sendMail(toId(by))) {
+					for (var msgNumber in this.messages[toId(by)]) {
+						if (msgNumber === 'timestamp') continue;
+						this.say(connection, this.room, '/msg ' + by + ', ' + this.messages[toId(by)][msgNumber]);
+					}
+					delete this.messages[toId(by)];
+					this.writeMessages();
+				}
 				if (toId(by) !== toId(config.nick) || ' +%@&#~'.indexOf(by.charAt(0)) === -1) return;
 				this.ranks[this.room || 'lobby'] = by.charAt(0);
 				if (lastMessage) this.room = '';
@@ -578,7 +587,7 @@ exports.parse = {
 			});
 		};
 	})(),
-	sendMail: function(user, room) {
+	sendMail: function(user) {
 		if (!this.messages || !this.messages[user]) return false;
 		if (this.messages[user]) {
 			console.log(user + ' has mail.');
