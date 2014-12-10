@@ -399,7 +399,52 @@ exports.commands = {
 		var vartwoNum = Math.floor(variabletwo.length * Math.random());
 		this.say(con, room, text + 'Random thing: __' + variableone[varoneNum] + ' ' + variabletwo[vartwoNum] + '__.');
 	},
-
+    	chargen: 'genchar',
+	genchar: function(arg, by, room, con) {
+		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
+			var text = '';
+		} else {
+			var text = '/pm ' + by + ', ';
+		}
+		var baseAdjective = ["sturdy", "helpless", "young", "rugged", "odd-looking", "amusing", "dynamic", "exuberant", "quirky", "awkward", "elderly", "adolescent", "young'in", "'ancient'", "odd", "funny-looking"];
+		var badjNum = Math.floor(baseAdjective.length * Math.random());
+		var baseType = ["Marksman", "Adventurer", "Pokemon Trainer", "Pokemon", "Dragonkin", "Chef", "Businessman", "Kitsune", "Youkai", "Person", "...thing", "Archer", "Taxi Driver", "Dentist", "Demon", "Paladin", "Writer", "God", "God(?)", "Protagonist", "Antagonist"];
+		var btypNum = Math.floor(baseType.length * Math.random());
+        var genderPronoun = ["He", "She"];
+        var genderNum = Math.floor(genderPronoun.length * Math.random());
+        var trueGender = genderPronoun[genderNum];
+        if (genderPronoun[genderNum] === "He") { 
+            var gender = "male";
+            var genderPossessive = "His";
+            } else if (genderPronoun[genderNum] === "She") {
+            var gender = "female";
+            var genderPossessive = "Her";
+        };
+        if (Math.floor(Math.random() * 4200 < 20)) {
+            var trueGender = "Shi";
+            var gender = "hermaphrodite";
+            var genderPossessive = "Hir";
+        };
+        if (Math.floor(Math.random() * 4200 < 10) || baseType[btypNum] == "...thing") {
+            var trueGender = "They";
+            var gender = "neuter";
+            var genderPossessive= "Their";
+        };
+        if (trueGender == "They") {
+            var grammarCheck = "are";
+        } else {
+            var grammarCheck = "is";
+        };
+        var perks1 = ["kind of heart", "powerful", "handsome", "ambitious", "amiable", "brave", "rational", "witty"];
+        var perkNum1 = Math.floor(perks1.length * Math.random());
+        var perks2 = ["honest", "agile", "athletic", "quick on their feet", "assertive", "fearless", "intelligenct", "persistent", "philosophical", "pioneering", "quiet"];
+        var perkNum2 = Math.floor(perks2.length * Math.random());
+        var perks3 = ["wealthy", "not afraid to voice their opinion", "quick-witted", "lucky", "friendly", "neat", "sympathetic", "sincere"];
+        var perkNum3 = Math.floor(perks3.length * Math.random());
+        var debuff = ["sly", "unclean", "smelly", "obnoxiously loud", "fond of 'tricks'", "fond of 'games'", "fond of 'jokes'", "prone to 'accidentally' taking others' things", "cocky", "prone to falling over", "prone to bad luck at times", "clingy", "foolish", "fussy", "greedy", "gullible", "impatient", "inconsiderate", "lazy", "moody", "obsessive", "narrow-minded", "patronizing", "resentful", "unreliable", "vague", "weak-willed", "egotistical", "sensitive", "Grammar Nazi-ish"];
+        var debuffNum = Math.floor(debuff.length * Math.random());
+		this.say(con, room, text + 'Generated character: __A(n) ' + baseAdjective[badjNum] + ' ' + baseType[btypNum] + '. ' + trueGender + ' ' + grammarCheck + ' a ' + gender + '. ' + genderPossessive + ' postive factors are that ' + toId(trueGender) + ' is ' + perks1[perkNum1] + ', ' + perks2[perkNum2] + ', and ' + perks3[perkNum3] + ', though ' + toId(trueGender) + ' ' + grammarCheck + ' unfortunately rather ' + debuff[debuffNum] + '.__');
+	},
 	//Random Commands Section!
 	//Place all 'random thing generator' commands in this section!
     rt: 'randtype',
