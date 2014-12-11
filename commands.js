@@ -399,6 +399,10 @@ exports.commands = {
 		var vartwoNum = Math.floor(variabletwo.length * Math.random());
 		this.say(con, room, text + 'Random thing: __' + variableone[varoneNum] + ' ' + variabletwo[vartwoNum] + '__.');
 	},
+	//Random Commands Section!
+	//Place all 'random thing generator' commands in this area!
+	randomcharacter: 'genchar',
+	randchar: 'genchar',
     	chargen: 'genchar',
 	genchar: function(arg, by, room, con) {
 		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
@@ -445,9 +449,7 @@ exports.commands = {
         var debuffNum = Math.floor(debuff.length * Math.random());
 		this.say(con, room, text + 'Generated character: __A(n) ' + baseAdjective[badjNum] + ' ' + baseType[btypNum] + '. ' + trueGender + ' ' + grammarCheck + ' a ' + gender + '. ' + genderPossessive + ' postive factors are that ' + toId(trueGender) + ' is ' + perks1[perkNum1] + ', ' + perks2[perkNum2] + ', and ' + perks3[perkNum3] + ', though ' + toId(trueGender) + ' ' + grammarCheck + ' unfortunately rather ' + debuff[debuffNum] + '.__');
 	},
-	//Random Commands Section!
-	//Place all 'random thing generator' commands in this section!
-    rt: 'randtype',
+	rt: 'randtype',
 	gentype: 'randtype',
 	randomtype: 'randtype',
 	randtype: function(arg, by, room, con) {
