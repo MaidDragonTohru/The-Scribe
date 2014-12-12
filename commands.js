@@ -447,7 +447,7 @@ exports.commands = {
         var perkNum3 = Math.floor(perks3.length * Math.random());
         var debuff = ["sly", "unclean", "smelly", "obnoxiously loud", "fond of 'tricks'", "fond of 'games'", "fond of 'jokes'", "prone to 'accidentally' taking others' things", "cocky", "prone to falling over", "prone to bad luck at times", "clingy", "foolish", "fussy", "greedy", "gullible", "impatient", "inconsiderate", "lazy", "moody", "obsessive", "narrow-minded", "patronizing", "resentful", "unreliable", "vague", "weak-willed", "egotistical", "sensitive", "Grammar Nazi-ish"];
         var debuffNum = Math.floor(debuff.length * Math.random());
-		this.say(con, room, text + 'Generated character: __A(n) ' + baseAdjective[badjNum] + ' ' + baseType[btypNum] + '. ' + trueGender + ' ' + grammarCheck + ' a ' + gender + '. ' + genderPossessive + ' postive factors are that ' + toId(trueGender) + ' is ' + perks1[perkNum1] + ', ' + perks2[perkNum2] + ', and ' + perks3[perkNum3] + ', though ' + toId(trueGender) + ' ' + grammarCheck + ' unfortunately rather ' + debuff[debuffNum] + '.__');
+		this.say(con, room, text + 'Generated character: __A(n) ' + baseAdjective[badjNum] + ' ' + baseType[btypNum] + '. ' + trueGender + ' ' + grammarCheck + ' a ' + gender + '. ' + genderPossessive + ' postive factors are that ' + toId(trueGender) + ' ' + grammarCheck + ' '+ perks1[perkNum1] + ', ' + perks2[perkNum2] + ', and ' + perks3[perkNum3] + ', though ' + toId(trueGender) + ' ' + grammarCheck + ' unfortunately rather ' + debuff[debuffNum] + '.__');
 	},
 	rt: 'randtype',
 	gentype: 'randtype',
