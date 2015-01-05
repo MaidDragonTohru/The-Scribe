@@ -401,10 +401,10 @@ exports.commands = {
 	},
 	//Random Commands Section!
 	//Place all 'random thing generator' commands in this area!
-	randomcharacter: 'genchar',
-	randchar: 'genchar',
-    	chargen: 'genchar',
-	genchar: function(arg, by, room, con) {
+	randchar: 'randomcharacter',
+    chargen: 'randomcharacter',
+	genchar: 'randomcharacter',
+	randomcharacter: function(arg, by, room, con) {
 		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
 			var text = '';
 		} else {
@@ -449,10 +449,10 @@ exports.commands = {
         var debuffNum = Math.floor(debuff.length * Math.random());
 		this.say(con, room, text + 'Generated character: __A(n) ' + baseAdjective[badjNum] + ' ' + baseType[btypNum] + '. ' + trueGender + ' ' + grammarCheck + ' a ' + gender + '. ' + genderPossessive + ' postive factors are that ' + toId(trueGender) + ' ' + grammarCheck + ' '+ perks1[perkNum1] + ', ' + perks2[perkNum2] + ', and ' + perks3[perkNum3] + ', though ' + toId(trueGender) + ' ' + grammarCheck + ' unfortunately rather ' + debuff[debuffNum] + '.__');
 	},
-	rt: 'randtype',
-	gentype: 'randtype',
-	randomtype: 'randtype',
-	randtype: function(arg, by, room, con) {
+	rt: 'randomtype',
+	gentype: 'randomtype',
+	randtype: 'randomtype',
+	randomtype: function(arg, by, room, con) {
 		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
 			var text = '';
 		} else {
@@ -477,7 +477,7 @@ exports.commands = {
 	randstats: 'randomstats',
 	rs: 'randomstats',
 	randomstats: function(arg, by, room, con, shuffle) {
-		if (this.canUse('randomstats', room, by) || room.charAt(0) === ',') {
+		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
 			var text = '';
 		} else {
 			var text = '/pm ' + by + ', ';
@@ -667,7 +667,6 @@ exports.commands = {
 	randscene: 'randomlocation',
 	randlocation: 'randomlocation',
 	randomlocation: function(arg, by, room, con) {
-		if (!(room in this.RP) && !room.charAt(0) === ',') return false;
 		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
 			var text = '';
 		} else {
@@ -805,7 +804,6 @@ exports.commands = {
 	rg: 'randomgenre',
 	randgenre: 'randomgenre',
 	randomgenre: function(arg, by, room, con) {
-		if (!(room in this.RP) && !room.charAt(0) === ',') return false;
 		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
 			var text = '';
 		} else {
@@ -838,8 +836,7 @@ exports.commands = {
 		this.say(con, room, text + 'Today\'s Spotlighted Writer is [[' + config.wotd + ']].');
 	},
 	site: function(arg, by, room, con) {
-		if (config.serverid !== 'showdown') return false;
-		if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !== -1) || room.charAt(0) === ',') {
+		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
 			var text = '';
 		} else {
 			var text = '/pm ' + by + ', ';
@@ -847,8 +844,7 @@ exports.commands = {
 		this.say(con, room, text + 'Writing Room\'s Website: http://pswriting.weebly.com/');
 	},
 	activities: function(arg, by, room, con) {
-		if (config.serverid !== 'showdown') return false;
-		if ((this.hasRank(by, '+%@#~')) {
+		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
 			var text = '';
 		} else {
 			var text = '/pm ' + by + ', ';
@@ -856,16 +852,16 @@ exports.commands = {
 		this.say(con, room, text + 'Be sure to read through our list of official activities! http://pswriting.weebly.com/activities.html');
 	},
 	newbie: function(arg, by, room, con) {
-		if (config.serverid == 'showdown' && !this.hasRank(by, '+%@#~')) {
-			var text = '/msg ' + by + ', ';
-		} else if (config.serverid == 'showdown' && this.hasRank(by, '+%@#~')) {
+		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
 			var text = '';
-		} else return false;
+		} else {
+			var text = '/pm ' + by + ', ';
+		}
 		this.say(con, room, text + 'Welcome to the Writing room! In case you missed the big shiny box, please make sure to visit the room website and read the rules listed there: http://pswriting.weebly.com/rules.html');
 		this.say(con, room, text + 'Also, feel free to ask the staff any questions you may have. I\'m sure they\'d love to answer them!');
 	},
 	esupport: function(arg, by, room, con) {
-		if ((this.hasRank(by, '%@#~') && config.rprooms.indexOf(room) !== -1) || room.charAt(0) === ',') {
+		if (this.hasRank(by, '%@#~') || room.charAt(0) === ',') {
 			var text = '';
 		} else {
 			var text = '/pm ' + by + ', ';
@@ -873,27 +869,25 @@ exports.commands = {
 		this.say(con, room, text + 'I love you, ' + by + '.');
 	},
 	drive: function(arg, by, room, con) {
-		if (!this.hasRank(by, '+%@#~')) {
-			var text = '/pm ' + by + ', ';
-		} else {
+		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
 			var text = '';
+		} else {
+			var text = '/pm ' + by + ', ';
 		}
 		this.say(con, room, text + 'Community Drive: http://bit.do/pswritingarchives');
 	},
 	contests: 'events',
 	contest: 'events',
 	events: function(arg, by, room, con) {
-		if (config.serverid !== 'showdown') return true;
-		if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !== -1) || room.charAt(0) === ',') {
+		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
 			var text = '';
 		} else {
-			var text = '/w ' + by + ', ';
+			var text = '/pm ' + by + ', ';
 		}
-		this.say(con, room, 'The current Contests and Events for the Writing Room can be found here: http://pswriting.weebly.com/contests--events.html');
+		this.say(con, room, text + 'The current Contests and Events for the Writing Room can be found here: http://pswriting.weebly.com/contests--events.html');
 	},
 	plug: function(arg, by, room, con) {
-		if (config.serverid !== 'showdown') return false;
-		if (this.hasRank(by, '+%@#~')) {
+		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
 			var text = '';
 		} else {
 			var text = '/pm ' + by + ', ';
@@ -901,8 +895,7 @@ exports.commands = {
 		this.say(con, room, text + 'Come join our Plug.dj~! https://plug.dj/pokemon-showdown-writing-room');
 	},
 	faq: function(arg, by, room, con) {
-		if (config.serverid !== 'showdown') return false;
-		if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !== -1) || room.charAt(0) === ',') {
+		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
 			var text = '';
 		} else {
 			var text = '/pm ' + by + ', ';
@@ -910,8 +903,7 @@ exports.commands = {
 		this.say(con, room, text + 'Check out our Frequently Asked Questions page: http://bit.do/PSWritingDriveFAQ');
 	},
 	poems: function(arg, by, room, con) {
-		if (config.serverid !== 'showdown') return false;
-		if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !== -1) || room.charAt(0) === ',') {
+		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
 			var text = '';
 		} else {
 			var text = '/pm ' + by + ', ';
@@ -919,8 +911,7 @@ exports.commands = {
 		this.say(con, room, text + 'Writing Room Poems: http://bit.do/PSwritingpoems');
 	},
 	stories: function(arg, by, room, con) {
-		if (config.serverid !== 'showdown') return false;
-		if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !== -1) || room.charAt(0) === ',') {
+		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
 			var text = '';
 		} else {
 			var text = '/pm ' + by + ', ';
@@ -928,8 +919,7 @@ exports.commands = {
 		this.say(con, room, text + 'Writing Room Stories: http://bit.do/PSwritingstories');
 	},
 	rules: function(arg, by, room, con) {
-		if (config.serverid !== 'showdown') return false;
-		if ((this.hasRank(by, '+%@#~') && config.rprooms.indexOf(room) !== -1) || room.charAt(0) === ',') {
+		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
 			var text = '';
 		} else {
 			var text = '/pm ' + by + ', ';
@@ -937,7 +927,6 @@ exports.commands = {
 		this.say(con, room, text + 'Please read our Rules page: http://pswriting.weebly.com/rules.html ^.^');
 	},
 	voice: function(arg, by, room, con) {
-		if (config.serverid !== 'showdown') return false;
 		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
 			var text = '';
 		} else {
@@ -946,7 +935,7 @@ exports.commands = {
 		this.say(con, room, text + 'Interested in becoming a voice? Check out the guideines for your chance at having a shot! http://bit.do/pswritingvoicerules or http://bit.do/pswritingvoicerap');
 	},
 	announce: function(arg, by, room, con) {
-		if (!this.hasRank(by, '@#~')) return false;
+		if (!this.hasRank(by, '%@#~')) return false;
 		arg = toId(arg);
 		if (arg === 'off') {
 			if (this.buzzer) clearInterval(this.buzzer);
@@ -965,8 +954,8 @@ exports.commands = {
 					"Want to play a writing game? Ask one of our friendly staff to host one, or if you think you're up to it, try hosting yourself! It's a great way to gain a good reputation!"
 				];
 				var num = Math.floor((Math.random() * tips.length));
-				self.say(con, room, "**Writing Room Tip #" + num + ":** " + tips[num]);
-			}, 1800000);
+				self.say(con, room, "**Writing Room Tip #" + (num + 1) + ":** " + tips[num]);
+			}, 60*60*1000);
 		}
 	},
 
