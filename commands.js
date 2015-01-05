@@ -967,40 +967,35 @@ exports.commands = {
 	mail: 'message',
 	msg: 'message',
 	message: function(arg, by, room, con) {
-		if (!this.settings.poeticlicense[toId(by)] && !this.hasRank(by, '+%@#~') || (toId(by) !== 'axebane')) {
-			if (!this.canUse('message', room, by) && !this.settings.poeticlicense[toId(by)]) return this.say(con, room, '/msg ' + by + ', Messaging is not enabled in this room for your rank.');
-			if (room.charAt(0) === ',' && !this.hasRank(by, '+%@#~')) return this.say(con, room, 'mail cannot be used in PMs.');
+		if (this.settings.messageBlacklist && this.settings.messageBlacklist[toId(by)]) return false;
+		if (room.charAt(0) !== ',' && !this.canUse('message', room, by)) return this.say(con, room, '/pm ' + by + ', Messaging is not enabled in this room for your rank, please send mail through PM');
+		var text = (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ');
+		arg = arg.split(',');
+		if (!arg[0] || !arg[1]) return this.say(con, room, text + 'Please use the following format: ";mail user, message"');
+		if (arg[1].length > 215) return this.say(con, room, text + 'Your message cannot exceed 215 characters');
+		var user = toId(arg[0]);
+		if (user.length > 18) return this.say(con, room, text + 'That\'s not a real username! It\'s too long! >:I');
+		if (!this.messages[user]) this.messages[user] = [];
+		if (this.messages[user].length >= 5) return this.say(con, room, text + arg[0] + '\'s inbox is full.');
+		var message = {
+			from: by.substr(1),
+			text: arg[1].trim(),
+			time: Date.now()
 		}
-		var user = toId(arg.split(', ')[0]);
-		if (user.length > 18) return this.say(con, room, 'That\'s not a real username! It\'s too long! >:I');
-		if ((by) == '') return this.say(con, room, 'Please use the following format: ";mail user, message"');
-		var message = by + ': ' + arg.substr(arg.split(', ')[0].length + 2);
-		if (message.length < by.length + 3) return this.say(con, room, 'You forgot to include the message! :o');
-		if (!this.messages) this.messages = {};
-		if (!this.messages[user]) {
-			this.messages[user] = {};
-			this.messages[user].timestamp = Date.now();
-		}
-		if (this.messages[user]["5"]) return this.say(con, room, user + '\'s message inbox is full.');
-		var msgNumber = -1;
-		for (var i in this.messages[user]) {
-			msgNumber++;
-		}
-		msgNumber = "" + msgNumber;
-		this.messages[user][msgNumber] = message;
+		this.messages[user].push(message);
 		this.writeMessages();
-		this.say(con, room, (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ') + 'Message has been sent to ' + user + '.');
+		this.say(con, room, text + 'Your message has been sent to ' + arg[0] + '.');
 	},
 	checkmail: 'readmessages',
 	readmail: 'readmessages',
 	readmessages: function(arg, by, room, con) {
 		var text = (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ');
-		if (!this.messages[toId(by)]) return this.say(con, room, text + 'Your inbox is empty.');
-		for (var msgNumber in this.messages[toId(by)]) {
-			if (msgNumber === 'timestamp') continue;
-			this.say(con, room, text + this.messages[toId(by)][msgNumber]);
+		var user = toId(by);
+		if (!this.messages[user]) return this.say(con, room, text + 'Your inbox is empty.');
+		for (var i = 0; i < this.messages[user].length; i++) {
+			this.say(con, room, text + this.messages[user][i].from + " said " + this.getTimeAgo(this.messages[user][i].time) + " ago: " + this.messages[user][i].text);
 		}
-		delete this.messages[toId(by)];
+		delete this.messages[user];
 		this.writeMessages();
 	},
 	clearmail: 'clearmessages',
@@ -1011,78 +1006,67 @@ exports.commands = {
 		if (arg === 'all') {
 			this.messages = {};
 			this.writeMessages();
-			this.say(con, room, 'All messages have been erased.');
+			this.say(con, room, 'All messages have been cleared.');
 		} else if (arg === 'time') {
 			for (var user in this.messages) {
-				if (this.messages[user]["timestamp"] < (Date.now() - MESSAGES_TIME_OUT)) delete this.messages[user];
+				var messages = this.messages[user].slice(0);
+				for (var i = 0; i < messages.length; i++) {
+					if (messages[i].time < (Date.now() - MESSAGES_TIME_OUT)) this.messages[user].splice(this.messages[user].indexOf(messages[i]), 1);
+				}
 			}
 			this.writeMessages();
-			this.say(con, room, 'Messages older than one week have been erased.');
+			this.say(con, room, 'Messages older than one week have been cleared.');
 		} else {
 			var user = toId(arg);
-			if (!this.messages[user]) return this.say(con, room, user + ' does not have any pending messages.');
+			if (!this.messages[user]) return this.say(con, room, arg + ' does not have any pending messages.');
 			delete this.messages[user];
 			this.writeMessages();
-			this.say(con, room, 'Messages for ' + user + ' have been erased.');
+			this.say(con, room, 'Messages for ' + arg + ' have been cleared.');
 		}
 	},
 	countmessages: 'countmail',
 	countmail: function(arg, by, room, con) {
 		if (!this.hasRank(by, '#~')) return false;
-		if (!this.messages) this.say(con, room, 'Messages.JSON is empty');
+		if (!this.messages) this.say(con, room, 'The message file is empty');
 		var messageCount = 0;
 		var oldestMessage = Date.now();
 		for (var user in this.messages) {
-			for (var message in this.messages[user]) {
-				if (message === 'timestamp') {
-					if (this.messages[user]['timestamp'] < oldestMessage) oldestMessage = this.messages[user]['timestamp'];
-					continue;
-				}
+			for (var i = 0; i < this.messages[user].length; i++) {
+				if (this.messages[user][i].time < oldestMessage) oldestMessage = this.messages[user][i].time;
 				messageCount++;
 			}
 		}
 		//convert oldestMessage to days
 		var day = Math.floor((Date.now() - oldestMessage) / (24 * 60 * 60 * 1000));
-		this.say(con, room, 'There are currently **' + messageCount + '** pending messages. The oldest message ' + (!day ? 'was left today.' : 'is __' + day + '__ days old.'));
+		this.say(con, room, 'There are currently **' + messageCount + '** pending messages. ' + (messageCount ? 'The oldest message ' + (!day ? 'was left today.' : 'is __' + day + '__ days old.') : ''));
 	},
-	pl: 'poeticlicense',
-	poeticlicense: function(arg, by, room, con) {
-		if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
-		if (!arg) return this.say(con, room, 'To whom should I grant a Poetic License?');
+	upl: 'messageblacklist',
+	unpoeticlicense: 'messageblacklist',
+	messageblacklist: function(arg, by, room, con) {
+		if (!this.hasRank(by, '@#~')) return false;
+		if (!arg) return this.say(con, room, 'Please specify which user(s) to blacklist from the message system');
 		var users = arg.split(', ');
 		var errors = [];
-		if (!this.settings.poeticlicense) this.settings.poeticlicense = {};
+		if (!this.settings.messageBlacklist) this.settings.messageBlacklist = {};
 		for (var i = 0; i < users.length; i++) {
 			var user = toId(users[i]);
-			if (this.settings.poeticlicense[user]) {
+			if (this.settings.messageBlacklist[user]) {
 				errors.push(users[i]);
 				users.splice(i, 1);
 				continue;
 			}
-			this.settings.poeticlicense[user] = 1;
+			this.settings.messageBlacklist[user] = 1;
 		}
 		this.writeSettings();
-		if (errors.length != 0) this.say(con, room, errors.join(', ') + ' already has a Poetic License');
-		if (users.length != 0) this.say(con, room, '/modnote ' + users.join(', ') + ' has been given a Poetic License by ' + toId(by));
+		if (errors.length) this.say(con, room, errors.join(', ') + ' is already on the message blacklist');
+		if (users.length) this.say(con, room, '/modnote ' + users.join(', ') + ' added to the message blacklist by ' + by.substr(1));
 	},
-	upl: 'unpoeticlicense',
-	unpoeticlicense: function(arg, by, room, con) {
-		if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
-		if (!arg) return this.say(con, room, 'Whose Poetic License should be revoked?');
-		var user = toId(arg);
-		if (!this.settings.poeticlicense) this.settings.poeticlicense = {};
-		if (!this.settings.poeticlicense[user]) return this.say(con, room, arg + ' does not have Poetic License.');
-		delete this.settings.poeticlicense[user];
-		this.writeSettings();
-		this.say(con, room, '/modnote ' + user + ' had their Poetic License removed by ' + toId(by));
-	},
-	vpl: 'viewpoeticlicense',
-	viewpoeticlicense: function(arg, by, room, con) {
-		if (!this.hasRank(by, '@#~') || room.charAt(0) === ',') return false;
-		if (!this.settings.poeticlicense) return this.say(con, room, 'No users are poeticlicense\'d.');
-		var poeticlicenseList = Object.keys(this.settings.poeticlicense);
-		this.uploadToHastebin(con, room, by, "The following users possess a Poetic License:\n\n" + poeticlicenseList.join('\n'));
-		return;
+	vmb: 'viewmessageblacklist',
+	viewmessageblacklist: function(arg, by, room, con) {
+		if (!this.hasRank(by, '@#~')) return false;
+		if (!this.settings.messageBlacklist) return this.say(con, room, 'No users are blacklisted from the message system');
+		var messageBlacklist = Object.keys(this.settings.messageBlacklist);
+		this.uploadToHastebin(con, room, by, "The following users are blacklisted from the message system:\n\n" + messageBlacklist.join('\n'));
 	},
 
 	/**

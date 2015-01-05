@@ -250,12 +250,12 @@ exports.parse = {
 				if (this.room && this.isBlacklisted(toId(by), this.room)) this.say(connection, this.room, '/roomban ' + by + ', Blacklisted user');
 				this.updateSeen(by, spl[1], this.room || 'lobby');
 				// Send pending mail
-				if (this.room && this.sendMail(toId(by))) {
-					for (var msgNumber in this.messages[toId(by)]) {
-						if (msgNumber === 'timestamp') continue;
-						this.say(connection, this.room, '/msg ' + by + ', ' + this.messages[toId(by)][msgNumber]);
+				var user = toId(by);
+				if (this.room && this.messages[user]) {
+					for (var i = 0; i < this.messages[user].length; i++) {
+						this.say(connection, this.room, "/pm " + by + ", " + this.messages[user][i].from + " said " + this.getTimeAgo(this.messages[user][i].time) + " ago: " + this.messages[user][i].text);
 					}
-					delete this.messages[toId(by)];
+					delete this.messages[user];
 					this.writeMessages();
 				}
 				if (toId(by) !== toId(config.nick) || ' +%@&#~'.indexOf(by.charAt(0)) === -1) return;
@@ -587,13 +587,6 @@ exports.parse = {
 			});
 		};
 	})(),
-	sendMail: function(user) {
-		if (!this.messages || !this.messages[user]) return false;
-		if (this.messages[user]) {
-			console.log(user + ' has mail.');
-			return true;
-		}
-	},
 	shuffle: function(array) {
 		var counter = array.length,
 			temp, index;
