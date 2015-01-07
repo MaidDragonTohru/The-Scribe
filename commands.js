@@ -8,6 +8,43 @@ const MESSAGES_TIME_OUT = 7 * 24 * 60 * 60 * 1000;
 var http = require('http');
 var sys = require('sys');
 
+// Lists for random generator commands
+var adjectives = ["crystal", "floating", "eternal-dusk", "sunset", "snowy", "rainy", "sunny", "chaotic", "peaceful", "colorful", "gooey", "fiery", "jagged", "glass", "vibrant", 
+	"rainbow", "foggy", "calm", "demonic", "polygonal", "glistening", "sexy", "overgrown", "frozen", "dark", "mechanical", "mystic", "steampunk", "subterranean", "polluted", "bleak", 
+	"dank", "smooth", "vast", "pixelated", "enigmatic", "illusionary", "sketchy", "spooky", "flying", "legendary", "cubic", "moist", "oriental", "fluffy", "odd", "fancy", "strange", 
+	"authentic", "bustling", "barren", "cluttered", "creepy", "dangerous", "distant", "massive", "exotic", "tainted", "filthy", "flawless", "forsaken", "frigid", "frosty", "grand", 
+	"grandiose", "grotesque", "harmful", "harsh", "hospitable", "hot", "jaded", "meek", "weird", "awkward", "silly", "cursed", "blessed", "drought-stricken", "futuristic", "ancient",
+	"medieval", "gothic", "radioactive"
+];
+var locations = ["river", "island", "desert", "forest", "jungle", "plains", "mountains", "mesa", "cave", "canyon", "marsh", "lake", "plateau", "tundra", "volcano", "valley", 
+	"waterfall", "atoll", "asteroid", "grove", "treetops", "cavern", "beach", "ocean", "heavens", "abyss", "city", "crag", "planetoid", "harbor", "evergreen", "cabin", 
+	"hill", "field", "ship", "glacier", "estuary", "wasteland", "clouds", "chamber", "ruin", "tomb", "park", "closet", "terrace", "hot air balloon", "shrine", "room", "swamp", "road", 
+	"path", "gateway", "school", "building", "vault", "pool", "pit", "temple", "lagoon", "prison", "harem", "mine", "catacombs", "rainforest", "laboratory", "library", "stadium", 
+	"museum", "mansion", "carnival", "amusement park", "farm", "factory", "castle", "spaceship", "space station", "cafe", "theater", "island", "hospital", "ruins", "bazaar" 
+];
+var characterAdjectives = ["sturdy", "helpless", "young", "rugged", "odd-looking", "amusing", "dynamic", "exuberant", "quirky", "awkward", "elderly", "adolescent", "'ancient'", 
+	"odd", "funny-looking", "tall", "short", "round", "blind", 
+];
+var characterTypes = ["Marksman", "Adventurer", "Pokemon Trainer", "Pokemon", "Dragonkin", "Chef", "Businessman", "Kitsune", "Youkai", "...thing", "Archer", "Taxi Driver", 
+	"Dentist", "Demon", "Paladin", "Writer", "Diety", "Spy", "Goverment Agent", "Farmer", "Teacher", "Warrior", "Athlete", "Artist", "Assassin", "Beast", "Journalist", 
+	"Designer", "Doctor", "Vampire", "Time Traveller", "Alien", "Butler", "Police Officer", "Toymaker", "Student", "Photographer", "Mage", "Computer Programmer"
+];
+var perks = ["kind of heart", "powerful", "handsome", "ambitious", "amiable", "brave", "rational", "witty", "honest", "agile", "athletic", "quick on their feet", "assertive", 
+	"fearless", "intelligent", "persistent", "philosophical", "pioneering", "quiet", "wealthy", "not afraid to voice their opinion", "quick-witted", "lucky", "friendly", "neat", 
+	"sympathetic", "sincere", "mysterious", "loyal", "trustworthy", "imaginative", "gentle"
+];
+var debuffs = ["sly", "unclean", "smelly", "obnoxiously loud", "fond of 'tricks'", "fond of 'games'", "fond of 'jokes'", "prone to 'accidentally' taking others' things", "cocky", 
+	"prone to falling over", "prone to bad luck at times", "clingy", "foolish", "fussy", "greedy", "gullible", "impatient", "inconsiderate", "lazy", "moody", "obsessive", 
+	"narrow-minded", "patronizing", "resentful", "unreliable", "vague", "weak-willed", "egotistical", "sensitive", "Grammar Nazi-ish"
+];
+var genres = ["Action", "Adventure", "Comedy", "Crime", "Drama", "Fantasy", "Historical", "Horror", "Mystery", "Philosophical", "Romance", 
+	"Saga", "Satire", "Science Fiction", "Thriller"
+];
+var roles = ["Protagonist", "Antagonist", "Major character", "Minor character"];
+var pronouns = {'male': 'he', 'female': 'she', 'hermaphrodite': 'shi', 'neuter': 'they'};
+var possessivePronouns = {'male': 'His', 'female': 'Her', 'hermaphrodite': 'Hir', 'neuter': 'Their'};
+var types = ["Normal", "Fire", "Water", "Electric", "Grass", "Ice", "Fighting", "Poison", "Flying", "Ground", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"];
+
 exports.commands = {
 	/**
 	 * Help commands
@@ -393,16 +430,14 @@ exports.commands = {
 		} else {
 			var text = '/pm ' + by + ', ';
 		}
-		var variableone = ["entity1", "entity2"];
-		var variabletwo = ["entity1", "entity2"];
-		var varoneNum = Math.floor(variableone.length * Math.random());
-		var vartwoNum = Math.floor(variabletwo.length * Math.random());
-		this.say(con, room, text + 'Random thing: __' + variableone[varoneNum] + ' ' + variabletwo[vartwoNum] + '__.');
+		var variableone = ["entity1", "entity2"][Math.floor(variableone.length * Math.random())];
+		var variabletwo = ["entity1", "entity2"][Math.floor(variabletwo.length * Math.random())];
+		this.say(con, room, text + "Randomly generated thing: __" + variableone + " " + variabletwo + "__.");
 	},
 	//Random Commands Section!
 	//Place all 'random thing generator' commands in this area!
 	randchar: 'randomcharacter',
-    chargen: 'randomcharacter',
+	chargen: 'randomcharacter',
 	genchar: 'randomcharacter',
 	randomcharacter: function(arg, by, room, con) {
 		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
@@ -410,46 +445,18 @@ exports.commands = {
 		} else {
 			var text = '/pm ' + by + ', ';
 		}
-		var baseAdjective = ["sturdy", "helpless", "young", "rugged", "odd-looking", "amusing", "dynamic", "exuberant", "quirky", "awkward", "elderly", "adolescent", "young'in", "'ancient'", "odd", "funny-looking"];
-		var badjNum = Math.floor(baseAdjective.length * Math.random());
-		var baseType = ["Marksman", "Adventurer", "Pokemon Trainer", "Pokemon", "Dragonkin", "Chef", "Businessman", "Kitsune", "Youkai", "Person", "...thing", "Archer", "Taxi Driver", "Dentist", "Demon", "Paladin", "Writer", "God", "God(?)", "Protagonist", "Antagonist"];
-		var btypNum = Math.floor(baseType.length * Math.random());
-        var genderPronoun = ["He", "She"];
-        var genderNum = Math.floor(genderPronoun.length * Math.random());
-        var trueGender = genderPronoun[genderNum];
-        if (genderPronoun[genderNum] === "He") { 
-            var gender = "male";
-            var genderPossessive = "His";
-            } else if (genderPronoun[genderNum] === "She") {
-            var gender = "female";
-            var genderPossessive = "Her";
-        };
-        if (Math.floor(Math.random() * 4200 < 20)) {
-            var trueGender = "Shi";
-            var gender = "hermaphrodite";
-            var genderPossessive = "Hir";
-        };
-        if (Math.floor(Math.random() * 4200 < 10) || baseType[btypNum] == "...thing") {
-            var trueGender = "They";
-            var gender = "neuter";
-            var genderPossessive= "Their";
-        };
-        if (trueGender == "They") {
-            var grammarCheck = "are";
-        } else {
-            var grammarCheck = "is";
-        };
-        var perks1 = ["kind of heart", "powerful", "handsome", "ambitious", "amiable", "brave", "rational", "witty"];
-        var perkNum1 = Math.floor(perks1.length * Math.random());
-        var perks2 = ["honest", "agile", "athletic", "quick on their feet", "assertive", "fearless", "intelligenct", "persistent", "philosophical", "pioneering", "quiet"];
-        var perkNum2 = Math.floor(perks2.length * Math.random());
-        var perks3 = ["wealthy", "not afraid to voice their opinion", "quick-witted", "lucky", "friendly", "neat", "sympathetic", "sincere"];
-        var perkNum3 = Math.floor(perks3.length * Math.random());
-        var debuff = ["sly", "unclean", "smelly", "obnoxiously loud", "fond of 'tricks'", "fond of 'games'", "fond of 'jokes'", "prone to 'accidentally' taking others' things", "cocky", "prone to falling over", "prone to bad luck at times", "clingy", "foolish", "fussy", "greedy", "gullible", "impatient", "inconsiderate", "lazy", "moody", "obsessive", "narrow-minded", "patronizing", "resentful", "unreliable", "vague", "weak-willed", "egotistical", "sensitive", "Grammar Nazi-ish"];
-        var debuffNum = Math.floor(debuff.length * Math.random());
-		this.say(con, room, text + 'Generated character: __A(n) ' + baseAdjective[badjNum] + ' ' + baseType[btypNum] + '. ' + trueGender + ' ' + grammarCheck + ' a ' + gender + '. ' + genderPossessive + ' postive factors are that ' + toId(trueGender) + ' ' + grammarCheck + ' '+ perks1[perkNum1] + ', ' + perks2[perkNum2] + ', and ' + perks3[perkNum3] + ', though ' + toId(trueGender) + ' ' + grammarCheck + ' unfortunately rather ' + debuff[debuffNum] + '.__');
+		var adjective = characterAdjectives[Math.floor(characterAdjectives.length * Math.random())];
+		var type = characterTypes[Math.floor(characterTypes.length * Math.random())];
+		var role = roles[Math.floor(roles.length * Math.random())];
+		var gender = ["male", "female"][Math.floor(2 * Math.random())];
+		if (Math.floor(Math.random() * 4200 < 20)) var gender = "hermaphrodite";
+		if (Math.floor(Math.random() * 4200 < 10) || type === "...thing") var gender = "neuter";
+		var pronoun = pronouns[gender];
+		var possessivePronoun = possessivePronouns[gender];
+		var perk = [perks[Math.floor(perks.length * Math.random())], perks[Math.floor(perks.length * Math.random())], perks[Math.floor(perks.length * Math.random())]];
+        var debuff = debuffs[Math.floor(debuffs.length * Math.random())];
+		this.say(con, room, text + "Randomly generated character: __A " + gender + ", " + adjective + " " + type + " (" + role + "). " + possessivePronoun + " postive factors include: " + perk[0] + ", " + perk[1] + ", and " + perk[2] + ", though " + pronoun + (gender === "neuter" ? " are" : " is") + " unfortunately rather " + debuff + ".__");
 	},
-	rt: 'randomtype',
 	gentype: 'randomtype',
 	randtype: 'randomtype',
 	randomtype: function(arg, by, room, con) {
@@ -458,60 +465,48 @@ exports.commands = {
 		} else {
 			var text = '/pm ' + by + ', ';
 		}
-        arg = toId(arg);
-        if (arg != 'single' && arg != 'dual' && arg != '') { this.say(con, room, text + "Please input either 'single' or 'dual' as arguments, or leave it blank for a random decision. Continuing as if you left it blank.") };
-        var variableone = ["Normal","Fire","Water","Electric","Grass","Ice","Fighting","Poison","Flying","Ground","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy"];
-		var varoneNum = Math.floor(variableone.length * Math.random());
-        var vartwoNum = Math.floor(variableone.length * Math.random());
-        var dualType = Math.floor(2 * Math.random()) + 1;
-        var firstType = variableone[varoneNum];
-        var secondType = variableone[vartwoNum];
-        if (dualType !== 1 && firstType != secondType || arg == 'dual' && firstType != secondType) {
-        this.say(con, room, text + 'Randomly generated type combination: __' + firstType + '/' + secondType + '__.');
-        } else if (dualType === 1 || arg == 'single') {
-		this.say(con, room, text + 'Randomly generated type: __' + firstType + '__.');
-        } else if (arg == 'dual' && firstType == secondType) {
-        	this.say(con, room, text + 'Randomly generated type combination: __' + firstType + '/' + secondType = '__. Note: There\'s a small chance that this could be a double-up. This will be fixed in the future.');
+		arg = toId(arg);
+		if (arg && arg !== 'single' && arg !== 'dual') this.say(con, room, text + "Please input either 'single' or 'dual' as arguments, or leave it blank for a random decision. Continuing as if you left it blank.");
+		var firstType = types[Math.floor(types.length * Math.random())];
+		if (arg !== 'single' && (arg === 'dual' || Math.floor(Math.random() * 2))) {
+			var secondType = types[Math.floor(types.length * Math.random())];
+			while (firstType === secondType) {
+				secondType = types[Math.floor(types.length * Math.random())];
+			}
 		}
+		this.say(con, room, text + "Randomly generated type: __" + firstType + (secondType ? "/" + secondType : "") + "__.");
 	},
 	randstats: 'randomstats',
-	rs: 'randomstats',
 	randomstats: function(arg, by, room, con, shuffle) {
 		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
 			var text = '';
 		} else {
 			var text = '/pm ' + by + ', ';
 		}
-		var text = '';
-		var stat = [0, 0, 0, 0, 0, 0];
+		arg = parseInt(arg);
+		if (arg && (isNaN(arg) || arg < 30 || arg > 780)) return this.say(con, room, text + "Specified BST must be a whole number between 30 and 780.");
+		var bst = arg ? Math.floor(arg) : Math.floor(580 * Math.random()) + 200;
+		var stats = [0, 0, 0, 0, 0, 0];
 		var currentST = 0;
 		var leveler = 2 * (Math.floor(Math.random() + 1));
-		if (!arg) {
-			var bst = Math.floor(580 * Math.random()) + 200;
-		} else {
-			var bst = Math.floor(arg);
-			arg = parseInt(arg);
-			if (isNaN(arg) || arg < 30 || arg > 780) return this.say(con, room, "Specified BST must be a whole number between 30 and 780.");
-		}
-		for (j = 0; j < leveler; j++) {
-			for (i = 0; i < 6; i++) {
+		for (var j = 0; j < leveler; j++) {
+			for (var i = 0; i < 6; i++) {
 				var randomPart = Math.floor((bst / (leveler * 6)) * Math.random()) + 1;
-				stat[i] += randomPart;
+				stats[i] += randomPart;
 				currentST += randomPart;
 			}
 		}
 		if (currentST > bst) {
-			for (k = currentST; k > bst; k--) {
-				stat[Math.floor(5 * Math.random()) + 1] -= 1;
+			for (var k = currentST; k > bst; k--) {
+				stats[Math.floor(5 * Math.random()) + 1] -= 1;
 			}
 		} else if (currentST < bst) {
-			for (k = currentST; k < bst; k++) {
-				stat[Math.floor(5 * Math.random()) + 1] += 1;
+			for (var k = currentST; k < bst; k++) {
+				stats[Math.floor(5 * Math.random()) + 1] += 1;
 			}
 		}
-		ranStats = this.shuffle(stat);
-		text += 'Random stats: HP:' + ranStats[0] + ' Atk:' + ranStats[1] + ' Def:' + ranStats[2] + ' SpA:' + ranStats[3] + ' SpD:' + ranStats[4] + ' Spe:' + ranStats[5] + ' BST:' + bst + '';
-		this.say(con, room, text);
+		stats = this.shuffle(stats);
+		this.say(con, room, text + "Randomly generated stats: HP: " + stats[0] + " Atk: " + stats[1] + " Def: " + stats[2] + " SpA: " + stats[3] + " SpD: " + stats[4] + " Spe: " + stats[5] + " BST: " + bst);
 	},
 	rollpokemon: 'randpokemon',
 	randpoke: 'randpokemon',
@@ -530,19 +525,19 @@ exports.commands = {
 		 *  1 = property will not affect roll
 		 *  2 = roll will be rejected if it lacks this property
 		 */
-		var conditions = {"uber":1,"legend":1,"nfe":1,"mega":1,"forms":1,"shiny":1};
-		var types = {"normal":1,"fire":1,"water":1,"grass":1,"electric":1,"ice":1,"fighting":1,"poison":1,"ground":1,"flying":1,"psychic":1,"bug":1,"rock":1,"ghost":1,"dragon":1,"dark":1,"steel":1,"fairy":1};
+		var conditions = {"uber":1, "legend":1, "nfe":1, "mega":1, "forms":1, "shiny":1};
+		var types = {"normal":1, "fire":1, "water":1, "grass":1, "electric":1, "ice":1, "fighting":1, "poison":1, "ground":1, "flying":1, "psychic":1, "bug":1, "rock":1, "ghost":1, "dragon":1, "dark":1, "steel":1, "fairy":1};
 		var singleType = false;
-		var noDt = {"Unown":1,"Shellos":1,"Gastrodon":1,"Deerling":1,"Sawsbuck":1,"Vivillon":1,"Flabebe":1,"Floette":1,"Florges":1,"Furfrou":1};
+		var noDt = {"Unown":1, "Shellos":1, "Gastrodon":1, "Deerling":1, "Sawsbuck":1, "Vivillon":1, "Flabebe":1, "Floette":1, "Florges":1, "Furfrou":1};
 
 		var pokequantity = 1;
 		if (arg) {
 			var parameters = arg.toLowerCase().split(", ");
 			var hasBeenSet = false;
-			for (j=0; j<parameters.length; j++) {
+			for (var j = 0; j < parameters.length; j++) {
 				if (parameters[j] == parseInt(parameters[j], 10)) {
-					if (hasBeenSet) return this.say(con, room, 'Please only specify number of pokemon once');
-					if (parameters[j] < 1 || parameters[j] > 6) return this.say(con, room, "Quantity of random pokemon must be between 1 and 6.");
+					if (hasBeenSet) return this.say(con, room, text + "Please only specify number of pokemon once");
+					if (parameters[j] < 1 || parameters[j] > 6) return this.say(con, room, text + "Quantity of random pokemon must be between 1 and 6.");
 					pokequantity = parameters[j];
 					hasBeenSet = true;
 					continue;
@@ -560,7 +555,7 @@ exports.commands = {
 				}
 
 				if (parameters[j] in conditions) {
-					if (conditions[parameters[j]] !== 1) return this.say(con, room, 'Cannot include both \'' + parameters[j] + '\' and \'!' + parameters[j] + '\'.');
+					if (conditions[parameters[j]] !== 1) return this.say(con, room, text + "Cannot include both '" + parameters[j] + "' and '!" + parameters[j] + "'.");
 					if (notGate) {
 						if (parameters[j] === 'forms') conditions.mega = 0;
 						conditions[parameters[j]] = 0;
@@ -571,7 +566,7 @@ exports.commands = {
 				}
 				if (parameters[j].indexOf(' type') > -1) parameters[j] = parameters[j].substr(0, parameters[j].length - 5);
 				if (parameters[j] in types) {
-					if (types[parameters[j]] !== 1) return this.say(con, room, 'Cannot include both \'' + parameters[j] + '\' and \'!' + parameters[j] + '\'.');
+					if (types[parameters[j]] !== 1) return this.say(con, room, text + "Cannot include both '" + parameters[j] + "' and '!" + parameters[j] + "'.");
 					if (notGate) {
 						types[parameters[j]] = 0;
 					} else {
@@ -580,18 +575,17 @@ exports.commands = {
 					}
 					continue;
 				} else {
-					return this.say(con, room, 'Parameter \'' + parameters[j] + '\' not recognized.');
+					return this.say(con, room, text + "Parameter '" + parameters[j] + "' not recognized.");
 				}
 			}
 
 			//More complex checks to prevent it getting stuck searching for combinations that don't exist
-			if (conditions.forms === 2 && singleType) return this.say(con, room, 'The parameter \'forms\' must be used by itself.');
-			if (conditions.uber === 2 && conditions.legend === 0 && pokequantity > 3) return this.say(con, room, 'Invalid generation conditions.');
-			if (conditions.mega === 2 && conditions.uber === 2 && pokequantity > 1) return this.say(con, room, 'Invalid generation conditions.');
-			if (conditions.nfe === 2 && (conditions.uber === 2 || conditions.legend === 2 || conditions.mega === 2)) return this.say(con, room, 'Invalid generation conditions.');
+			if (conditions.forms === 2 && singleType) return this.say(con, room, text + "The parameter 'forms' must be used by itself.");
+			if ((conditions.uber === 2 && conditions.legend === 0 && pokequantity > 3) || (conditions.mega === 2 && conditions.uber === 2 && pokequantity > 1) ||
+				(conditions.nfe === 2 && (conditions.uber === 2 || conditions.legend === 2 || conditions.mega === 2))) return this.say(con, room, text + "Invalid generation conditions.");
 
 			if (singleType) {
-				if (conditions.uber === 2 || conditions.legend === 2 || conditions.mega === 2) return this.say(con, room, 'Invalid generation conditions.');
+				if (conditions.uber === 2 || conditions.legend === 2 || conditions.mega === 2) return this.say(con, room, text + "Invalid generation conditions.");
 				for (var set in types) {
 					if (types[set] === 1) types[set] = 0;
 				}
@@ -603,17 +597,16 @@ exports.commands = {
 		var dexNumbers = [];
 		if (parameters.length > 0) {
 			//create an array for all dex numbers and then shuffle it
-			for (g=0; g<722; g++) {
+			for (var g = 0; g < 722; g++) {
 				dexNumbers.push(g);
 			}
 			dexNumbers = this.shuffle(dexNumbers);
 		}
-		for (i=0; i<pokequantity; i++) {
+		for (var i = 0; i < pokequantity; i++) {
 			attempt++;
 			if (attempt > 721) {
 				console.log('randpoke fail: ' + parameters);
-				text = (room.charAt(0) === ',') ? '' : '/pm ' + by + ', ';
-				return this.say(con, room, text + 'could not find ' + pokequantity + ' unique Pokemon with ``' + parameters.join(', ') + '``');
+				return this.say(con, room, text + "Could not find " + pokequantity + " unique Pokemon with ``" + parameters.join(', ') + "``");
 			}
 			var skipPoke = false;
 			if (parameters.length > 0) {
@@ -629,7 +622,7 @@ exports.commands = {
 			if (conditions.uber === 0 && Pokedex[pokeNum].uber) {i--; continue;}
 			if (conditions.legend === 0 && Pokedex[pokeNum].legend) {i--; continue;}
 			if (conditions.nfe === 0 && Pokedex[pokeNum].nfe) {i--; continue;}
-			for (h=0; h<Pokedex[pokeNum].type.length; h++) {
+			for (var h = 0; h < Pokedex[pokeNum].type.length; h++) {
 				var currentType = Pokedex[pokeNum].type[h].toLowerCase();
 				if (types[currentType] !== 0) break;
 				skipPoke = true;
@@ -657,14 +650,14 @@ exports.commands = {
 			}
 			randompokes.push(Pokedex[pokeNum].species);
 		}
-		for (k=0; k<randompokes.length; k++) {
+		for (var k = 0; k < randompokes.length; k++) {
 			if (Math.floor(((conditions.shiny === 2) ? 2 : 1364) * Math.random()) !== 0) continue;
 			randompokes[k] = '``shiny`` ' + randompokes[k];
 		}
-		this.say(con, room, text + randompokes.join(", "));
+		this.say(con, room, (text === "!dt " ? text + randompokes.join(", ") : text + "Randomly generated Pokemon: " + randompokes.join(", ")));
 	},
-	rl: 'randomlocation',
 	randscene: 'randomlocation',
+	randomscene: 'randomlocation',
 	randlocation: 'randomlocation',
 	randomlocation: function(arg, by, room, con) {
 		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
@@ -672,22 +665,10 @@ exports.commands = {
 		} else {
 			var text = '/pm ' + by + ', ';
 		}
-		var adjectives = ["crystal", "floating", "eternal-dusk", "sunset", "snowy", "rainy", "sunny", "chaotic", "peaceful", "colorful", "gooey", "fiery", "jagged", "glass", "vibrant", "rainbow", "foggy",
-			"calm", "demonic", "polygonal", "glistening", "sexy", "overgrown", "frozen", "dark", "mechanical", "mystic", "steampunk", "subterranean", "polluted", "bleak", "dank", "smooth", "vast", "pixelated",
-			"enigmatic", "illusionary", "sketchy", "spooky", "flying", "legendary", "cubic", "moist", "oriental", "fluffy", "odd", "fancy", "strange", "authentic", "bustling", "barren", "cluttered", "creepy", "dangerous",
-			"distant", "massive", "exotic", "tainted", "filthy", "flawless", "forsaken", "frigid", "frosty", "grand", "grandiose", "grotesque", "harmful", "harsh", "hospitable", "hot", "jaded", "meek", "weird", "awkward",
-			"silly", "cursed", "blessed", "drought-stricken"
-		];
-		var locations = ["river", "island", "desert", "forest", "jungle", "plains", "mountains", "mesa", "cave", "canyon", "marsh", "lake", "plateau", "tundra", "volcano", "valley", "waterfall", "atoll",
-			"asteroid", "grove", "treetops", "cavern", "beach", "ocean", "plains", "heavens", "abyss", "city", "crag", "planetoid", "harbor", "evergreen", "cabin", "hill", "field", "ship", "glacier", "estuary",
-			"wasteland", "sky", "chamber", "ruin", "tomb", "park", "closet", "terrace", "air balloon", "shrine", "room", "swamp", "road", "path", "gateway", "school", "building", "vault", "pool", "statue", "pit",
-			"temple", "lagoon", "prison", "harem", "mine", "catacombs"
-		];
-		var adjNum = Math.floor(adjectives.length * Math.random());
-		var locNum = Math.floor(locations.length * Math.random());
-		this.say(con, room, text + 'Random scenery: __' + adjectives[adjNum] + ' ' + locations[locNum] + '__.');
+		var adjective = adjectives[Math.floor(adjectives.length * Math.random())];
+		var location = locations[Math.floor(locations.length * Math.random())];
+		this.say(con, room, text + "Randomly generated scene: __" + adjective + " " + location + "__.");
 	},
-	rm: 'randommove',
 	randmove: 'randommove',
 	randommove: function(arg, by, room, con) {
 		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
@@ -695,42 +676,19 @@ exports.commands = {
 		} else {
 			var text = '/pm ' + by + ', ';
 		}
-		var types = {
-			"normal": 1,
-			"fire": 1,
-			"water": 1,
-			"grass": 1,
-			"electric": 1,
-			"ice": 1,
-			"fighting": 1,
-			"poison": 1,
-			"ground": 1,
-			"flying": 1,
-			"psychic": 1,
-			"bug": 1,
-			"rock": 1,
-			"ghost": 1,
-			"dragon": 1,
-			"dark": 1,
-			"steel": 1,
-			"fairy": 1
-		};
-		var classes = {
-			"physical": 1,
-			"special": 1,
-			"status": 1
-		};
+		var types = {"normal":1, "fire":1, "water":1, "grass":1, "electric":1, "ice":1, "fighting":1, "poison":1, "ground":1, "flying":1, "psychic":1, "bug":1, "rock":1, "ghost":1, "dragon":1, "dark":1, "steel":1, "fairy":1};
+		var classes = {"physical": 1, "special": 1, "status": 1};
 		var moveQuantity = 1;
 		var hasBeenSet = false;
 		var singleType = false;
 		var singleClass = false;
 
 		var parameters = arg.split(', ');
-		if (parameters.length > 10) return this.say(con, room, 'Please use 10 or fewer arguments.');
+		if (parameters.length > 10) return this.say(con, room, text + "Please use 10 or fewer arguments.");
 		for (var i = 0; i < parameters.length; i++) {
 			if (parameters[i] == parseInt(parameters[i], 10)) {
-				if (hasBeenSet) return this.say(con, room, 'Please only specify number of pokemon once');
-				if (parameters[i] < 1 || parameters[i] > 6) return this.say(con, room, "Quantity of random moves must be between 1 and 6.");
+				if (hasBeenSet) return this.say(con, room, text + "Please only specify number of pokemon once");
+				if (parameters[i] < 1 || parameters[i] > 6) return this.say(con, room, text + "Quantity of random moves must be between 1 and 6.");
 				moveQuantity = parameters[i];
 				hasBeenSet = true;
 				continue;
@@ -748,7 +706,7 @@ exports.commands = {
 				} else if (types[parameter] === 1 && notGate) {
 					types[parameter] = 0;
 				} else {
-					return this.say(con, room, 'Cannot include both \'' + parameters[i] + '\' and \'!' + parameters[i] + '\'.');
+					return this.say(con, room, text + "Cannot include both '" + parameters[i] + "' and '!" + parameters[i] + "'.");
 				}
 			} else if (parameter in classes) {
 				if (classes[parameter] === 1 && !notGate) {
@@ -757,14 +715,14 @@ exports.commands = {
 				} else if (classes.parameter === 1 && notGate) {
 					classes[parameter] = 0;
 				} else {
-					return this.say(con, room, 'Cannot include both \'' + parameters[i] + '\' and \'!' + parameters[i] + '\'.');
+					return this.say(con, room, text + "Cannot include both '" + parameters[i] + "' and '!" + parameters[i] + "'.");
 				}
 			} else {
-				return this.say(con, room, 'Pleae specify a parameter or check that you are spelling it correctly.');
+				return this.say(con, room, text + "Please specify a parameter or check that you are spelling it correctly.");
 			}
 		}
 		if (singleType) {
-			if (moveQuantity > 3) return this.say(con, room, 'Invalid generation conditions.');
+			if (moveQuantity > 3) return this.say(con, room, text + "Invalid generation conditions.");
 			for (var set in types) {
 				if (types[set] == 1) types[set] = 0;
 			}
@@ -778,15 +736,7 @@ exports.commands = {
 		var randomMoves = [];
 		for (var j = 0; j < moveQuantity; j++) {
 			var roll = Math.floor(614 * Math.random()) + 1;
-			if (types[Movedex[roll].type] === 0) {
-				j--;
-				continue;
-			}
-			if (classes[Movedex[roll].class] === 0) {
-				j--;
-				continue;
-			}
-			if (randomMoves.indexOf(Movedex[roll].name) > -1) {
+			if (types[Movedex[roll].type] === 0 || classes[Movedex[roll].class] === 0 || randomMoves.indexOf(Movedex[roll].name) > -1) {
 				j--;
 				continue;
 			}
@@ -794,14 +744,8 @@ exports.commands = {
 		}
 		this.say(con, room, text + randomMoves.join(', '));
 	},
-	idea: 'randomgenre',
-	randomidea: 'randomgenre',
-	randidea: 'randomgenre',
-	ri: 'randomgenre',
 	randstyle: 'randomgenre',
 	randomstyle: 'randomgenre',
-	rs: 'randomgenre',
-	rg: 'randomgenre',
 	randgenre: 'randomgenre',
 	randomgenre: function(arg, by, room, con) {
 		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
@@ -809,12 +753,12 @@ exports.commands = {
 		} else {
 			var text = '/pm ' + by + ', ';
 		}
-		var genres = ["Action", "Adventure", "Comedy", "Crime", "Fantasy", "Historical", "Children's Book", "Horror", "Mystery",
-			"Philosophical", "Political", "Realistic", "Romance", "Saga", "Satire", "Science Fiction", "Slice of Life", "Thriller", "Urban"
-		];
-		var genNum = Math.floor(genres.length * Math.random());
-		var genNum2 = Math.floor(genres.length * Math.random());
-		this.say(con, room, text + 'Random genre splice: __' + genres[genNum] + ' ' + genres[genNum2] + '__.');
+		var genre1 = genres[Math.floor(genres.length * Math.random())];
+		var genre2 = genres[Math.floor(genres.length * Math.random())];
+		while (genre1 === genre2) {
+			genre2 = genres[Math.floor(genres.length * Math.random())];
+		}
+		this.say(con, room, text + "Randomly generated genre: __" + genre1 + "/" + genre2 + "__.");
 	},
 
 	//End Random Commands
