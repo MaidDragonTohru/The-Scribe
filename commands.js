@@ -430,8 +430,8 @@ exports.commands = {
 		} else {
 			var text = '/pm ' + by + ', ';
 		}
-		var variableone = ["entity1", "entity2"][Math.floor(variableone.length * Math.random())];
-		var variabletwo = ["entity1", "entity2"][Math.floor(variabletwo.length * Math.random())];
+		var variableone = list1[Math.floor(list1.length * Math.random())];
+		var variabletwo = list2[Math.floor(list2.length * Math.random())];
 		this.say(con, room, text + "Randomly generated thing: __" + variableone + " " + variabletwo + "__.");
 	},
 	//Random Commands Section!
@@ -454,7 +454,7 @@ exports.commands = {
 		var pronoun = pronouns[gender];
 		var possessivePronoun = possessivePronouns[gender];
 		var perk = [perks[Math.floor(perks.length * Math.random())], perks[Math.floor(perks.length * Math.random())], perks[Math.floor(perks.length * Math.random())]];
-        var debuff = debuffs[Math.floor(debuffs.length * Math.random())];
+		var debuff = debuffs[Math.floor(debuffs.length * Math.random())];
 		this.say(con, room, text + "Randomly generated character: __A " + gender + ", " + adjective + " " + type + " (" + role + "). " + possessivePronoun + " postive factors include: " + perk[0] + ", " + perk[1] + ", and " + perk[2] + ", though " + pronoun + (gender === "neuter" ? " are" : " is") + " unfortunately rather " + debuff + ".__");
 	},
 	gentype: 'randomtype',
@@ -759,6 +759,37 @@ exports.commands = {
 			genre2 = genres[Math.floor(genres.length * Math.random())];
 		}
 		this.say(con, room, text + "Randomly generated genre: __" + genre1 + "/" + genre2 + "__.");
+	},
+	idea: 'randomstory',
+	randidea: 'randomstory',
+	randomidea: 'randomstory',
+	randstory: 'randomstory',
+	randomstory: function(arg, by, room, con) {
+		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
+			var text = '';
+		} else {
+			var text = '/pm ' + by + ', ';
+		}
+		var genre1 = genres[Math.floor(genres.length * Math.random())];
+		if (Math.floor(Math.random() * 2)) {
+			var genre2 = genres[Math.floor(genres.length * Math.random())];
+			while (genre1 === genre2) {
+				genre2 = genres[Math.floor(genres.length * Math.random())];
+			}
+		}
+		var adjective = adjectives[Math.floor(adjectives.length * Math.random())];
+		var location = locations[Math.floor(locations.length * Math.random())];
+		var characterAdjective = characterAdjectives[Math.floor(characterAdjectives.length * Math.random())];
+		var type = characterTypes[Math.floor(characterTypes.length * Math.random())];
+		var role = roles[Math.floor(4 * Math.random())];
+		var gender = ["male", "female"][Math.floor(2 * Math.random())];
+		if (Math.floor(Math.random() * 4200 < 20)) var gender = "hermaphrodite";
+		if (Math.floor(Math.random() * 4200 < 10) || type === "...thing") var gender = "neuter";
+		var pronoun = pronouns[gender];
+		var possessivePronoun = possessivePronouns[gender];
+		var perk = [perks[Math.floor(perks.length * Math.random())], perks[Math.floor(perks.length * Math.random())], perks[Math.floor(perks.length * Math.random())]];
+		var debuff = debuffs[Math.floor(debuffs.length * Math.random())];
+		this.say(con, room, text + "Randomly generated story | Setting: __" + adjective + " " + location + "__ | Genre: __" + genre1 + (genre2 ? "/" + genre2 : "") + "__ | " + role + ": __a " + gender + ", " + characterAdjective + " " + type + ". " + possessivePronoun + " postive factors include: " + perk[0] + ", " + perk[1] + ", and " + perk[2] + ", though " + pronoun + (gender === "neuter" ? " are" : " is") + " unfortunately rather " + debuff + ".__");
 	},
 
 	//End Random Commands
