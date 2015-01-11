@@ -947,17 +947,18 @@ exports.commands = {
 		var text = (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ');
 		arg = arg.split(',');
 		if (!arg[0] || !arg[1]) return this.say(con, room, text + 'Please use the following format: ";mail user, message"');
-		if (arg[1].length > 215) return this.say(con, room, text + 'Your message cannot exceed 215 characters');
 		var user = toId(arg[0]);
+		var message = arg.slice(1).join(',').trim();
+		if (message.length > 215) return this.say(con, room, text + 'Your message cannot exceed 215 characters');
 		if (user.length > 18) return this.say(con, room, text + 'That\'s not a real username! It\'s too long! >:I');
 		if (!this.messages[user]) this.messages[user] = [];
 		if (this.messages[user].length >= 5) return this.say(con, room, text + arg[0] + '\'s inbox is full.');
-		var message = {
+		var mail = {
 			from: by.substr(1),
-			text: arg[1].trim(),
+			text: message,
 			time: Date.now()
 		}
-		this.messages[user].push(message);
+		this.messages[user].push(mail);
 		this.writeMessages();
 		this.say(con, room, text + 'Your message has been sent to ' + arg[0] + '.');
 	},
