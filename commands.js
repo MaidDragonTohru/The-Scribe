@@ -926,7 +926,8 @@ exports.commands = {
 					"Would you like to host your work on our cloud drive? Ask a staff member about getting your own folder!",
 					"Be sure to keep your work's presentation up to par, or AxeBane will hunt you down! Or, you could ask one of our staff to take a look and check it for you, but that's boring.",
 					"Hey, you. Yes, you! Do __you__ want to improve the room? If you answered 'no', then go sit in the naughty corner. If you said 'yes', on the other hand, then go ahead and click the shiny 'submit and idea' button in the roominto!",
-					"Want to play a writing game? Ask one of our friendly staff to host one, or if you think you're up to it, try hosting yourself! It's a great way to gain a good reputation!"
+					"Want to play a writing game? Ask one of our friendly staff to host one, or if you think you're up to it, try hosting yourself! It's a great way to gain a good reputation!",
+					"Sunday Slam! Participants have all of Sunday to write and submit pieces based on the topic given on Saturday. More info: http://pswriting.weebly.com/events.html"
 				];
 				var num = Math.floor((Math.random() * tips.length));
 				self.say(con, room, "**Writing Room Tip #" + (num + 1) + ":** " + tips[num]);
