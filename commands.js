@@ -794,21 +794,23 @@ exports.commands = {
 
 	//End Random Commands
 
-	sw: 'wotd',
-	writer: 'wotd',
+	'word' : 'wotd',
 	wotd: function(arg, by, room, con) {
-		if (!this.canUse('setrp', room, by)) {
-			var text = '/pm ' + by + ', ';
-		} else {
-			var text = '';
-			var self = this;
-			config.wotdCalled = true;
-			setTimeout(function() {
-				delete config.wotdCalled;
-			}, 60 * 1000);
-		}
-		if (!config.wotd) return this.say(con, room, text + 'A Writer of the Day hasn\'t been set! :o');
-		this.say(con, room, text + 'Today\'s Spotlighted Writer is [[' + config.wotd + ']].');
+	 if (!this.hasRank(by, '+%@#')) {
+       		  var text = "/pm " + by + ", ";
+	  } else {
+	       var text = "";
+	  }
+	  if (arg) {
+	       if (!this.hasRank(by, '+%@#')) return false;
+	       arg = arg.split(','); 
+	       if (!arg[0] || !arg[1]) return this.say(con, room, text + "Please remember to include a defintion! The format is: word, defintion.");
+	       settings.wotd = arg[0];
+	        settings.wotdDefinition = arg.slice(1).join(',').trim();
+	         this.say(con, room, "The Word of the Day has been set to \"" + arg[0] + "\"!")
+	          this.writeSettings();
+	       }
+	      if (!arg) this.say(con, room, text + "Today's Word of the Day is: " + this.settings.wotd + ". Its definition is: " + this.settings.wotdDefinition);
 	},
 	site: function(arg, by, room, con) {
 		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
@@ -970,7 +972,7 @@ exports.commands = {
 		var user = toId(by);
 		if (!this.messages[user]) return this.say(con, room, text + 'Your inbox is empty.');
 		for (var i = 0; i < this.messages[user].length; i++) {
-			this.say(con, room, text + this.messages[user][i].from + " said " + this.getTimeAgo(this.messages[user][i].time) + " ago: " + this.messages[user][i].text);
+			this.say(con, room, text + this.messages[user][i].from + " said, " + this.getTimeAgo(this.messages[user][i].time) + " ago: " + this.messages[user][i].text);
 		}
 		delete this.messages[user];
 		this.writeMessages();
