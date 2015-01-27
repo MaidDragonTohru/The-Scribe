@@ -453,9 +453,14 @@ exports.commands = {
 		if (Math.floor(Math.random() * 4200 < 10) || type === "...thing") var gender = "neuter";
 		var pronoun = pronouns[gender];
 		var possessivePronoun = possessivePronouns[gender];
-		var perk = [perks[Math.floor(perks.length * Math.random())], perks[Math.floor(perks.length * Math.random())], perks[Math.floor(perks.length * Math.random())]];
+		var perkList = perks.slice(0);
+		var perk1 = perkList[Math.floor(perkList.length * Math.random())];
+		perkList.splice(perkList.indexOf(perk1), 1);
+		var perk2 = perkList[Math.floor(perkList.length * Math.random())];
+		perkList.splice(perkList.indexOf(perk2), 1);
+		var perk3 = perkList[Math.floor(perkList.length * Math.random())];
 		var debuff = debuffs[Math.floor(debuffs.length * Math.random())];
-		this.say(con, room, text + "Randomly generated character: __A " + gender + ", " + adjective + " " + type + " (" + role + "). " + possessivePronoun + " postive factors include: " + perk[0] + ", " + perk[1] + ", and " + perk[2] + ", though " + pronoun + (gender === "neuter" ? " are" : " is") + " unfortunately rather " + debuff + ".__");
+		this.say(con, room, text + "Randomly generated character: __A " + gender + ", " + adjective + " " + type + " (" + role + "). " + possessivePronoun + " postive factors include: " + perk1 + ", " + perk2 + ", and " + perk3 + ", though " + pronoun + (gender === "neuter" ? " are" : " is") + " unfortunately rather " + debuff + ".__");
 	},
 	gentype: 'randomtype',
 	randtype: 'randomtype',
@@ -787,9 +792,14 @@ exports.commands = {
 		if (Math.floor(Math.random() * 4200 < 10) || type === "...thing") var gender = "neuter";
 		var pronoun = pronouns[gender];
 		var possessivePronoun = possessivePronouns[gender];
-		var perk = [perks[Math.floor(perks.length * Math.random())], perks[Math.floor(perks.length * Math.random())], perks[Math.floor(perks.length * Math.random())]];
+		var perkList = perks.slice(0);
+		var perk1 = perkList[Math.floor(perkList.length * Math.random())];
+		perkList.splice(perkList.indexOf(perk1), 1);
+		var perk2 = perkList[Math.floor(perkList.length * Math.random())];
+		perkList.splice(perkList.indexOf(perk2), 1);
+		var perk3 = perkList[Math.floor(perkList.length * Math.random())];
 		var debuff = debuffs[Math.floor(debuffs.length * Math.random())];
-		this.say(con, room, text + "Randomly generated story | Setting: __" + adjective + " " + location + "__ | Genre: __" + genre1 + (genre2 ? "/" + genre2 : "") + "__ | " + role + ": __a " + gender + ", " + characterAdjective + " " + type + ". " + possessivePronoun + " postive factors include: " + perk[0] + ", " + perk[1] + ", and " + perk[2] + ", though " + pronoun + (gender === "neuter" ? " are" : " is") + " unfortunately rather " + debuff + ".__");
+		this.say(con, room, text + "Randomly generated story | Setting: __" + adjective + " " + location + "__ | Genre: __" + genre1 + (genre2 ? "/" + genre2 : "") + "__ | " + role + ": __a " + gender + ", " + characterAdjective + " " + type + ". " + possessivePronoun + " postive factors include: " + perk1 + ", " + perk2 + ", and " + perk3 + ", though " + pronoun + (gender === "neuter" ? " are" : " is") + " unfortunately rather " + debuff + ".__");
 	},
 
 	//End Random Commands
