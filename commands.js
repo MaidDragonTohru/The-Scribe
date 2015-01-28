@@ -827,7 +827,7 @@ exports.commands = {
         var mi = today.getMinutes();
         var se = today.getSeconds();
         if (mm === 1) { this.mmm = "January" };
-        if (mm === 2) { this.mmm = "Febuary" };
+        if (mm === 2) { this.mmm = "February" };
         if (mm === 3) { this.mmm = "March" };
         if (mm === 4) { this.mmm = "April" };
         if (mm === 5) { this.mmm = "May" };
@@ -841,7 +841,7 @@ exports.commands = {
         if (dd === 1) { this.ddd = "first" };
         if (dd === 2) { this.ddd = "second" };
         if (dd === 3) { this.ddd = "third" };
-        if (dd === 4) { this.ddd = "forth" };
+        if (dd === 4) { this.ddd = "fourth" };
         if (dd === 5) { this.ddd = "fifth" };
         if (dd === 6) { this.ddd = "sixth" };
         if (dd === 7) { this.ddd = "seventh" };
@@ -861,7 +861,7 @@ exports.commands = {
         if (dd === 21) { this.ddd = "twenty-first" };
         if (dd === 22) { this.ddd = "twenty-second" };
         if (dd === 23) { this.ddd = "twenty-third" };
-        if (dd === 24) { this.ddd = "twenty-forth" };
+        if (dd === 24) { this.ddd = "twenty-fourth" };
         if (dd === 25) { this.ddd = "twenty-fifth" };
         if (dd === 26) { this.ddd = "twenty-sixth" };
         if (dd === 27) { this.ddd = "twenty-seventh" };
@@ -927,7 +927,7 @@ exports.commands = {
         var mi = today.getMinutes();
         var se = today.getSeconds();
         if (mm === 1) { this.mmm = "January" };
-        if (mm === 2) { this.mmm = "Febuary" };
+        if (mm === 2) { this.mmm = "February" };
         if (mm === 3) { this.mmm = "March" };
         if (mm === 4) { this.mmm = "April" };
         if (mm === 5) { this.mmm = "May" };
@@ -941,7 +941,7 @@ exports.commands = {
         if (dd === 1) { this.ddd = "first" };
         if (dd === 2) { this.ddd = "second" };
         if (dd === 3) { this.ddd = "third" };
-        if (dd === 4) { this.ddd = "forth" };
+        if (dd === 4) { this.ddd = "fourth" };
         if (dd === 5) { this.ddd = "fifth" };
         if (dd === 6) { this.ddd = "sixth" };
         if (dd === 7) { this.ddd = "seventh" };
@@ -961,7 +961,7 @@ exports.commands = {
         if (dd === 21) { this.ddd = "twenty-first" };
         if (dd === 22) { this.ddd = "twenty-second" };
         if (dd === 23) { this.ddd = "twenty-third" };
-        if (dd === 24) { this.ddd = "twenty-forth" };
+        if (dd === 24) { this.ddd = "twenty-fourth" };
         if (dd === 25) { this.ddd = "twenty-fifth" };
         if (dd === 26) { this.ddd = "twenty-sixth" };
         if (dd === 27) { this.ddd = "twenty-seventh" };
