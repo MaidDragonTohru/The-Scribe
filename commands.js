@@ -872,8 +872,8 @@ exports.commands = {
         //And one more, just for good luck.
         if (dd === 32) { this.ddd = "thirty-second" };
         var AMorPM = "AM"
-        if (hr === 12) AMorPM = "PM"
-        if (hr === 24) { hr = 12; AMorPm = "AM" };
+        if (hr === 12) AMorPM = "PM";
+        if (hr === 0) { hr = 12; AMorPm = "AM" };
         if (hr > 12) {
             if (hr === 13) { hr = 1 };
             if (hr === 14) { hr = 2 };
@@ -893,7 +893,7 @@ exports.commands = {
         if (mi<10) { mi = "0" + mi };
         if (se<10) { se = "0" + se };
         var theDay = today.getDay(); 
-        if (theDay === 0) { this.theDay === "Sunday" }; 
+        if (theDay === 0) { this.theDay = "Sunday" }; 
         if (theDay === 1) { this.theDay = "Monday" }; 
         if (theDay === 2) { this.theDay = "Tuesday" };
         if (theDay === 3) { this.theDay = "Wednesday" };
@@ -972,8 +972,8 @@ exports.commands = {
         //And one more, just for good luck.
         if (dd === 32) { this.ddd = "thirty-second" };
         var AMorPM = "AM"
-        if (hr === 12) AMorPM = "PM"
-        if (hr === 24) { hr = 12; AMorPm = "AM" };
+        if (hr === 12) AMorPM = "PM";
+        if (hr === 0) { hr = 12; AMorPm = "AM" };
         if (hr > 12) {
             if (hr === 13) { hr = 1 };
             if (hr === 14) { hr = 2 };
@@ -993,7 +993,7 @@ exports.commands = {
         if (mi<10) { mi = "0" + mi };
         if (se<10) { se = "0" + se };
         var theDay = today.getDay(); 
-        if (theDay === 0) { this.theDay === "Sunday" }; 
+        if (theDay === 0) { this.theDay = "Sunday" }; 
         if (theDay === 1) { this.theDay = "Monday" }; 
         if (theDay === 2) { this.theDay = "Tuesday" };
         if (theDay === 3) { this.theDay = "Wednesday" };
