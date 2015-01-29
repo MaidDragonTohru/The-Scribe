@@ -85,7 +85,7 @@ Commands any user can use~!
 
 `poll`: Lists the poll that was set in the `setpoll`. . . Let's not start that again.
 
-`writer; wotd`: PMs the user, assuming they're not ranked, the Spotlighted Writer.
+`word; wotd`: PMs the user, assuming they're not ranked, the Word of the Day
 
 `site`: PMs the user, assuming they're not ranked, the Writing Room's website.
 
@@ -104,6 +104,8 @@ Commands any user can use~!
 `randpoke <optional number between one and six>`: Generates a random Pokemon from the Pokedex. If the number is left blank, then it will simply generate one.
 
 `newbie`: Gives a newcomer to the room a nice friendly greeting~
+
+`time`: Returns the current time (for the bot) to the room.
 
 Installation
 ============
