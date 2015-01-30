@@ -806,104 +806,23 @@ exports.commands = {
 
 	'word' : 'wotd',
 	wotd: function(arg, by, room, con) {
-	 if (!this.hasRank(by, '+%@#')) {
-       		  var text = "/pm " + by + ", ";
-	  } else {
-	       var text = "";
-	  }
-	  if (arg) {
-	       if (!this.hasRank(by, '+%@#')) return false;
-          if (arg == 'check') return this.say(con, room, "The Word of the Day was last updated at: " + settings.wotdSetAt + ", the word being '" + settings.wotd + "', and the definition being '" + settings.wotdDefinition + "'.");
-	       arg = arg.split(','); 
-	       if (!arg[0] || !arg[1]) return this.say(con, room, text + "Please remember to include a defintion! The format is: word, defintion.");
-	       settings.wotd = arg[0];
-	        settings.wotdDefinition = arg.slice(1).join(',').trim();
-	         this.say(con, room, "The Word of the Day has been set to \"" + arg[0] + "\"!")
-        var today = new Date(); 
-        var dd = today.getDate(); 
-        var mm = today.getMonth()+1; 
-        var yyyy = today.getFullYear();
-        var hr = today.getHours();
-        var mi = today.getMinutes();
-        var se = today.getSeconds();
-        if (mm === 1) { this.mmm = "January" };
-        if (mm === 2) { this.mmm = "February" };
-        if (mm === 3) { this.mmm = "March" };
-        if (mm === 4) { this.mmm = "April" };
-        if (mm === 5) { this.mmm = "May" };
-        if (mm === 6) { this.mmm = "June" };
-        if (mm === 7) { this.mmm = "July" };
-        if (mm === 8) { this.mmm = "August" };
-        if (mm === 9) { this.mmm = "September" };
-        if (mm === 10) { this.mmm = "October" };
-        if (mm === 11) { this.mmm = "November" };
-        if (mm === 12) { this.mmm = "December" };
-        if (dd === 1) { this.ddd = "first" };
-        if (dd === 2) { this.ddd = "second" };
-        if (dd === 3) { this.ddd = "third" };
-        if (dd === 4) { this.ddd = "fourth" };
-        if (dd === 5) { this.ddd = "fifth" };
-        if (dd === 6) { this.ddd = "sixth" };
-        if (dd === 7) { this.ddd = "seventh" };
-        if (dd === 8) { this.ddd = "eighth" };
-        if (dd === 9) { this.ddd = "nineth" };
-        if (dd === 10) { this.ddd = "tenth" };
-        if (dd === 11) { this.ddd = "eleventh" };
-        if (dd === 12) { this.ddd = "twelfth" };
-        if (dd === 13) { this.ddd = "thirteenth" };
-        if (dd === 14) { this.ddd = "forteenth" };
-        if (dd === 15) { this.ddd = "fifteenth" };
-        if (dd === 16) { this.ddd = "sixteenth" };
-        if (dd === 17) { this.ddd = "seventeenth" };
-        if (dd === 18) { this.ddd = "eighteenth" };
-        if (dd === 19) { this.ddd = "nineteenth" };
-        if (dd === 20) { this.ddd = "twentieth" };
-        if (dd === 21) { this.ddd = "twenty-first" };
-        if (dd === 22) { this.ddd = "twenty-second" };
-        if (dd === 23) { this.ddd = "twenty-third" };
-        if (dd === 24) { this.ddd = "twenty-fourth" };
-        if (dd === 25) { this.ddd = "twenty-fifth" };
-        if (dd === 26) { this.ddd = "twenty-sixth" };
-        if (dd === 27) { this.ddd = "twenty-seventh" };
-        if (dd === 28) { this.ddd = "twenty-eighth" };
-        if (dd === 29) { this.ddd = "twenty-nineth" };
-        if (dd === 30) { this.ddd = "thirtieth" };
-        if (dd === 31) { this.ddd = "thirty-first" };
-        //And one more, just for good luck.
-        if (dd === 32) { this.ddd = "thirty-second" };
-        var AMorPM = "AM"
-        if (hr === 12) AMorPM = "PM";
-        if (hr === 0) { hr = 12; AMorPm = "AM" };
-        if (hr > 12) {
-            if (hr === 13) { hr = 1 };
-            if (hr === 14) { hr = 2 };
-            if (hr === 15) { hr = 3 };
-            if (hr === 16) { hr = 4 };
-            if (hr === 17) { hr = 5 };
-            if (hr === 18) { hr = 6 };
-            if (hr === 19) { hr = 7 };
-            if (hr === 20) { hr = 8 };
-            if (hr === 21) { hr = 9 };
-            if (hr === 22) { hr = 10 };
-            if (hr === 23) { hr = 11 };
-            AMorPM = "PM";
-        };
-        if (dd<10) { dd = "0" + dd }; 
-        if (mm<10) { mm = "0" + mm };
-        if (mi<10) { mi = "0" + mi };
-        if (se<10) { se = "0" + se };
-        var theDay = today.getDay(); 
-        if (theDay === 0) { this.theDay = "Sunday" }; 
-        if (theDay === 1) { this.theDay = "Monday" }; 
-        if (theDay === 2) { this.theDay = "Tuesday" };
-        if (theDay === 3) { this.theDay = "Wednesday" };
-        if (theDay === 4) { this.theDay = "Thursday" };
-        if (theDay === 5) { this.theDay = "Friday" };
-        if (theDay === 6) { this.theDay = "Saturday"};
-        settings.wotdSetAt = hr + ":" + mi + ":" + se + " " + AMorPM + ", " + mm+'/'+dd+'/'+yyyy +', the ' + this.ddd + " of " + this.mmm + ', ' + yyyy + ' (' + this.theDay + ')';
-	          this.writeSettings();
-	       }
-	      if (!arg) this.say(con, room, text + "Today's Word of the Day is: " + this.settings.wotd + ". Its definition is: " + this.settings.wotdDefinition);
+		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
+			var text = '';
+		} else {
+			var text = '/pm ' + by + ', ';
+		}
+		if (!arg) return this.say(con, room, text + "Today's Word of the Day is: **" + this.settings.wotd.word + "**. Its definition is: " + this.settings.wotd.definition);
+		if (toId(arg) === 'check' || toId(arg) === 'time') return this.say(con, room, text + "The Word of the Day was last updated to **" + this.settings.wotd.word + "** " + this.getTimeAgo(this.settings.wotd.time) + " ago by " + this.settings.wotd.user);
+		arg = arg.split(',');
+		if (!arg[0] || !arg[1]) return this.say(con, room, text + "Please remember to include a defintion! The format is: word, defintion.");
+		this.settings.wotd = {
+			word: arg[0],
+			definition: arg.slice(1).join(',').trim(),
+			time: Date.now(),
+			user: by.substr(1)
+		};
+		this.writeSettings();
+		this.say(con, room, text + "The Word of the Day has been set to '" + arg[0] + "'!");
 	},
 	site: function(arg, by, room, con) {
 		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
@@ -1009,16 +928,17 @@ exports.commands = {
 		} else {
 			var text = '/pm ' + by + ', ';
 		}
-		this.say(con, room, text + 'Be sure to read through our list of official activities! http://pswriting.weebly.com/activities.html');
+		this.say(con, room, text + 'Check out this page for our list of room activities! http://pswriting.weebly.com/room-activities.html');
 	},
-	newbie: function(arg, by, room, con) {
+	newbie: 'rules',
+	faq: 'rules',
+	rules: function(arg, by, room, con) {
 		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
 			var text = '';
 		} else {
 			var text = '/pm ' + by + ', ';
 		}
-		this.say(con, room, text + 'Welcome to the Writing room! In case you missed the big shiny box, please make sure to visit the room website and read the rules listed there: http://pswriting.weebly.com/rules.html');
-		this.say(con, room, text + 'Also, feel free to ask the staff any questions you may have. I\'m sure they\'d love to answer them!');
+		this.say(con, room, text + "If you're new to the Writing room, be sure to read our introduction: http://pswriting.weebly.com/introduction.html Feel free to ask any room staff any questions that you may have!");
 	},
 	esupport: function(arg, by, room, con) {
 		if (this.hasRank(by, '%@#~') || room.charAt(0) === ',') {
@@ -1044,7 +964,18 @@ exports.commands = {
 		} else {
 			var text = '/pm ' + by + ', ';
 		}
-		this.say(con, room, text + 'The current Contests and Events for the Writing Room can be found here: http://pswriting.weebly.com/contests--events.html');
+		this.say(con, room, text + 'Visit this page for a list of our weekly challenges and contests: http://pswriting.weebly.com/events.html');
+	},
+	slam: 'sundayscribing',
+	sundayslam: 'sundayscribing',
+	scribing: 'sundayscribing',
+	sundayscribing: function(arg, by, room, con) {
+		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
+			var text = '';
+		} else {
+			var text = '/pm ' + by + ', ';
+		}
+		this.say(con, room, text + "Every week we hold a __Pokemon Showdown! Sunday Scribing__ challenge. Participants are to write a story or a poem, depending on which week it is, based on the topic announced on Saturday. They have the whole of Sunday to submit it. For more info: http://goo.gl/Ay6U5N");
 	},
 	plug: function(arg, by, room, con) {
 		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
@@ -1053,14 +984,6 @@ exports.commands = {
 			var text = '/pm ' + by + ', ';
 		}
 		this.say(con, room, text + 'Come join our Plug.dj~! https://plug.dj/pokemon-showdown-writing-room');
-	},
-	faq: function(arg, by, room, con) {
-		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
-		this.say(con, room, text + 'Check out our Frequently Asked Questions page: http://bit.do/PSWritingDriveFAQ');
 	},
 	poems: function(arg, by, room, con) {
 		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
@@ -1077,14 +1000,6 @@ exports.commands = {
 			var text = '/pm ' + by + ', ';
 		}
 		this.say(con, room, text + 'Writing Room Stories: http://bit.do/PSwritingstories');
-	},
-	rules: function(arg, by, room, con) {
-		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
-		this.say(con, room, text + 'Please read our Rules page: http://pswriting.weebly.com/rules.html ^.^');
 	},
 	voice: function(arg, by, room, con) {
 		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
@@ -1113,7 +1028,7 @@ exports.commands = {
 					"Hey, you. Yes, you! Do __you__ want to improve the room? If you answered 'no', then go sit in the naughty corner. If you said 'yes', on the other hand, then go ahead and click the shiny 'submit and idea' button in the roominto!",
 					"Want to play a writing game? Ask one of our friendly staff to host one, or if you think you're up to it, try hosting yourself! It's a great way to gain a good reputation!",
 					"Every week we hold a Pokemon Showdown! Sunday Scribing contest. Participants are to write a story or a poem, depending on which week it is, based on the topic announced on Saturday. They have the whole of Sunday to write it. For more info: http://goo.gl/Ay6U5N",
-					"Today's Word of the Day is: " + this.settings.wotd + ". Its definition is: " + this.settings.wotdDefinition
+					"Today's Word of the Day is: " + this.settings.wotd.word + ". Its definition is: " + this.settings.wotd.definition
 				];
 				var num = Math.floor((Math.random() * tips.length));
 				self.say(con, room, "**Writing Room Tip #" + (num + 1) + ":** " + tips[num]);
@@ -1156,7 +1071,7 @@ exports.commands = {
 		var user = toId(by);
 		if (!this.messages[user]) return this.say(con, room, text + 'Your inbox is empty.');
 		for (var i = 0; i < this.messages[user].length; i++) {
-			this.say(con, room, text + this.messages[user][i].from + " said, " + this.getTimeAgo(this.messages[user][i].time) + " ago: " + this.messages[user][i].text);
+			this.say(con, room, text + this.getTimeAgo(this.messages[user][i].time) + " ago, " + this.messages[user][i].from + " said: " + this.messages[user][i].text);
 		}
 		delete this.messages[user];
 		this.writeMessages();

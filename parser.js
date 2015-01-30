@@ -253,7 +253,7 @@ exports.parse = {
 				var user = toId(by);
 				if (this.room && this.messages[user]) {
 					for (var i = 0; i < this.messages[user].length; i++) {
-						this.say(connection, this.room, "/pm " + by + ", " + this.messages[user][i].from + " said " + this.getTimeAgo(this.messages[user][i].time) + " ago: " + this.messages[user][i].text);
+						this.say(connection, this.room, "/pm " + by + ", " + this.getTimeAgo(this.messages[user][i].time) + " ago, " + this.messages[user][i].from + " said: " + this.messages[user][i].text);
 					}
 					delete this.messages[user];
 					this.writeMessages();
