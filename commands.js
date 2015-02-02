@@ -833,11 +833,6 @@ exports.commands = {
 		this.say(con, room, text + 'Writing Room\'s Website: http://pswriting.weebly.com/');
 	},
 	time: function(arg, by, room, con) {
-	if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
-		var text = '';
-	} else {
-		var text = '/pm ' + by + ', ';
-	}
         var today = new Date(); 
         var dd = today.getDate(); 
         var mm = today.getMonth()+1; 
@@ -845,22 +840,22 @@ exports.commands = {
         var hr = today.getHours();
         var mi = today.getMinutes();
         var se = today.getSeconds();
-        if (mm === 1) { this.mmm = "January" };
-        if (mm === 2) { this.mmm = "February" };
-        if (mm === 3) { this.mmm = "March" };
-        if (mm === 4) { this.mmm = "April" };
-        if (mm === 5) { this.mmm = "May" };
-        if (mm === 6) { this.mmm = "June" };
-        if (mm === 7) { this.mmm = "July" };
-        if (mm === 8) { this.mmm = "August" };
-        if (mm === 9) { this.mmm = "September" };
-        if (mm === 10) { this.mmm = "October" };
-        if (mm === 11) { this.mmm = "November" };
-        if (mm === 12) { this.mmm = "December" };
+        if (mm === 1) { this.mmm = "January"; var sea = "winter"};
+        if (mm === 2) { this.mmm = "Febuary"; var sea = "winter"};
+        if (mm === 3) { this.mmm = "March"; var sea = "spring"};
+        if (mm === 4) { this.mmm = "April"; var sea = "spring"};
+        if (mm === 5) { this.mmm = "May"; var sea = "spring"};
+        if (mm === 6) { this.mmm = "June"; var sea = "summer"};
+        if (mm === 7) { this.mmm = "July"; var sea = "summer"};
+        if (mm === 8) { this.mmm = "August"; var sea = "summer"};
+        if (mm === 9) { this.mmm = "September"; var sea = "autumn"};
+        if (mm === 10) { this.mmm = "October"; var sea = "autumn"};
+        if (mm === 11) { this.mmm = "November"; var sea = "autumn"};
+        if (mm === 12) { this.mmm = "December"; var sea = "winter"};
         if (dd === 1) { this.ddd = "first" };
         if (dd === 2) { this.ddd = "second" };
         if (dd === 3) { this.ddd = "third" };
-        if (dd === 4) { this.ddd = "fourth" };
+        if (dd === 4) { this.ddd = "forth" };
         if (dd === 5) { this.ddd = "fifth" };
         if (dd === 6) { this.ddd = "sixth" };
         if (dd === 7) { this.ddd = "seventh" };
@@ -880,7 +875,7 @@ exports.commands = {
         if (dd === 21) { this.ddd = "twenty-first" };
         if (dd === 22) { this.ddd = "twenty-second" };
         if (dd === 23) { this.ddd = "twenty-third" };
-        if (dd === 24) { this.ddd = "twenty-fourth" };
+        if (dd === 24) { this.ddd = "twenty-forth" };
         if (dd === 25) { this.ddd = "twenty-fifth" };
         if (dd === 26) { this.ddd = "twenty-sixth" };
         if (dd === 27) { this.ddd = "twenty-seventh" };
@@ -891,8 +886,8 @@ exports.commands = {
         //And one more, just for good luck.
         if (dd === 32) { this.ddd = "thirty-second" };
         var AMorPM = "AM"
-        if (hr === 12) AMorPM = "PM";
-        if (hr === 0) { hr = 12; AMorPm = "AM" };
+        if (hr = 12) AMorPM = "PM"
+        if (hr === 24) { hr = 12; AMorPm = "AM" };
         if (hr > 12) {
             if (hr === 13) { hr = 1 };
             if (hr === 14) { hr = 2 };
@@ -912,24 +907,16 @@ exports.commands = {
         if (mi<10) { mi = "0" + mi };
         if (se<10) { se = "0" + se };
         var theDay = today.getDay(); 
-        if (theDay === 0) { this.theDay = "Sunday" }; 
+        if (theDay === 0) { this.theDay === "Sunday" }; 
         if (theDay === 1) { this.theDay = "Monday" }; 
         if (theDay === 2) { this.theDay = "Tuesday" };
         if (theDay === 3) { this.theDay = "Wednesday" };
         if (theDay === 4) { this.theDay = "Thursday" };
         if (theDay === 5) { this.theDay = "Friday" };
         if (theDay === 6) { this.theDay = "Saturday"};
-        var today = hr + ":" + mi + ":" + se + " " + AMorPM + ", " + mm+'/'+dd+'/'+yyyy +', the ' + this.ddd + " of " + this.mmm + ', ' + yyyy + ' (' + this.theDay + ')';
-        this.say(con, room, text + "The current time is: " + today);
-	},
-	activities: function(arg, by, room, con) {
-		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
-		this.say(con, room, text + 'Check out this page for our list of room activities! http://pswriting.weebly.com/room-activities.html');
-	},
+        var today = hr + ":" + mi + ":" + se + " " + AMorPM + ", " + mm + '/' + dd + '/' + yyyy + ', the ' + this.ddd + " of the " + sea + " month of " + this.mmm + ', ' + yyyy + ' (' + this.theDay + ')';
+        this.say(con, room, "The current time is: " + today);
+    },
 	newbie: 'rules',
 	faq: 'rules',
 	rules: function(arg, by, room, con) {
