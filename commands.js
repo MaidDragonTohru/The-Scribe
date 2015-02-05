@@ -907,7 +907,7 @@ exports.commands = {
         if (mi<10) { mi = "0" + mi };
         if (se<10) { se = "0" + se };
         var theDay = today.getDay(); 
-        if (theDay === 0) { this.theDay === "Sunday" }; 
+        if (theDay === 0) { this.theDay = "Sunday" }; 
         if (theDay === 1) { this.theDay = "Monday" }; 
         if (theDay === 2) { this.theDay = "Tuesday" };
         if (theDay === 3) { this.theDay = "Wednesday" };
