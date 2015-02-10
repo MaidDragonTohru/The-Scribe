@@ -460,7 +460,7 @@ exports.commands = {
 		perkList.splice(perkList.indexOf(perk2), 1);
 		var perk3 = perkList[Math.floor(perkList.length * Math.random())];
 		var debuff = debuffs[Math.floor(debuffs.length * Math.random())];
-		this.say(con, room, text + "Randomly generated character: __A " + gender + ", " + adjective + " " + type + " (" + role + "). " + possessivePronoun + " postive factors include: " + perk1 + ", " + perk2 + ", and " + perk3 + ", though " + pronoun + (gender === "neuter" ? " are" : " is") + " unfortunately rather " + debuff + ".__");
+		this.say(con, room, text + "Randomly generated character: __A " + gender + ", " + adjective + " " + type + " (" + role + "). " + possessivePronoun + " positive factors include: " + perk1 + ", " + perk2 + ", and " + perk3 + ", though " + pronoun + (gender === "neuter" ? " are" : " is") + " unfortunately rather " + debuff + ".__");
 	},
 	gentype: 'randomtype',
 	randtype: 'randomtype',
@@ -953,6 +953,7 @@ exports.commands = {
 		}
 		this.say(con, room, text + 'Visit this page for a list of our weekly challenges and contests: http://pswriting.weebly.com/events.html');
 	},
+	hype: 'sundayscribing',
 	slam: 'sundayscribing',
 	sundayslam: 'sundayscribing',
 	scribing: 'sundayscribing',
