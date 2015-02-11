@@ -35,7 +35,8 @@ var perks = ["kind of heart", "powerful", "handsome", "ambitious", "amiable", "b
 ];
 var debuffs = ["sly", "unclean", "smelly", "obnoxiously loud", "fond of 'tricks'", "fond of 'games'", "fond of 'jokes'", "prone to 'accidentally' taking others' things", "cocky", 
 	"prone to falling over", "prone to bad luck at times", "clingy", "foolish", "fussy", "greedy", "gullible", "impatient", "inconsiderate", "lazy", "moody", "obsessive", 
-	"narrow-minded", "patronizing", "resentful", "unreliable", "vague", "weak-willed", "egotistical", "sensitive", "Grammar Nazi-ish"
+	"narrow-minded", "patronizing", "resentful", "unreliable", "vague", "weak-willed", "egotistical", "sensitive", "Grammar Nazi-ish", "'bitchy'", "emotionally scarred",
+	"overly-serious", "volatile", "morally scrupulous", "lacking of empathy", "prone to overreacting", "overbearing", "prone to panic attacks", "self-pessimistic"
 ];
 var genres = ["Action", "Adventure", "Comedy", "Crime", "Drama", "Fantasy", "Historical", "Horror", "Mystery", "Philosophical", "Romance", 
 	"Saga", "Satire", "Science Fiction", "Thriller"
