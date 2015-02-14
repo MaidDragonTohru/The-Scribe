@@ -917,7 +917,7 @@ exports.commands = {
         if (theDay === 6) { this.theDay = "Saturday"};
         var today = hr + ":" + mi + ":" + se + " " + AMorPM + ", " + mm + '/' + dd + '/' + yyyy + ', the ' + this.ddd + " of the " + sea + " month of " + this.mmm + ', ' + yyyy + ' (' + this.theDay + ')';
         this.say(con, room, "The current time is: " + today);
-    },
+	},
 	newbie: 'rules',
 	faq: 'rules',
 	rules: function(arg, by, room, con) {
