@@ -40,12 +40,6 @@ Moderators and Above
 
 `viewbannedphrases; viewbannedwords ;vab`: Used to get the bot to Private Message the sender a list of every banned phrase or word.
 
-`pl; poeticlicense`: Used to give a user a Poetic License. This is classified as an unofficial rank, just below Voice.
-
-`upl; unpoeticlisense`: Used to revoke a user's Poetic License. 
-
-`vpl; viewpoeticlicense`: Makes the bot return a list of all users that possess a Poetic License VIA Private Messages.
-
 `announce on/off`: Used to toggle the state of the announcements for the room. Useful. ^.^
 
 Drivers and Above
