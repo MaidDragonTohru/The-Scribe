@@ -812,7 +812,7 @@ exports.commands = {
 		} else {
 			var text = '/pm ' + by + ', ';
 		}
-		if (!arg) return this.say(con, room, text + "Today's Word of the Day is: **" + this.settings.wotd.word + "**. Its definition is: " + this.settings.wotd.definition);
+		if (!arg || !this.hasRank(by, '+%@#~')) return this.say(con, room, text + "Today's Word of the Day is: **" + this.settings.wotd.word + "**. Its definition is: " + this.settings.wotd.definition);
 		if (toId(arg) === 'check' || toId(arg) === 'time') return this.say(con, room, text + "The Word of the Day was last updated to **" + this.settings.wotd.word + "** " + this.getTimeAgo(this.settings.wotd.time) + " ago by " + this.settings.wotd.user);
 		arg = arg.split(',');
 		if (!arg[0] || !arg[1]) return this.say(con, room, text + "Please remember to include a defintion! The format is: word, defintion.");
