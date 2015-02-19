@@ -1007,20 +1007,25 @@ exports.commands = {
 		} else if (arg === 'on') {
 			var self = this;
 			this.buzzer = setInterval(function() {
-				var tips = ["Don't forget to allow people to comment on your work when it's done! Click 'Share' and set permissions accordingly.",
+				var tips = ["Don't forget to allow people to comment on your work when it's done! Click 'Share', and set permissions accordingly.",
 					"We like to play writing games, too! Click 'Activities' in our room introduction (the fancy box you saw when you joined) to see what games are available!",
 					"Looking for feedback? Ask writers for an R/R, or a 'review for review'. It's a win-win for both parties!",
 					"Questions on the (+) voice rank? Read our Voice Guidelines at http://bit.do/pswritingvoiceguidlines for more information.",
-					"Our Halloween contest has ended! Check out http://bit.do/pscontestresults for more info on the turnout, and thank you to all that participated!",
+					"Confused as to the time? Wanting to punch timezones in the face? Look no further, for I have a fancy ``time`` command! Try it out!",
 					"Would you like to host your work on our cloud drive? Ask a staff member about getting your own folder!",
 					"Be sure to keep your work's presentation up to par, or AxeBane will hunt you down! Or, you could ask one of our staff to take a look and check it for you, but that's boring.",
 					"Hey, you. Yes, you! Do __you__ want to improve the room? If you answered 'no', then go sit in the naughty corner. If you said 'yes', on the other hand, then go ahead and click the shiny 'submit and idea' button in the roominto!",
 					"Want to play a writing game? Ask one of our friendly staff to host one, or if you think you're up to it, try hosting yourself! It's a great way to gain a good reputation!",
-					"Every week we hold a Pokemon Showdown! Sunday Scribing contest. Participants are to write a story or a poem, depending on which week it is, based on the topic announced on Saturday. They have the whole of Sunday to write it. For more info: http://goo.gl/Ay6U5N",
-					"Today's Word of the Day is: " + this.settings.wotd.word + ". Its definition is: " + this.settings.wotd.definition
+					"Every week we hold a Pokemon Showdown! Sunday Scribing contest. Participants are to write a story or a poem, depending on which week it is, based on the topic announced on Saturday. They have the whole of Sunday to write it. For more info, visit http://goo.gl/Ay6U5N",
+					"Today's Word of the Day is: " + this.settings.wotd.word + ". Its definition is: " + this.settings.wotd.definition,
+					"Need help getting started on a story? Try out the ``;idea`` command! Or, if you need to be a little more specific, try things like ``;randchar`` or ``;randscene``. You'll be writing in no time!",
+					"Did you know that we have an official place to share music? It's a great place to listen to something whilst writing, perhaps even gaining some inspiration! Of course, you could also just hang out there and chat. Interested? Good! Head on over to https://plug.dj/pokemon-showdown-writing-room",
+					"Need a quick way to access our Community Drive? Type ``;drive``!",
+					"Psst... You. Yeah, you! Did you know that you can send messages to your scribing buddies just by using the ``;mail`` command? It works, even when they're offline! :o",
+					"Need some love? Try using the ``esupport`` command. I promise I won't bite. <3"
 				];
 				var num = Math.floor((Math.random() * tips.length));
-				self.say(con, room, "**Writing Room Tip #" + (num + 1) + ":** " + tips[num]);
+				self.say(con, room, tips[num]);
 			}, 60*60*1000);
 		}
 	},
@@ -1039,6 +1044,7 @@ exports.commands = {
 		arg = arg.split(',');
 		if (!arg[0] || !arg[1]) return this.say(con, room, text + 'Please use the following format: ";mail user, message"');
 		var user = toId(arg[0]);
+		if (user === toId(config.nick)) return this.say(con, room, text + 'Oh, dear. You do know you can just tell me these things up-front, right?');
 		var message = arg.slice(1).join(',').trim();
 		if (message.length > 215) return this.say(con, room, text + 'Your message cannot exceed 215 characters');
 		if (user.length > 18) return this.say(con, room, text + 'That\'s not a real username! It\'s too long! >:I');
