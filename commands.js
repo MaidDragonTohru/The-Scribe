@@ -887,7 +887,7 @@ exports.commands = {
         //And one more, just for good luck.
         if (dd === 32) { this.ddd = "thirty-second" };
         var AMorPM = "AM"
-        if (hr = 12) AMorPM = "PM"
+        if (hr === 12) AMorPM = "PM"
         if (hr === 24) { hr = 12; AMorPm = "AM" };
         if (hr > 12) {
             if (hr === 13) { hr = 1 };
