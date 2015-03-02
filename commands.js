@@ -801,24 +801,40 @@ exports.commands = {
 		var perk3 = perkList[Math.floor(perkList.length * Math.random())];
 		var debuff = debuffs[Math.floor(debuffs.length * Math.random())];
 		this.say(con, room, text + "Randomly generated story | Setting: __" + adjective + " " + location + "__ | Genre: __" + genre1 + (genre2 ? "/" + genre2 : "") + "__ | " + role + ": __a " + gender + ", " + characterAdjective + " " + type + ". " + possessivePronoun + " postive factors include: " + perk1 + ", " + perk2 + ", and " + perk3 + ", though " + pronoun + (gender === "neuter" ? " are" : " is") + " unfortunately rather " + debuff + ".__");
-	},
-
-	//End Random Commands
-
-	'word' : 'wotd',
+    },
+    
+    //End Random Commands
+    
+	'word': 'wotd',
 	wotd: function(arg, by, room, con) {
 		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
 			var text = '';
 		} else {
 			var text = '/pm ' + by + ', ';
 		}
-		if (!arg || !this.hasRank(by, '+%@#~')) return this.say(con, room, text + "Today's Word of the Day is: **" + this.settings.wotd.word + "**. Its definition is: " + this.settings.wotd.definition);
+        if (!this.settings.wotd.kind) this.settings.wotd.kind = "Dummy Value";
+        var wordKind = toId(this.settings.wotd.kind);
+        if (wordKind === "noun" || wordKind === "n" || wordKind === "pronoun" || wordKind === "verb") {
+            var AorAn = "a";
+        } else if (wordKind === "adjective" || wordKind === "adj" || wordKind === "adverb") {
+            var AorAn = "an";
+        } else {
+            var AorAn = "a(n)";
+        };
+        
+		if (!arg || !this.hasRank(by, '+%@#~')) {
+            this.say(con, room, text + "Today's Word of the Day is: __" + this.settings.wotd.word + "__, pronounced '" + this.settings.wotd.pron + ".' It is " + AorAn + " " + this.settings.wotd.kind + ".");
+            return this.say(con, room, text + "Its definition is: " + this.settings.wotd.definition);
+        }
 		if (toId(arg) === 'check' || toId(arg) === 'time') return this.say(con, room, text + "The Word of the Day was last updated to **" + this.settings.wotd.word + "** " + this.getTimeAgo(this.settings.wotd.time) + " ago by " + this.settings.wotd.user);
-		arg = arg.split(',');
-		if (!arg[0] || !arg[1]) return this.say(con, room, text + "Please remember to include a defintion! The format is: word, defintion.");
+		arg = arg.split(', ');
+		if (!arg[0] || !arg[1] || !arg[2] || !arg[3]) return this.say(con, room, text + "Please remember to include the pronounciation, to state what kind of word it is (noun, verb, adjective), and to include the defintion! The format is: __word__, __pronunciation__, __kind__, __defintion__.");
 		this.settings.wotd = {
 			word: arg[0],
-			definition: arg.slice(1).join(',').trim(),
+            pron: arg[1],
+            kind: arg[2],
+            AorAn: AorAn,
+			definition: arg.slice(3).join(',').trim(),
 			time: Date.now(),
 			user: by.substr(1)
 		};
