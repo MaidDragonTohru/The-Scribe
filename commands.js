@@ -990,6 +990,15 @@ exports.commands = {
 		}
 		this.say(con, room, text + 'Come join our Plug.dj~! https://plug.dj/pokemon-showdown-writing-room');
 	},
+	titlehelp: 'title'
+	title: function(arg, by, room, con) {
+		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
+			var text = '';
+		} else {
+			var text = '/pm ' + by + ', ';
+		}
+		this.say(con, room, text + 'Need help capitalising a title? Try out this helpful tool! http://titlecapitalization.com/');
+	},
 	poems: function(arg, by, room, con) {
 		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
 			var text = '';
