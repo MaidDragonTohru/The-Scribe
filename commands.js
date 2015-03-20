@@ -990,7 +990,7 @@ exports.commands = {
 		}
 		this.say(con, room, text + 'Come join our Plug.dj~! https://plug.dj/pokemon-showdown-writing-room');
 	},
-	titlehelp: 'title'
+	titlehelp: 'title',
 	title: function(arg, by, room, con) {
 		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
 			var text = '';
