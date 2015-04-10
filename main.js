@@ -54,18 +54,10 @@ global.toId = function(text) {
 };
 
 global.stripCommands = function(text) {
-	return ((text.trim().charAt(0) === '/') ? '/' : ((text.trim().charAt(0) === '!') ? ' ':'')) + text.trim();
-};
-
-global.send = function(connection, data) {
-	if (connection.connected) {
-		if (!(data instanceof Array)) {
-			data = [data.toString()];
-		}
-		data = JSON.stringify(data);
-		dsend(data);
-		connection.send(data);
-	}
+	text = text.trim();
+	if (text.charAt(0) === '/') return '/' + text;
+	if (text.charAt(0) === '!' || /^>>>? /.test(text)) return ' ' + text;
+	return text;
 };
 
 function runNpm(command) {
@@ -127,26 +119,6 @@ global.config = require('./config.js');
 global.Pokedex = require('./pokedex.js').pokedex;
 global.Movedex = require('./movedex.js').movedex;
 
-global.cleanChatData = function(chatData) {
-	for (var user in chatData) {
-		for (var room in chatData[user]) {
-			if (!chatData[user][room].times || !chatData[user][room].times.length) {
-				delete chatData[user][room];
-				continue;
-			}
-			var newTimes = [];
-			var now = Date.now();
-			for (var i in chatData[user][room].times) {
-					if ((now - chatData[user][room].times[i]) < 5*1000) newTimes.push(chatData[user][room].times[i]);
-			}
-			newTimes.sort();
-			chatData[user][room].times = newTimes;
-			if (chatData[user][room].points > 0 && chatData[user][room].points < 4) chatData[user][room].points--;
-		}
-	}
-	return chatData;
-};
-
 var checkCommandCharacter = function() {
 	if (!/[^a-z0-9 ]/i.test(config.commandcharacter)) {
 		error('invalid command character; should at least contain one non-alphanumeric character');
@@ -183,6 +155,41 @@ var WebSocketClient = require('websocket').client;
 global.Commands = require('./commands.js').commands;
 global.Parse = require('./parser.js').parse;
 
+var connection = null;
+var queue = [];
+var dequeueTimeout = null;
+var lastSentAt = 0;
+
+global.send = function(data) {
+	if (!connection.connected) return false;
+	
+	var now = Date.now();
+	var diff = now - lastSentAt;
+	if (diff < 650) {
+		if (!dequeueTimeout) dequeueTimeout = setTimeout(dequeue, 650 - diff);
+		queue.push(data);
+		return false;
+	}
+
+	if (!Array.isArray(data)) data = [data.toString()];
+	data = JSON.stringify(data);
+	dsend(data);
+	connection.send(data);
+
+	lastSentAt = now;
+	if (dequeueTimeout) {
+		if (queue.length) {
+			dequeueTimeout = setTimeout(dequeue, 650);
+		} else {
+			dequeueTimeout = null;
+		}
+	}
+};
+
+function dequeue() {
+	send(queue.shift());
+}
+
 var connect = function(retry) {
 	if (retry) {
 		info('retrying...');
@@ -199,14 +206,15 @@ var connect = function(retry) {
 		}, 60000);
 	});
 
-	ws.on('connect', function(connection) {
+	ws.on('connect', function(con) {
+		connection = con;
 		ok('connected to server ' + config.server);
 
-		connection.on('error', function(err) {
+		con.on('error', function(err) {
 			error('connection error: ' + sys.inspect(err));
 		});
 
-		connection.on('close', function() {
+		con.on('close', function() {
 			// Is this always error or can this be intended...?
 			error('connection closed: ' + sys.inspect(arguments));
 			info('retrying in one minute');
@@ -216,10 +224,10 @@ var connect = function(retry) {
 			}, 60000);
 		});
 
-		connection.on('message', function(message) {
+		con.on('message', function(message) {
 			if (message.type === 'utf8') {
 				recv(sys.inspect(message.utf8Data));
-				Parse.data(message.utf8Data, connection);
+				Parse.data(message.utf8Data);
 			}
 		});
 	});

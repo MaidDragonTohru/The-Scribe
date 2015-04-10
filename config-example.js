@@ -4,7 +4,7 @@
 // If you really don't know how to do this... Run `node getserver.js URL`.
 // Fill in the URL of the client where `URL` is.
 // For example: `node getserver.js http://example-server.psim.us/`
-exports.server = 'sim.smogon.com';
+exports.server = 'sim.psim.us';
 exports.port = 8000;
 
 // This is the server id.
@@ -28,11 +28,6 @@ exports.rooms = ['example room name', 'another example'];
 // Private rooms will be moderated differently (since /warn doesn't work in them).
 // The bot will also avoid leaking the private rooms through .seen
 exports.privaterooms = [];
-
-// Roleplaying rooms.
-// Roleplaying rooms are rooms where the roleplaying commands should be enabled,
-// in case the bot moderates rooms where there is none.
-exports.rprooms = [];
 
 // The character text should start with to be seen as a command.
 // Note that using / and ! might be 'dangerous' since these are used in
@@ -69,6 +64,9 @@ exports.excepts = [];
 // Whitelisted users are those who the bot will not enforce moderation for.
 exports.whitelist = [];
 
+// Users in this list can use the regex autoban commands. Only add users who know how to write regular expressions and have your complete trust not to abuse the commands.
+exports.regexautobanwhitelist = [];
+
 // Add a link to the help for the bot here. When there is a link here, .help and .guide
 // will link to it.
 exports.botguide = '';
@@ -81,6 +79,9 @@ exports.logpms = false;
 
 //Here, you specify the avatar you want the bot to use. Nice and handy if you don't want it to constantly have the default avatar.
 exports.avatarNumber = ['52'];
+
+// Add a link to the git repository for the bot here for .git to link to.
+exports.fork = 'http://github.com/TalkTakesTime/Pokemon-Showdown-Bot';
 
 // This allows the bot to act as an automated moderator. If enabled, the bot will
 // mute users who send 6 lines or more in 6 or fewer seconds for 7 minutes. NOTE: THIS IS
@@ -99,3 +100,6 @@ exports.punishvals = {
 	4: 'roomban',
 	5: 'ban'
 };
+
+//This key is used to deliver requests from Google Spreadsheets. Used by the wifi room.
+exports.googleapikey = '';
