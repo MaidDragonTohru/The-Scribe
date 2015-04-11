@@ -53,21 +53,12 @@ exports.commands = {
 	 * These commands are here to provide information about the bot.
 	 */
 	about: function (arg, by, room) {
-		if (this.hasRank(by, '#~') || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
-		text += 'Writing Bot: fork of Roleplaying Bot by Morfent, customised for use in room __Writing__ by AxeBane. Github Repository: http://github.com/AxeBane/Axe-s-Writing-Bot';
-		this.say(room, text);
+		var text = this.hasRank(by, '#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
+		this.say(room, text + "**Writing Bot** by AxeBane & sirDonovan __(forked from Pokémon Showdown Bot by: Quinella, TalkTakesTime, and Morfent)__");
 	},
 	help: 'guide',
 	guide: function (arg, by, room) {
-		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		if (config.botguide) {
 			text += 'A guide on how to use this bot can be found here: ' + config.botguide;
 		} else {
@@ -85,7 +76,7 @@ exports.commands = {
 	 */
 
 	reload: function (arg, by, room) {
-		if (toId(by) !== 'axebane') return false;
+		if (config.excepts.indexOf(toId(by)) === -1) return false;
 		try {
 			this.uncacheTree('./commands.js');
 			Commands = require('./commands.js').commands;
@@ -112,7 +103,7 @@ exports.commands = {
 			this.say(room, e.name + ": " + e.message);
 		}
 	},
-	uptime: function(arg, by, room) {
+	uptime: function (arg, by, room) {
 		var text = config.excepts.indexOf(toId(by)) < 0 ? '/pm ' + by + ', **Uptime:** ' : '**Uptime:** ';
 		var divisors = [52, 7, 24, 60, 60];
 		var units = ['week', 'day', 'hour', 'minute', 'second'];
@@ -190,7 +181,7 @@ exports.commands = {
 			if (!this.settings['modding']) this.settings['modding'] = {};
 			if (!this.settings['modding'][room]) this.settings['modding'][room] = {};
 			if (opts[2] && toId(opts[2])) {
-				if (!this.hasRank(by, '#~')) return false;
+				if (!this.hasRank(by, '#&~')) return false;
 				if (!(toId(opts[2]) in {on: 1, off: 1}))  return this.say(room, 'Incorrect command: correct syntax is ' + config.commandcharacter + 'set mod, [' +
 					Object.keys(modOpts).join('/') + '](, [on/off])');
 				if (toId(opts[2]) === 'off') {
@@ -258,7 +249,7 @@ exports.commands = {
 				this.say(room, msg);
 				return;
 			} else {
-				if (!this.hasRank(by, '#~')) return false;
+				if (!this.hasRank(by, '#&~')) return false;
 				var newRank = opts[1].trim();
 				if (!(newRank in settingsLevels)) return this.say(room, 'Unknown option: "' + newRank + '". Valid settings are: off/disable/false, +, %, @, &, #, ~, on/enable/true.');
 				if (!this.settings[cmd]) this.settings[cmd] = {};
@@ -273,7 +264,7 @@ exports.commands = {
 	blacklist: 'autoban',
 	ban: 'autoban',
 	ab: 'autoban',
-	autoban: function(arg, by, room) {
+	autoban: function (arg, by, room) {
 		if (!this.canUse('autoban', room, by) || room.charAt(0) === ',') return false;
 		if (!this.hasRank(this.ranks[room] || ' ', '@&#~')) return this.say(room, config.nick + ' requires rank of @ or higher to (un)blacklist.');
 
@@ -309,7 +300,7 @@ exports.commands = {
 	unblacklist: 'unautoban',
 	unban: 'unautoban',
 	unab: 'unautoban',
-	unautoban: function(arg, by, room) {
+	unautoban: function (arg, by, room) {
 		if (!this.canUse('autoban', room, by) || room.charAt(0) === ',') return false;
 		if (!this.hasRank(this.ranks[room] || ' ', '@&#~')) return this.say(room, config.nick + ' requires rank of @ or higher to (un)blacklist.');
 
@@ -340,7 +331,7 @@ exports.commands = {
 		this.say(room, text);
 	},
 	rab: 'regexautoban',
-	regexautoban: function(arg, by, room) {
+	regexautoban: function (arg, by, room) {
 		if (config.regexautobanwhitelist.indexOf(toId(by)) < 0 || !this.canUse('autoban', room, by) || room.charAt(0) === ',') return false;
 		if (!this.hasRank(this.ranks[room] || ' ', '@&#~')) return this.say(room, config.nick + ' requires rank of @ or higher to (un)blacklist.');
 		if (!arg) return this.say(room, 'You must specify a regular expression to (un)blacklist.');
@@ -358,7 +349,7 @@ exports.commands = {
 		this.say(room, '/' + arg + ' was added to the blacklist successfully.');
 	},
 	unrab: 'unregexautoban',
-	unregexautoban: function(arg, by, room) {
+	unregexautoban: function (arg, by, room) {
 		if (config.regexautobanwhitelist.indexOf(toId(by)) < 0 || !this.canUse('autoban', room, by) || room.charAt(0) === ',') return false;
 		if (!this.hasRank(this.ranks[room] || ' ', '@&#~')) return this.say(room, config.nick + ' requires rank of @ or higher to (un)blacklist.');
 		if (!arg) return this.say(room, 'You must specify a regular expression to (un)blacklist.');
@@ -372,7 +363,7 @@ exports.commands = {
 	viewbans: 'viewblacklist',
 	vab: 'viewblacklist',
 	viewautobans: 'viewblacklist',
-	viewblacklist: function(arg, by, room) {
+	viewblacklist: function (arg, by, room) {
 		if (!this.canUse('autoban', room, by) || room.charAt(0) === ',') return false;
 
 		var text = '';
@@ -398,7 +389,7 @@ exports.commands = {
 		this.say(room, '/pm ' + by + ', ' + text);
 	},
 	banphrase: 'banword',
-	banword: function(arg, by, room) {
+	banword: function (arg, by, room) {
 		if (!this.canUse('banword', room, by)) return false;
 		if (!this.settings.bannedphrases) this.settings.bannedphrases = {};
 		arg = arg.trim().toLowerCase();
@@ -417,7 +408,7 @@ exports.commands = {
 		this.say(room, "Phrase \"" + arg + "\" is now banned.");
 	},
 	unbanphrase: 'unbanword',
-	unbanword: function(arg, by, room) {
+	unbanword: function (arg, by, room) {
 		if (!this.canUse('banword', room, by)) return false;
 		arg = arg.trim().toLowerCase();
 		if (!arg) return false;
@@ -438,7 +429,7 @@ exports.commands = {
 	},
 	viewbannedphrases: 'viewbannedwords',
 	vbw: 'viewbannedwords',
-	viewbannedwords: function(arg, by, room) {
+	viewbannedwords: function (arg, by, room) {
 		if (!this.canUse('banword', room, by)) return false;
 		arg = arg.trim().toLowerCase();
 		var tarRoom = room;
@@ -473,7 +464,7 @@ exports.commands = {
 	 * Add custom commands here.
 	 */
 
-	seen: function(arg, by, room) { // this command is still a bit buggy
+	seen: function (arg, by, room) { // this command is still a bit buggy
 		var text = (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ');
 		arg = toId(arg);
 		if (!arg || arg.length > 18) return this.say(room, text + 'Invalid username.');
@@ -492,11 +483,7 @@ exports.commands = {
 
 	//This is a template for all Random Commands; please don't use this as an actual command.
 	randomcommands: function (arg, by, room) {
-		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		var variableone = list1[Math.floor(list1.length * Math.random())];
 		var variabletwo = list2[Math.floor(list2.length * Math.random())];
 		this.say(room, text + "Randomly generated thing: __" + variableone + " " + variabletwo + "__.");
@@ -507,11 +494,7 @@ exports.commands = {
 	chargen: 'randomcharacter',
 	genchar: 'randomcharacter',
 	randomcharacter: function (arg, by, room) {
-		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		var adjective = characterAdjectives[Math.floor(characterAdjectives.length * Math.random())];
 		var type = characterTypes[Math.floor(characterTypes.length * Math.random())];
 		var role = roles[Math.floor(roles.length * Math.random())];
@@ -532,11 +515,7 @@ exports.commands = {
 	gentype: 'randomtype',
 	randtype: 'randomtype',
 	randomtype: function (arg, by, room) {
-		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		arg = toId(arg);
 		if (arg && arg !== 'single' && arg !== 'dual') this.say(room, text + "Please input either 'single' or 'dual' as arguments, or leave it blank for a random decision. Continuing as if you left it blank.");
 		var firstType = types[Math.floor(types.length * Math.random())];
@@ -549,12 +528,8 @@ exports.commands = {
 		this.say(room, text + "Randomly generated type: __" + firstType + (secondType ? "/" + secondType : "") + "__.");
 	},
 	randstats: 'randomstats',
-	randomstats: function(arg, by, room, shuffle) {
-		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
+	randomstats: function (arg, by, room, shuffle) {
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		arg = parseInt(arg);
 		if (arg && (isNaN(arg) || arg < 30 || arg > 780)) return this.say(room, text + "Specified BST must be a whole number between 30 and 780.");
 		var bst = arg ? Math.floor(arg) : Math.floor(580 * Math.random()) + 200;
@@ -585,11 +560,7 @@ exports.commands = {
 	randompoke: 'randpokemon',
 	randompokemon: 'randpokemon',
 	randpokemon: function (arg, by, room) {
-		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		var randompokes = [];
 		var parameters = [];
 		/**	OBJECT KEY
@@ -663,7 +634,7 @@ exports.commands = {
 				}
 			}
 		}
-		if (pokequantity == 1 && room.charAt(0) !== ',' && this.hasRank(by, '+%@#~')) text = '!dt ';
+		if (pokequantity == 1 && room.charAt(0) !== ',' && this.hasRank(by, '+%@#&~')) text = '!dt ';
 
 		var attempt = -1;
 		var dexNumbers = [];
@@ -732,22 +703,14 @@ exports.commands = {
 	randomscene: 'randomlocation',
 	randlocation: 'randomlocation',
 	randomlocation: function (arg, by, room) {
-		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		var adjective = adjectives[Math.floor(adjectives.length * Math.random())];
 		var location = locations[Math.floor(locations.length * Math.random())];
 		this.say(room, text + "Randomly generated scene: __" + adjective + " " + location + "__.");
 	},
 	randmove: 'randommove',
 	randommove: function (arg, by, room) {
-		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		var types = {"normal":1, "fire":1, "water":1, "grass":1, "electric":1, "ice":1, "fighting":1, "poison":1, "ground":1, "flying":1, "psychic":1, "bug":1, "rock":1, "ghost":1, "dragon":1, "dark":1, "steel":1, "fairy":1};
 		var classes = {"physical": 1, "special": 1, "status": 1};
 		var moveQuantity = 1;
@@ -820,11 +783,7 @@ exports.commands = {
 	randomstyle: 'randomgenre',
 	randgenre: 'randomgenre',
 	randomgenre: function (arg, by, room) {
-		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		var genre1 = genres[Math.floor(genres.length * Math.random())];
 		var genre2 = genres[Math.floor(genres.length * Math.random())];
 		while (genre1 === genre2) {
@@ -837,11 +796,7 @@ exports.commands = {
 	randomidea: 'randomstory',
 	randstory: 'randomstory',
 	randomstory: function (arg, by, room) {
-		if (this.canUse('randomcommands', room, by) || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		var genre1 = genres[Math.floor(genres.length * Math.random())];
 		if (Math.floor(Math.random() * 2)) {
 			var genre2 = genres[Math.floor(genres.length * Math.random())];
@@ -873,33 +828,15 @@ exports.commands = {
     
 	'word': 'wotd',
 	wotd: function (arg, by, room) {
-		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
-        if (!this.settings.wotd.kind) this.settings.wotd.kind = "Dummy Value";
-        var wordKind = toId(this.settings.wotd.kind);
-        if (wordKind === "noun" || wordKind === "n" || wordKind === "pronoun" || wordKind === "verb") {
-            var AorAn = "a";
-        } else if (wordKind === "adjective" || wordKind === "adj" || wordKind === "adverb") {
-            var AorAn = "an";
-        } else {
-            var AorAn = "a(n)";
-        };
-        
-		if (!arg || !this.hasRank(by, '+%@#~')) {
-            this.say(room, text + "Today's Word of the Day is: __" + this.settings.wotd.word + "__, pronounced '" + this.settings.wotd.pron + ".' It is " + AorAn + " " + this.settings.wotd.kind + ".");
-            return this.say(room, text + "Its definition is: " + this.settings.wotd.definition);
-        }
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
+		if (!arg || !this.hasRank(by, '+%@#&~')) return this.say(room, text + "Today's Word of the Day is **" + this.settings.wotd.word + "**: " + this.settings.wotd.kind + " [__" + this.settings.wotd.pron + "__] - " + this.settings.wotd.definition);
 		if (toId(arg) === 'check' || toId(arg) === 'time') return this.say(room, text + "The Word of the Day was last updated to **" + this.settings.wotd.word + "** " + this.getTimeAgo(this.settings.wotd.time) + " ago by " + this.settings.wotd.user);
 		arg = arg.split(', ');
-		if (!arg[0] || !arg[1] || !arg[2] || !arg[3]) return this.say(room, text + "Please remember to include the pronounciation, to state what kind of word it is (noun, verb, adjective), and to include the defintion! The format is: __word__, __pronunciation__, __kind__, __defintion__.");
+		if (arg.length < 4) return this.say(room, text + "Invalid arguments specified. The format is: __word__, __pronunciation__, __part of speech__, __defintion__.");
 		this.settings.wotd = {
 			word: arg[0],
             pron: arg[1],
             kind: arg[2],
-            AorAn: AorAn,
 			definition: arg.slice(3).join(',').trim(),
 			time: Date.now(),
 			user: by.substr(1)
@@ -908,12 +845,8 @@ exports.commands = {
 		this.say(room, text + "The Word of the Day has been set to '" + arg[0] + "'!");
 	},
 	site: function (arg, by, room) {
-		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
-		this.say(room, text + 'Writing Room\'s Website: http://pswriting.weebly.com/');
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
+		this.say(room, text + "Writing Room's Website: http://pswriting.weebly.com/");
 	},
 	time: function (arg, by, room) {
         var today = new Date(); 
@@ -1003,37 +936,21 @@ exports.commands = {
 	newbie: 'rules',
 	faq: 'rules',
 	rules: function (arg, by, room) {
-		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + "If you're new to the Writing room, be sure to read our introduction: http://pswriting.weebly.com/introduction.html Feel free to ask any room staff any questions that you may have!");
 	},
 	esupport: function (arg, by, room) {
-		if (this.hasRank(by, '%@#~') || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
+		var text = this.hasRank(by, '%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + 'I love you, ' + by + '.');
 	},
 	drive: function (arg, by, room) {
-		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + 'Community Drive: http://bit.do/pswritingarchives');
 	},
 	contests: 'events',
 	contest: 'events',
 	events: function (arg, by, room) {
-		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + 'Visit this page for a list of our weekly challenges and contests: http://pswriting.weebly.com/events.html');
 	},
 	hype: 'sundayscribing',
@@ -1041,56 +958,32 @@ exports.commands = {
 	sundayslam: 'sundayscribing',
 	scribing: 'sundayscribing',
 	sundayscribing: function (arg, by, room) {
-		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
-		this.say(room, text + "Every week we hold a __Pokemon Showdown! Sunday Scribing__ challenge. Participants are to write a story or a poem, depending on which week it is, based on the topic announced on Saturday. They have the whole of Sunday to submit it. For more info: http://goo.gl/Ay6U5N");
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
+		this.say(room, text + "Every week we hold a Sunday Scribing challenge in which participants are to write a story or a poem (depending on the week) based on the topic announced on Sunday. They have until the following Friday to submit it. For more info and the submission link: http://goo.gl/Ezik4q");
 	},
 	plug: function (arg, by, room) {
-		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + 'Come join our Plug.dj~! https://plug.dj/pokemon-showdown-writing-room');
 	},
 	titlehelp: 'title',
 	title: function (arg, by, room) {
-		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + 'Need help capitalising a title? Try out this helpful tool! http://titlecapitalization.com/');
 	},
 	poems: function (arg, by, room) {
-		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + 'Writing Room Poems: http://bit.do/PSwritingpoems');
 	},
 	stories: function (arg, by, room) {
-		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + 'Writing Room Stories: http://bit.do/PSwritingstories');
 	},
 	voice: function (arg, by, room) {
-		if (this.hasRank(by, '+%@#~') || room.charAt(0) === ',') {
-			var text = '';
-		} else {
-			var text = '/pm ' + by + ', ';
-		}
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + 'Interested in becoming a voice? Check out the guideines for your chance at having a shot! http://bit.do/pswritingvoicerules or http://bit.do/pswritingvoicerap');
 	},
 	announce: function (arg, by, room) {
-		if (!this.hasRank(by, '%@#~')) return false;
+		if (!this.hasRank(by, '%@#&~')) return false;
 		arg = toId(arg);
 		if (arg === 'off') {
 			if (this.buzzer) clearInterval(this.buzzer);
@@ -1164,7 +1057,7 @@ exports.commands = {
 	},
 	clearmail: 'clearmessages',
 	clearmessages: function (arg, by, room) {
-		if (!this.hasRank(by, '#~')) return false;
+		if (!this.hasRank(by, '#&~')) return false;
 		if (!arg) return this.say(room, 'Specify whose mail to clear or \'all\' to clear all mail.');
 		if (!this.messages) return this.say(room, 'The message file is empty.');
 		if (arg === 'all') {
@@ -1190,7 +1083,7 @@ exports.commands = {
 	},
 	countmessages: 'countmail',
 	countmail: function (arg, by, room) {
-		if (!this.hasRank(by, '#~')) return false;
+		if (!this.hasRank(by, '#&~')) return false;
 		if (!this.messages) this.say(room, 'The message file is empty');
 		var messageCount = 0;
 		var oldestMessage = Date.now();
@@ -1207,7 +1100,7 @@ exports.commands = {
 	upl: 'messageblacklist',
 	unpoeticlicense: 'messageblacklist',
 	messageblacklist: function (arg, by, room) {
-		if (!this.hasRank(by, '@#~')) return false;
+		if (!this.hasRank(by, '@#&~')) return false;
 		if (!arg) return this.say(room, 'Please specify which user(s) to blacklist from the message system');
 		var users = arg.split(', ');
 		var errors = [];
@@ -1227,7 +1120,7 @@ exports.commands = {
 	},
 	vmb: 'viewmessageblacklist',
 	viewmessageblacklist: function (arg, by, room) {
-		if (!this.hasRank(by, '@#~')) return false;
+		if (!this.hasRank(by, '@#&~')) return false;
 		if (!this.settings.messageBlacklist) return this.say(room, 'No users are blacklisted from the message system');
 		var messageBlacklist = Object.keys(this.settings.messageBlacklist);
 		this.uploadToHastebin(room, by, "The following users are blacklisted from the message system:\n\n" + messageBlacklist.join('\n'));
