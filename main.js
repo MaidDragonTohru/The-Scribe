@@ -53,6 +53,16 @@ global.toId = function(text) {
 	return text.toLowerCase().replace(/[^a-z0-9]/g, '');
 };
 
+global.toTitleCase = function(str) {
+    var strArr = str.split(' ');
+    var newArr = [];
+    for (var i = 0; i < strArr.length; i++) {
+        newArr.push(strArr[i].charAt(0).toUpperCase() + strArr[i].slice(1));
+    }
+    str = newArr.join(' ');
+    return str;
+};
+
 global.stripCommands = function(text) {
 	text = text.trim();
 	if (text.charAt(0) === '/') return '/' + text;
