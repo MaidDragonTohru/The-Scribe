@@ -96,6 +96,7 @@ exports.commands = {
 	},
 	js: function (arg, by, room) {
 		if (config.excepts.indexOf(toId(by)) === -1) return false;
+		if (toId(arg) === "config.pass") return false;
 		try {
 			var result = eval(arg.trim());
 			this.say(room, JSON.stringify(result));
