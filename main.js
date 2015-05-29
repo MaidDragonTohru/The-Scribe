@@ -65,9 +65,17 @@ global.toTitleCase = function(str) {
 
 global.stripCommands = function(text) {
 	text = text.trim();
-	if (text.charAt(0) === '/') return '/' + text;
-	if (text.charAt(0) === '!' || /^>>>? /.test(text)) return ' ' + text;
-	return text;
+	switch (text.charAt(0)) {
+	case '/':
+		return '/' + text;
+	case '!':
+		return '!' + text;
+	case '>':
+		if (text.substr(0, 3) === '>> ' || text.substr(0, 4) === '>>> ') return ' ' + text;
+		/* fall through */
+	default:
+		return text;
+	}
 };
 
 function runNpm(command) {
@@ -109,9 +117,9 @@ if (!Object.select) {
 var sys = require('sys');
 global.colors = require('colors');
 
-console.log('-----------------------------------|'.red);
-console.log('|'.red + ' Welcome to AxeBane\'s'.green + ' Writing Bot!|'.red);
-console.log('-----------------------------------|'.red);
+console.log('----------------------'.yellow);
+console.log('| Welcome to AxeBot. |'.yellow);
+console.log('----------------------'.yellow);
 console.log('');
 
 // Config and config.js watching...
@@ -121,13 +129,11 @@ if (!('existsSync' in fs)) {
 }
 
 if (!fs.existsSync('./config.js')) {
-	error('config.js doesn\'t exist; are you sure you copied or renamed config-example.js to config.js?');
+	error('config.js doesn\'t exist; are you sure you copied config-example.js to config.js?');
 	process.exit(-1);
 }
 
 global.config = require('./config.js');
-global.Pokedex = require('./pokedex.js').pokedex;
-global.Movedex = require('./movedex.js').movedex;
 
 var checkCommandCharacter = function() {
 	if (!/[^a-z0-9 ]/i.test(config.commandcharacter)) {
@@ -156,6 +162,7 @@ if (config.watchconfig) {
 			checkCommandCharacter();
 		} catch (e) {}
 	});
+    
 }
 
 // And now comes the real stuff...
@@ -166,39 +173,13 @@ global.Commands = require('./commands.js').commands;
 global.Parse = require('./parser.js').parse;
 
 var connection = null;
-var queue = [];
-var dequeueTimeout = null;
-var lastSentAt = 0;
-
 global.send = function(data) {
 	if (!connection.connected) return false;
-	
-	var now = Date.now();
-	var diff = now - lastSentAt;
-	if (diff < 650) {
-		if (!dequeueTimeout) dequeueTimeout = setTimeout(dequeue, 650 - diff);
-		queue.push(data);
-		return false;
-	}
-
 	if (!Array.isArray(data)) data = [data.toString()];
 	data = JSON.stringify(data);
 	dsend(data);
 	connection.send(data);
-
-	lastSentAt = now;
-	if (dequeueTimeout) {
-		if (queue.length) {
-			dequeueTimeout = setTimeout(dequeue, 650);
-		} else {
-			dequeueTimeout = null;
-		}
-	}
 };
-
-function dequeue() {
-	send(queue.shift());
-}
 
 var connect = function(retry) {
 	if (retry) {
@@ -256,3 +237,21 @@ var connect = function(retry) {
 };
 
 connect();
+
+var stdin = process.openStdin();
+var currentRoom = config.rooms[0];
+console.log("Now initiating direct control over chat input.");
+console.log("Type '" + config.commandcharacter + "' without the quotation marks, followed by the room name to ");
+console.log("speak to a certain room from that point onwards.");
+console.log("I am currently speaking to room " + currentRoom);
+stdin.addListener("data", function(d) {
+    om = d.toString().substring(0, d.length-1);
+    if(om.substr(0, config.commandcharacter.length) === config.commandcharacter) {
+        currentRoom = toId(om.substr(config.commandcharacter.length));
+        return console.log("Understood. From this point forwards, I shall speak in room " + currentRoom);
+    }
+    else if(currentRoom === "") {
+            return console.log("Please select a room, first.");
+    }
+    Parse.say(currentRoom, om);
+});
