@@ -12,32 +12,26 @@ var sys = require('sys');
 var https = require('https');
 var url = require('url');
 
-const ACTION_COOLDOWN = 3 * 1000;
+const ACTION_COOLDOWN = 3*1000;
 const FLOOD_MESSAGE_NUM = 5;
 const FLOOD_PER_MSG_MIN = 500; // this is the minimum time between messages for legitimate spam. It's used to determine what "flooding" is caused by lag
-const FLOOD_MESSAGE_TIME = 6 * 1000;
+const FLOOD_MESSAGE_TIME = 6*1000;
 const MIN_CAPS_LENGTH = 18;
 const MIN_CAPS_PROPORTION = 0.8;
 
-settings = {};
+var settings;
 try {
 	settings = JSON.parse(fs.readFileSync('settings.json'));
-	if (!Object.keys(settings).length && settings !== {}) settings = {};
 } catch (e) {} // file doesn't exist [yet]
-
-messages = {};
-try {
-	messages = JSON.parse(fs.readFileSync('messages.json'));
-	if (!Object.keys(messages).length && messages !== {}) messages = {};
-} catch (e) {} // file doesn't exist [yet]
+if (!Object.isObject(settings)) settings = {};
 
 exports.parse = {
 	actionUrl: url.parse('https://play.pokemonshowdown.com/~~' + config.serverid + '/action.php'),
 	room: 'lobby',
 	'settings': settings,
-	'messages': messages,
 	chatData: {},
 	ranks: {},
+	msgQueue: [],
 	blacklistRegexes: {},
 
 	data: function(data) {
@@ -60,17 +54,9 @@ exports.parse = {
 
 		var spl = message.split('\n');
 		if (spl[0].charAt(0) === '>') {
+			if (spl[1].substr(1, 4) === 'init') return ok('joined ' + spl[2].substr(7));
 			if (spl[1].substr(1, 10) === 'tournament') return;
 			room = spl.shift().substr(1);
-			if (spl[0].substr(1, 4) === 'init') {
-				var users = spl[2].substr(7).split(',');
-				var nickId = toId(config.nick);
-				for (var i = users.length; i--;) {
-					if (toId(users[i]) === nickId) this.ranks[room] = users[i].trim().charAt(0);
-					break;
-				}
-				return ok('joined ' + room);
-			}
 		}
 
 		for (var i = 0, len = spl.length; i < len; i++) {
@@ -167,70 +153,75 @@ exports.parse = {
 				ok('logged in as ' + spl[2]);
 
 				// Now join the rooms
+				this.msgQueue.push('|/blockchallenges');
 				for (var i = 0, len = config.rooms.length; i < len; i++) {
 					var room = toId(config.rooms[i]);
 					if (room === 'lobby' && config.serverid === 'showdown') continue;
-					send('|/join ' + room);
+					this.msgQueue.push('|/join ' + room);
 				}
 				for (var i = 0, len = config.privaterooms.length; i < len; i++) {
 					var room = toId(config.privaterooms[i]);
 					if (room === 'lobby' && config.serverid === 'showdown') continue;
-					send('|/join ' + room);
+					this.msgQueue.push('|/join ' + room);
 				}
-				if (config.avatarNumber) send('|/avatar ' + config.avatarNumber);
 				if (this.settings.blacklist) {
 					var blacklist = this.settings.blacklist;
 					for (var room in blacklist) {
 						this.updateBlacklistRegex(room);
 					}
 				}
+				this.msgDequeue = setInterval(function () {
+					var msg = this.msgQueue.shift();
+					if (msg) return send(msg);
+					clearInterval(this.msgDequeue);
+					this.msgDequeue = null;
+				}.bind(this), 750);
 				setInterval(this.cleanChatData.bind(this), 30 * 60 * 1000);
 				break;
 			case 'c':
 				var by = spl[2];
-				if (this.isBlacklisted(toId(by), room)) return this.say(room, '/roomban ' + by + ', Blacklisted user');
-
 				spl = spl.slice(3).join('|');
-				if ('%@#&~'.indexOf(by.charAt(0)) < 0) this.processChatData(toId(by), room, spl);
+				this.processChatData(toId(by), room, spl);
+				if (this.isBlacklisted(toId(by), room)) this.say(room, '/roomban ' + by + ', Blacklisted user');
 				this.chatMessage(spl, by, room);
+				if (toId(by) === toId(config.nick) && ' +%@&#~'.indexOf(by.charAt(0)) > -1) this.ranks[room] = by.charAt(0);
 				break;
 			case 'c:':
 				var by = spl[3];
-				if (this.isBlacklisted(toId(by), room)) return this.say(room, '/roomban ' + by + ', Blacklisted user');
-
 				spl = spl.slice(4).join('|');
-				if ('%@#&~'.indexOf(by.charAt(0)) < 0) this.processChatData(toId(by), room, spl);
+				this.processChatData(toId(by), room, spl);
+				if (this.isBlacklisted(toId(by), room)) this.say(room, '/roomban ' + by + ', Blacklisted user');
 				this.chatMessage(spl, by, room);
+				if (toId(by) === toId(config.nick) && ' +%@&#~'.indexOf(by.charAt(0)) > -1) this.ranks[room] = by.charAt(0);
 				break;
 			case 'pm':
 				var by = spl[2];
-				this.chatMessage(spl.slice(4).join('|'), by, ',' + by);
+				spl = spl.slice(4).join('|');
+				if (toId(by) === toId(config.nick) && ' +%@&#~'.indexOf(by.charAt(0)) > -1) this.ranks[room] = by.charAt(0);
+				this.chatMessage(spl, by, ',' + by);
 				break;
 			case 'N':
 				var by = spl[2];
-				if (this.isBlacklisted(toId(by), room)) return this.say(room, '/roomban ' + by + ', Blacklisted user');
 				this.updateSeen(spl[3], spl[1], toId(by));
+				if (toId(by) === toId(config.nick) && ' +%@&#~'.indexOf(by.charAt(0)) > -1) this.ranks[room] = by.charAt(0);
+                console.log(spl[3].cyan + " has changed their nickname to " + by.cyan);
 				break;
 			case 'J': case 'j':
 				var by = spl[2];
-				if (this.isBlacklisted(toId(by), room)) return this.say(room, '/roomban ' + by + ', Blacklisted user');
+				if (config.serverid === 'showdown' && room === 'lobby') this.say(room, '/part');
+				if (this.isBlacklisted(toId(by), room)) this.say(room, '/roomban ' + by + ', Blacklisted user');
 				this.updateSeen(toId(by), spl[1], room);
-				// Send pending mail
-				var user = toId(by);
-				if (this.room && this.messages[user]) {
-					for (var i = 0; i < this.messages[user].length; i++) {
-						this.say(room, "/pm " + by + ", " + this.getTimeAgo(this.messages[user][i].time) + " ago, " + this.messages[user][i].from + " said: " + this.messages[user][i].text);
-					}
-					delete this.messages[user];
-					this.writeMessages();
-				}
+				if (toId(by) === toId(config.nick) && ' +%@&#~'.indexOf(by.charAt(0)) > -1) this.ranks[room] = by.charAt(0);
+                console.log(by.cyan + " has " + "joined".green + " room " + room);
 				break;
 			case 'l': case 'L':
 				this.updateSeen(toId(spl[2]), spl[1], room);
+                var by = spl[2];
+                console.log(by.cyan + " has " + "left".red + " room " + room);
 				break;
 		}
 	},
-	chatMessage: function(message, by, room) {
+	chatMessage: function(message, by, room, type) {
 		var cmdrMessage = '["' + room + '|' + by + '|' + message + '"]';
 		message = message.trim();
 		// auto accept invitations to rooms
@@ -239,21 +230,28 @@ exports.parse = {
 		}
 		if (config.logmain && room.substr(0, 1) !== ',') {
 			var spl = message.split('\n');
-			if (this.hasRank(by, '+')) { var sender = by.yellow};
-			if (this.hasRank(by, '%')) { var sender = by.cyan};
-			if (this.hasRank(by, '@')) { var sender = by.blue};
-			if (this.hasRank(by, '#')) { var sender = by.red};
-			if (this.hasRank(by, '~')) { var sender = by.green};
-			if (!this.hasRank(by, '+%@#~')) { var sender = by};
+            if (!this.hasRank(by, '+%@#~')) { var sender = by; }
+			else if (this.hasRank(by, '+')) { var sender = by.yellow; }
+            else if (this.hasRank(by, '%')) { var sender = by.cyan; }
+			else if (this.hasRank(by, '@')) { var sender = by.blue; }
+			else if (this.hasRank(by, '#')) { var sender = by.red; }
+			else if (this.hasRank(by, '~')) { var sender = by.green; }
 			console.log(room.cyan + ': '.cyan + sender + ': '.cyan + spl);
 		}
+        if (config.reply) {
+            var spl = message.split('\n').toString();
+            for (i = 0; i < config.replies.length; i++) {
+                if (toId(spl) === toId(config.replies[i][0])) {
+                    this.say(room, config.replies[i][1]);
+                }
+            }
+        }
 		if (config.logpms && room.substr(0, 1) === ',') {
 			var spl = message.split('\n');
 			console.log("Private Message from ".red + by.cyan + ": ".cyan + spl);
 		}
-		if (message.substr(0, config.commandcharacter.length) !== config.commandcharacter || toId(by) === toId(config.nick)) {
-			return;
-		}
+		if (message.substr(0, config.commandcharacter.length) !== config.commandcharacter || toId(by) === toId(config.nick)) return;
+
 		message = message.substr(config.commandcharacter.length);
 		var index = message.indexOf(' ');
 		var arg = '';
@@ -284,7 +282,15 @@ exports.parse = {
 			room = room.substr(1);
 			var str = '|/pm ' + room + ', ' + text;
 		}
-		send(str);
+		this.msgQueue.push(str);
+		if (!this.msgDequeue) {
+			this.msgDequeue = setInterval(function () {
+				var msg = this.msgQueue.shift();
+				if (msg) return send(msg);
+				clearInterval(this.msgDequeue);
+				this.msgDequeue = null;
+			}.bind(this), 750);
+		}
 	},
 	hasRank: function(user, rank) {
 		var hasRank = (rank.split('').indexOf(user.charAt(0)) !== -1) || (config.excepts.indexOf(toId(user)) !== -1);
@@ -303,17 +309,14 @@ exports.parse = {
 		return canUse;
 	},
 	isBlacklisted: function(user, room) {
-		var blacklistRegex = this.blacklistRegexes[room];
-		return blacklistRegex && blacklistRegex.test(user);
+		var blacklistRegexes = this.blacklistRegexes;
+		return (blacklistRegexes && blacklistRegexes[room] && blacklistRegexes[room].test(user));
 	},
 	blacklistUser: function(user, room) {
 		var blacklist = this.settings.blacklist || (this.settings.blacklist = {});
-		if (blacklist[room]) {
-			if (blacklist[room][user]) return false;
-		} else {
-			blacklist[room] = {};
-		}
+		if (!blacklist[room]) blacklist[room] = {};
 
+		if (blacklist[room][user]) return false;
 		blacklist[room][user] = 1;
 		this.updateBlacklistRegex(room);
 		return true;
@@ -321,21 +324,19 @@ exports.parse = {
 	unblacklistUser: function(user, room) {
 		var blacklist = this.settings.blacklist;
 		if (!blacklist || !blacklist[room] || !blacklist[room][user]) return false;
-
 		delete blacklist[room][user];
-		if (Object.isEmpty(blacklist[room])) {
-			delete blacklist[room];
-			delete this.blacklistRegexes[room];
-		} else {
-			this.updateBlacklistRegex(room);
-		}
+		this.updateBlacklistRegex(room);
 		return true;
 	},
 	updateBlacklistRegex: function(room) {
 		var blacklist = this.settings.blacklist[room];
+		if (Object.isEmpty(blacklist)) {
+			delete this.blacklistRegexes[room];
+			return false;
+		}
 		var buffer = [];
 		for (var entry in blacklist) {
-			if (entry.charAt(0) === '/' && entry.substr(-2) === '/i') {
+			if (/^\/[^\/]+\/i$/.test(entry)) {
 				buffer.push(entry.slice(1, -2));
 			} else {
 				buffer.push('^' + entry + '$');
@@ -478,7 +479,6 @@ exports.parse = {
 			}
 		}
 	},
-
 	updateSeen: function(user, type, detail) {
 		if (type !== 'n' && config.rooms.indexOf(detail) === -1 || config.privaterooms.indexOf(toId(detail)) > -1) return;
 		var now = Date.now();
@@ -489,7 +489,7 @@ exports.parse = {
 		};
 		if (!detail) return;
 		var userData = this.chatData[user];
-		var msg = '';
+        var msg = '';
 		switch (type) {
 		case 'j':
 		case 'J':
@@ -565,49 +565,6 @@ exports.parse = {
 			});
 		};
 	})(),
-	shuffle: function(array) {
-		var counter = array.length,
-			temp, index;
-		while (counter > 0) {
-			index = Math.floor(Math.random() * counter);
-			counter--;
-			temp = array[counter];
-			array[counter] = array[index];
-			array[index] = temp;
-		}
-		return array;
-	},
-	writeMessages: (function() {
-		var writing = false;
-		var writePending = false; // whether or not a new write is pending
-		var finishWriting = function() {
-			writing = false;
-			if (writePending) {
-				writePending = false;
-				this.writeMessages();
-			}
-		};
-		return function() {
-			if (writing) {
-				writePending = true;
-				return;
-
-			}
-			writing = true;
-			var data = JSON.stringify(this.messages);
-			fs.writeFile('messages.json.0', data, function() {
-				// rename is atomic on POSIX, but will throw an error on Windows
-				fs.rename('messages.json.0', 'messages.json', function(err) {
-					if (err) {
-						// This should only happen on Windows.
-						fs.writeFile('messages.json', data, finishWriting);
-						return;
-					}
-					finishWriting();
-				});
-			});
-		};
-	})(),
 	uncacheTree: function(root) {
 		var uncache = [require.resolve(root)];
 		do {
@@ -624,5 +581,32 @@ exports.parse = {
 			}
 			uncache = newuncache;
 		} while (uncache.length > 0);
+	},
+	getDocMeta: function(id, callback) {
+		https.get('https://www.googleapis.com/drive/v2/files/' + id + '?key=' + config.googleapikey, function (res) {
+			var data = '';
+			res.on('data', function (part) {
+				data += part;
+			});
+			res.on('end', function (end) {
+				var json = JSON.parse(data);
+				if (json) {
+					callback(null, json);
+				} else {
+					callback('Invalid response', data);
+				}
+			});
+		});
+	},
+	getDocCsv: function(meta, callback) {
+		https.get('https://docs.google.com/spreadsheet/pub?key=' + meta.id + '&output=csv', function (res) {
+			var data = '';
+			res.on('data', function (part) {
+				data += part;
+			});
+			res.on('end', function (end) {
+				callback(data);
+			});
+		});
 	}
 };
