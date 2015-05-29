@@ -77,6 +77,9 @@ exports.logmain = false;
 //This allows the bot to log PMs sent to it in the console. Off by default.
 exports.logpms = false;
 
+//Read everything else in the chat, like ban messages and the start of torunaments.
+exports.readElse = true;
+
 //This enables automated replies to the chat.
 exports.reply = true;
 
