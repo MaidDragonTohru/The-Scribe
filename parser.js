@@ -219,6 +219,12 @@ exports.parse = {
                 var by = spl[2];
                 console.log(by.cyan + " has " + "left".red + " room " + room);
 				break;
+			default:
+			if (config.readElse) {
+				var oS = spl.toString();
+				if (oS.substr(0, 9) === ",formats," || oS === ",queryresponse,rooms,null" || oS === "You are already blocking challenges!" || oS.substr(0, 4) === ",raw" || oS.substr(0, 18) === ",updatechallenges,") return false;
+				console.log(oS);
+			}
 		}
 	},
 	chatMessage: function(message, by, room, type) {
