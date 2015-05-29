@@ -1125,5 +1125,55 @@ exports.commands = {
 		if (!this.settings.messageBlacklist) return this.say(room, 'No users are blacklisted from the message system');
 		var messageBlacklist = Object.keys(this.settings.messageBlacklist);
 		this.uploadToHastebin(room, by, "The following users are blacklisted from the message system:\n\n" + messageBlacklist.join('\n'));
+	},
+	bio: function(arg, by, room) { 
+        	var usr = toId(arg);
+        	var inValue = arg.split(' ');
+        	var found = false;
+        	if (!arg) return this.say(room, "Please include a name.");
+        	if (!this.settings.bios) {
+        	    this.settings.bios = [];
+        	    this.writeSettings();
+        	}
+        	var bios = this.settings.bios;
+        	var output = [];
+        	for (i = 1; i < inValue.length; i++) {
+        	    output.push(inValue[i]);
+        	}
+        	var output = output.join(" ");
+        	if (toId(inValue[0]) === "set" && inValue.length > 1) {
+        	    if (!this.settings.bios) {
+        	        this.settings.bios = [];
+        	        this.writeSetting();
+        	        return this.say(room, "Sorry, please try that again. Had to set a few things up.");
+        	    }
+        	    if (this.hasRank(by, '+%@#&~')) {
+        	        for (i = 0; i < bios.length; i++) {
+        	            if (this.settings.bios[i].name === toId(by)) {
+        	                this.settings.bios[i].bio = output;
+        	                this.say(room, "Biography for user " + by + " has been edited.");
+        	                return this.writeSettings();
+        	            }
+        	        }
+        	        var biography = {
+        	            "name":toId(by),
+        		            "bio":output
+        	        };
+        	        this.settings.bios.push(biography);
+        	        this.writeSettings();
+        	        return this.say(room, "Biography for user " + by + " has been set.");
+        	    } else {
+        	        return this.say(room, "Sorry, but you need to be at least a voice to set a biography for memory limitation reasons. ...Also spam.");
+        	    }
+        	} //Code for setting users' biographies.
+        	for (i = 0; i < bios.length; i++) {
+        		if (usr === bios[i].name) {
+        	        found = true;
+        	        return this.say(room, toTitleCase(usr) + ": " + bios[i].bio);
+        	    }
+        	}
+        	if (found === false) {
+        	    this.say(room,"This user does not have a bio.");
+        	}
 	}
 };
