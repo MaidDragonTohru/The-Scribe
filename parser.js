@@ -212,7 +212,14 @@ exports.parse = {
 				if (this.isBlacklisted(toId(by), room)) this.say(room, '/roomban ' + by + ', Blacklisted user');
 				this.updateSeen(toId(by), spl[1], room);
 				if (toId(by) === toId(config.nick) && ' +%@&#~'.indexOf(by.charAt(0)) > -1) this.ranks[room] = by.charAt(0);
-                console.log(by.cyan + " has " + "joined".green + " room " + room);
+				console.log(by.cyan + " has " + "joined".green + " room " + room);
+				if (config.reply) {
+					for (i = 0; i < config.greetings.length; i++) {
+						if (toId(config.greetings[i][0]) === toId(by)) {
+							this.say(room, config.greetings[i][1]);
+						}
+					}
+				}
 				break;
 			case 'l': case 'L':
 				this.updateSeen(toId(spl[2]), spl[1], room);
