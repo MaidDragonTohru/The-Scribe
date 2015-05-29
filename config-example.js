@@ -77,11 +77,17 @@ exports.logmain = false;
 //This allows the bot to log PMs sent to it in the console. Off by default.
 exports.logpms = false;
 
+//This enables automated replies to the chat.
+exports.reply = true;
+
+//These are the replies. They search for the exact string.
+exports.replies = [['example 1','reply 1'],['example 2','reply 2']];
+
 //Here, you specify the avatar you want the bot to use. Nice and handy if you don't want it to constantly have the default avatar.
 exports.avatarNumber = ['52'];
 
 // Add a link to the git repository for the bot here for .git to link to.
-exports.fork = 'http://github.com/TalkTakesTime/Pokemon-Showdown-Bot';
+exports.fork = 'https://github.com/AxeBane/Showdown-Writing-Bot'';
 
 // This allows the bot to act as an automated moderator. If enabled, the bot will
 // mute users who send 6 lines or more in 6 or fewer seconds for 7 minutes. NOTE: THIS IS
