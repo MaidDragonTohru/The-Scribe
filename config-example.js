@@ -33,7 +33,7 @@ exports.privaterooms = [];
 // Note that using / and ! might be 'dangerous' since these are used in
 // Showdown itself.
 // Using only alphanumeric characters and spaces is not allowed.
-exports.commandcharacter = '.';
+exports.commandcharacter = ';';
 
 // The default rank is the minimum rank that can use a command in a room when
 // no rank is specified in settings.json
@@ -42,7 +42,7 @@ exports.defaultrank = '%';
 // Whether this file should be watched for changes or not.
 // If you change this option, the server has to be restarted in order for it to
 // take effect.
-exports.watchconfig = false;
+exports.watchconfig = true;
 
 // Secondary websocket protocols should be defined here, however, Showdown
 // doesn't support that yet, so it's best to leave this empty.
@@ -81,7 +81,7 @@ exports.logpms = false;
 exports.reply = true;
 
 //These are the replies. They search for the exact string.
-exports.replies = [['example 1','reply 1'],['example 2','reply 2']];
+exports.replies = [["example 1","reply 1"],["example 2","reply 2"]];
 
 //Here, you specify the avatar you want the bot to use. Nice and handy if you don't want it to constantly have the default avatar.
 exports.avatarNumber = ['52'];
