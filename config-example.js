@@ -83,6 +83,9 @@ exports.readElse = true;
 //This enables automated replies to the chat.
 exports.reply = true;
 
+//Tied in with greetings. These are automated messages sent upon a user's joining.
+exports.greetings = [["axebane","/me kicks down the door for lord AxeBane."]];
+
 //These are the replies. They search for the exact string.
 exports.replies = [["example 1","reply 1"],["example 2","reply 2"]];
 
