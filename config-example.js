@@ -78,7 +78,7 @@ exports.logmain = false;
 exports.logpms = false;
 
 //Read everything else in the chat, like ban messages and the start of torunaments.
-exports.readElse = true;
+exports.readElse = false;
 
 //This enables automated replies to the chat.
 exports.reply = true;
