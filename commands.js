@@ -59,8 +59,8 @@ exports.commands = {
 	help: 'guide',
 	guide: function (arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
-		if (config.botguide) {
-			text += 'A guide on how to use this bot can be found here: ' + config.botguide;
+		if (Config.botguide) {
+			text += 'A guide on how to use this bot can be found here: ' + Config.botguide;
 		} else {
 			text += 'There is no guide for this bot. PM the bot\'s owner with any questions.';
 		}
@@ -76,7 +76,7 @@ exports.commands = {
 	 */
 
 	reload: function (arg, by, room) {
-		if (config.excepts.indexOf(toId(by)) === -1) return false;
+		if (Config.excepts.indexOf(toId(by)) === -1) return false;
 		try {
 			this.uncacheTree('./commands.js');
 			Commands = require('./commands.js').commands;
@@ -95,8 +95,7 @@ exports.commands = {
 		this.say(tarRoom || room, arg);
 	},
 	js: function (arg, by, room) {
-		if (config.excepts.indexOf(toId(by)) === -1) return false;
-		if (toId(arg) === "configpass") return false;
+		if (Config.excepts.indexOf(toId(by)) === -1 || toId(arg) === "configpass") return false;
 		try {
 			var result = eval(arg.trim());
 			this.say(room, JSON.stringify(result));
@@ -105,7 +104,7 @@ exports.commands = {
 		}
 	},
 	uptime: function (arg, by, room) {
-		var text = config.excepts.indexOf(toId(by)) < 0 ? '/pm ' + by + ', **Uptime:** ' : '**Uptime:** ';
+		var text = Config.excepts.indexOf(toId(by)) < 0 ? '/pm ' + by + ', **Uptime:** ' : '**Uptime:** ';
 		var divisors = [52, 7, 24, 60, 60];
 		var units = ['week', 'day', 'hour', 'minute', 'second'];
 		var buffer = [];
@@ -176,14 +175,14 @@ exports.commands = {
 		var opts = arg.split(',');
 		var cmd = toId(opts[0]);
 		if (cmd === 'mod' || cmd === 'm' || cmd === 'modding') {
-			if (!opts[1] || !toId(opts[1]) || !(toId(opts[1]) in modOpts)) return this.say(room, 'Incorrect command: correct syntax is ' + config.commandcharacter + 'set mod, [' +
+			if (!opts[1] || !toId(opts[1]) || !(toId(opts[1]) in modOpts)) return this.say(room, 'Incorrect command: correct syntax is ' + Config.commandcharacter + 'set mod, [' +
 				Object.keys(modOpts).join('/') + '](, [on/off])');
 
 			if (!this.settings['modding']) this.settings['modding'] = {};
 			if (!this.settings['modding'][room]) this.settings['modding'][room] = {};
 			if (opts[2] && toId(opts[2])) {
 				if (!this.hasRank(by, '#&~')) return false;
-				if (!(toId(opts[2]) in {on: 1, off: 1}))  return this.say(room, 'Incorrect command: correct syntax is ' + config.commandcharacter + 'set mod, [' +
+				if (!(toId(opts[2]) in {on: 1, off: 1}))  return this.say(room, 'Incorrect command: correct syntax is ' + Config.commandcharacter + 'set mod, [' +
 					Object.keys(modOpts).join('/') + '](, [on/off])');
 				if (toId(opts[2]) === 'off') {
 					this.settings['modding'][room][toId(opts[1])] = 0;
@@ -199,7 +198,7 @@ exports.commands = {
 				return;
 			}
 		} else {
-			if (!Commands[cmd]) return this.say(room, config.commandcharacter + '' + opts[0] + ' is not a valid command.');
+			if (!Commands[cmd]) return this.say(room, Config.commandcharacter + '' + opts[0] + ' is not a valid command.');
 			var failsafe = 0;
 			while (!(cmd in settable)) {
 				if (typeof Commands[cmd] === 'string') {
@@ -208,7 +207,7 @@ exports.commands = {
 					if (cmd in settable) {
 						break;
 					} else {
-						this.say(room, 'The settings for ' + config.commandcharacter + '' + opts[0] + ' cannot be changed.');
+						this.say(room, 'The settings for ' + Config.commandcharacter + '' + opts[0] + ' cannot be changed.');
 						return;
 					}
 				} else {
@@ -217,7 +216,7 @@ exports.commands = {
 				}
 				failsafe++;
 				if (failsafe > 5) {
-					this.say(room, 'The command "' + config.commandcharacter + '' + opts[0] + '" could not be found.');
+					this.say(room, 'The command "' + Config.commandcharacter + '' + opts[0] + '" could not be found.');
 					return;
 				}
 			}
@@ -239,13 +238,13 @@ exports.commands = {
 			if (!opts[1] || !opts[1].trim()) {
 				var msg = '';
 				if (!this.settings[cmd] || (!this.settings[cmd][room] && this.settings[cmd][room] !== false)) {
-					msg = '' + config.commandcharacter + '' + cmd + ' is available for users of rank ' + ((cmd === 'autoban' || cmd === 'banword') ? '#' : config.defaultrank) + ' and above.';
+					msg = '' + Config.commandcharacter + '' + cmd + ' is available for users of rank ' + ((cmd === 'autoban' || cmd === 'banword') ? '#' : Config.defaultrank) + ' and above.';
 				} else if (this.settings[cmd][room] in settingsLevels) {
-					msg = '' + config.commandcharacter + '' + cmd + ' is available for users of rank ' + this.settings[cmd][room] + ' and above.';
+					msg = '' + Config.commandcharacter + '' + cmd + ' is available for users of rank ' + this.settings[cmd][room] + ' and above.';
 				} else if (this.settings[cmd][room] === true) {
-					msg = '' + config.commandcharacter + '' + cmd + ' is available for all users in this room.';
+					msg = '' + Config.commandcharacter + '' + cmd + ' is available for all users in this room.';
 				} else if (this.settings[cmd][room] === false) {
-					msg = '' + config.commandcharacter + '' + cmd + ' is not available for use in this room.';
+					msg = '' + Config.commandcharacter + '' + cmd + ' is not available for use in this room.';
 				}
 				this.say(room, msg);
 				return;
@@ -256,7 +255,7 @@ exports.commands = {
 				if (!this.settings[cmd]) this.settings[cmd] = {};
 				this.settings[cmd][room] = settingsLevels[newRank];
 				this.writeSettings();
-				this.say(room, 'The command ' + config.commandcharacter + '' + cmd + ' is now ' +
+				this.say(room, 'The command ' + Config.commandcharacter + '' + cmd + ' is now ' +
 					(settingsLevels[newRank] === newRank ? ' available for users of rank ' + newRank + ' and above.' :
 					(this.settings[cmd][room] ? 'available for all users in this room.' : 'unavailable for use in this room.')))
 			}
@@ -267,7 +266,7 @@ exports.commands = {
 	ab: 'autoban',
 	autoban: function (arg, by, room) {
 		if (!this.canUse('autoban', room, by) || room.charAt(0) === ',') return false;
-		if (!this.hasRank(this.ranks[room] || ' ', '@&#~')) return this.say(room, config.nick + ' requires rank of @ or higher to (un)blacklist.');
+		if (!this.hasRank(this.ranks[room] || ' ', '@&#~')) return this.say(room, Config.nick + ' requires rank of @ or higher to (un)blacklist.');
 
 		arg = arg.split(',');
 		var added = [];
@@ -303,7 +302,7 @@ exports.commands = {
 	unab: 'unautoban',
 	unautoban: function (arg, by, room) {
 		if (!this.canUse('autoban', room, by) || room.charAt(0) === ',') return false;
-		if (!this.hasRank(this.ranks[room] || ' ', '@&#~')) return this.say(room, config.nick + ' requires rank of @ or higher to (un)blacklist.');
+		if (!this.hasRank(this.ranks[room] || ' ', '@&#~')) return this.say(room, Config.nick + ' requires rank of @ or higher to (un)blacklist.');
 
 		arg = arg.split(',');
 		var removed = [];
@@ -333,8 +332,8 @@ exports.commands = {
 	},
 	rab: 'regexautoban',
 	regexautoban: function (arg, by, room) {
-		if (config.regexautobanwhitelist.indexOf(toId(by)) < 0 || !this.canUse('autoban', room, by) || room.charAt(0) === ',') return false;
-		if (!this.hasRank(this.ranks[room] || ' ', '@&#~')) return this.say(room, config.nick + ' requires rank of @ or higher to (un)blacklist.');
+		if (Config.regexautobanwhitelist.indexOf(toId(by)) < 0 || !this.canUse('autoban', room, by) || room.charAt(0) === ',') return false;
+		if (!this.hasRank(this.ranks[room] || ' ', '@&#~')) return this.say(room, Config.nick + ' requires rank of @ or higher to (un)blacklist.');
 		if (!arg) return this.say(room, 'You must specify a regular expression to (un)blacklist.');
 
 		try {
@@ -351,8 +350,8 @@ exports.commands = {
 	},
 	unrab: 'unregexautoban',
 	unregexautoban: function (arg, by, room) {
-		if (config.regexautobanwhitelist.indexOf(toId(by)) < 0 || !this.canUse('autoban', room, by) || room.charAt(0) === ',') return false;
-		if (!this.hasRank(this.ranks[room] || ' ', '@&#~')) return this.say(room, config.nick + ' requires rank of @ or higher to (un)blacklist.');
+		if (Config.regexautobanwhitelist.indexOf(toId(by)) < 0 || !this.canUse('autoban', room, by) || room.charAt(0) === ',') return false;
+		if (!this.hasRank(this.ranks[room] || ' ', '@&#~')) return this.say(room, Config.nick + ' requires rank of @ or higher to (un)blacklist.');
 		if (!arg) return this.say(room, 'You must specify a regular expression to (un)blacklist.');
 
 		arg = '/' + arg.replace(/\\\\/g, '\\') + '/i';
@@ -471,7 +470,7 @@ exports.commands = {
 		if (!arg || arg.length > 18) return this.say(room, text + 'Invalid username.');
 		if (arg === toId(by)) {
 			text += 'Have you looked in the mirror lately?';
-		} else if (arg === toId(config.nick)) {
+		} else if (arg === toId(Config.nick)) {
 			text += 'You might be either blind or illiterate. Might want to get that checked out.';
 		} else if (!this.chatData[arg] || !this.chatData[arg].seenAt) {
 			text += 'The user ' + arg + ' has never been seen.';
@@ -826,7 +825,7 @@ exports.commands = {
     },
     
     //End Random Commands
-    
+
 	'word': 'wotd',
 	wotd: function (arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
@@ -1002,7 +1001,7 @@ exports.commands = {
 					"Hey, you. Yes, you! Do __you__ want to improve the room? If you answered 'no', then go sit in the naughty corner. If you said 'yes', on the other hand, then go ahead and click the shiny 'submit and idea' button in the roominto!",
 					"Want to play a writing game? Ask one of our friendly staff to host one, or if you think you're up to it, try hosting yourself! It's a great way to gain a good reputation!",
 					"Every week we hold a Pokemon Showdown! Sunday Scribing contest. Participants are to write a story or a poem, depending on which week it is, based on the topic announced on Saturday. They have the whole of Sunday to write it. For more info, visit http://goo.gl/Ay6U5N",
-					"Today's Word of the Day is: " + this.settings.wotd.word + ". Its definition is: " + this.settings.wotd.definition,
+					"Today's Word of the Day is: " + self.settings.wotd.word + ". Its definition is: " + self.settings.wotd.definition,
 					"Need help getting started on a story? Try out the ``;idea`` command! Or, if you need to be a little more specific, try things like ``;randchar`` or ``;randscene``. You'll be writing in no time!",
 					"Did you know that we have an official place to share music? It's a great place to listen to something whilst writing, perhaps even gaining some inspiration! Of course, you could also just hang out there and chat. Interested? Good! Head on over to https://plug.dj/pokemon-showdown-writing-room",
 					"Need a quick way to access our Community Drive? Type ``;drive``!",
@@ -1011,7 +1010,7 @@ exports.commands = {
 				];
 				var num = Math.floor((Math.random() * tips.length));
 				self.say(room, tips[num]);
-			}, 60*60*1000);
+			}, 60 * 60 * 1000);
 		}
 	},
 
@@ -1029,7 +1028,7 @@ exports.commands = {
 		arg = arg.split(',');
 		if (!arg[0] || !arg[1]) return this.say(room, text + 'Please use the following format: ";mail user, message"');
 		var user = toId(arg[0]);
-		if (user === toId(config.nick)) return this.say(room, text + 'Oh, dear. You do know you can just tell me these things up-front, right?');
+		if (user === toId(Config.nick)) return this.say(room, text + 'Oh, dear. You do know you can just tell me these things up-front, right?');
 		var message = arg.slice(1).join(',').trim();
 		if (message.length > 215) return this.say(room, text + 'Your message cannot exceed 215 characters');
 		if (user.length > 18) return this.say(room, text + 'That\'s not a real username! It\'s too long! >:I');
@@ -1126,54 +1125,38 @@ exports.commands = {
 		var messageBlacklist = Object.keys(this.settings.messageBlacklist);
 		this.uploadToHastebin(room, by, "The following users are blacklisted from the message system:\n\n" + messageBlacklist.join('\n'));
 	},
-	bio: function(arg, by, room) { 
-        	var usr = toId(arg);
-        	var inValue = arg.split(' ');
-        	var found = false;
-        	if (!arg) return this.say(room, "Please include a name.");
-        	if (!this.settings.bios) {
-        	    this.settings.bios = [];
-        	    this.writeSettings();
-        	}
-        	var bios = this.settings.bios;
-        	var output = [];
-        	for (i = 1; i < inValue.length; i++) {
-        	    output.push(inValue[i]);
-        	}
-        	var output = output.join(" ");
-        	if (toId(inValue[0]) === "set" && inValue.length > 1) {
-        	    if (!this.settings.bios) {
-        	        this.settings.bios = [];
-        	        this.writeSetting();
-        	        return this.say(room, "Sorry, please try that again. Had to set a few things up.");
-        	    }
-        	    if (this.hasRank(by, '+%@#&~')) {
-        	        for (i = 0; i < bios.length; i++) {
-        	            if (this.settings.bios[i].name === toId(by)) {
-        	                this.settings.bios[i].bio = output;
-        	                this.say(room, "Biography for user " + by + " has been edited.");
-        	                return this.writeSettings();
-        	            }
-        	        }
-        	        var biography = {
-        	            "name":toId(by),
-        		            "bio":output
-        	        };
-        	        this.settings.bios.push(biography);
-        	        this.writeSettings();
-        	        return this.say(room, "Biography for user " + by + " has been set.");
-        	    } else {
-        	        return this.say(room, "Sorry, but you need to be at least a voice to set a biography for memory limitation reasons. ...Also spam.");
-        	    }
-        	} //Code for setting users' biographies.
-        	for (i = 0; i < bios.length; i++) {
-        		if (usr === bios[i].name) {
-        	        found = true;
-        	        return this.say(room, toTitleCase(usr) + ": " + bios[i].bio);
-        	    }
-        	}
-        	if (found === false) {
-        	    this.say(room,"This user does not have a bio.");
-        	}
+	bio: 'biography',
+	biography: function(arg, by, room) {
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
+		var user = toId(arg);
+		if (!user) return this.say(room, text + "Please include a name.");
+		if (!this.settings.bios) {
+			this.settings.bios = [];
+			this.writeSettings();
+		}
+		var bios = this.settings.bios;
+		var input = arg.split(' ');
+		if (toId(input[0]) === "set" && input[1]) {
+			if (!this.hasRank(by, '+%@#&~')) return this.say(room, text + "Sorry, but you need to be at least a voice to set a biography.");
+			user = toId(by);
+			input = input.slice(1).join(' ');
+			for (var i = 0, len = bios.length; i < len; i++) {
+				if (bios[i].name === user) {
+					bios[i].bio = input;
+					this.writeSettings();
+					return this.say(room, text + "Biography for user " + by.substr(1) + " has been edited.");
+				}
+			}
+			bios.push({"name": user, "bio": input});
+			this.writeSettings();
+			return this.say(room, text + "Biography for user " + by.substr(1) + " has been set.");
+		} else {
+			for (var i = 0, len = bios.length; i < len; i++) {
+				if (user === bios[i].name) {
+					return this.say(room, text + arg + ": " + bios[i].bio);
+				}
+			}
+			this.say(room, text + "No biography found for " + arg);
+		}
 	}
 };
