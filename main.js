@@ -239,16 +239,22 @@ var connect = function(retry) {
 connect();
 
 var stdin = process.openStdin();
-var currentRoom = config.rooms[0];
+if (config.rooms.length > 0) {
+    var currentRoom = config.rooms[0];
+} else {
+    var currentRoom = config.privaterooms[0];
+}
+console.log(config.rooms.length);
+console.log(config.privaterooms.length);
 console.log("Now initiating direct control over chat input.");
 console.log("Type '" + config.commandcharacter + "' without the quotation marks, followed by the room name to ");
 console.log("speak to a certain room from that point onwards.");
-console.log("I am currently speaking to room " + currentRoom);
+console.log("I am currently speaking to room " + toTitleCase(currentRoom));
 stdin.addListener("data", function(d) {
     om = d.toString().substring(0, d.length-1);
     if(om.substr(0, config.commandcharacter.length) === config.commandcharacter) {
         currentRoom = toId(om.substr(config.commandcharacter.length));
-        return console.log("Understood. From this point forwards, I shall speak in room " + currentRoom);
+        return console.log("Understood. From this point forwards, I shall speak in room " + toTitleCase(currentRoom));
     }
     else if(currentRoom === "") {
             return console.log("Please select a room, first.");
