@@ -244,8 +244,6 @@ if (config.rooms.length > 0) {
 } else {
     var currentRoom = config.privaterooms[0];
 }
-console.log(config.rooms.length);
-console.log(config.privaterooms.length);
 console.log("Now initiating direct control over chat input.");
 console.log("Type '" + config.commandcharacter + "' without the quotation marks, followed by the room name to ");
 console.log("speak to a certain room from that point onwards.");
