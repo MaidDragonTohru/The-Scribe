@@ -1129,7 +1129,6 @@ exports.commands = {
 	biography: function(arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		var user = toId(arg);
-		if (!user) return this.say(room, text + "Please include a name.");
 		if (!this.settings.bios) {
 			this.settings.bios = [];
 			this.writeSettings();
@@ -1152,11 +1151,18 @@ exports.commands = {
 			return this.say(room, text + "Biography for user " + by.substr(1) + " has been set.");
 		} else {
 			for (var i = 0, len = bios.length; i < len; i++) {
-				if (user === bios[i].name) {
+				if (toId(by) === bios[i].name) {
+					return this.say(room, text + by + ": " + bios[i].bio);
+				}
+				else if (user === bios[i].name) {
 					return this.say(room, text + arg + ": " + bios[i].bio);
 				}
 			}
-			this.say(room, text + "No biography found for " + arg);
+			if (arg) {
+				this.say(room, text + "No biography found for " + arg);
+			} else {
+				return this.say(room, text + "You haven't set a biography yet! :o")
+			}
 		}
 	}
 };
