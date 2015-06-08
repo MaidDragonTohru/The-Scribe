@@ -481,13 +481,16 @@ exports.commands = {
 		this.say(room, text);
 	},
 
-	//This is a template for all Random Commands; please don't use this as an actual command.
+	/* 
+    This is a template for all Random Commands; please don't use this as an actual command.
 	randomcommands: function (arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		var variableone = list1[Math.floor(list1.length * Math.random())];
 		var variabletwo = list2[Math.floor(list2.length * Math.random())];
 		this.say(room, text + "Randomly generated thing: __" + variableone + " " + variabletwo + "__.");
-	},
+	}, 
+    */
+    
 	//Random Commands Section!
 	//Place all 'random thing generator' commands in this area!
 	randchar: 'randomcharacter',
