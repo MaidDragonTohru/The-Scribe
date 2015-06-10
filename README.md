@@ -53,31 +53,34 @@ Voices and Above
 
 `help; guide`: Links to this page.
 
-`idea; randomidea; randidea; ri; randstyle; randomstyle; rs; rg; randgenre; randomgenre`: Randomly generates either a single genre or a splicing of two genres. This is your best friend for when you're stuck on things to write~!
+`idea`: Merges the `randscene`, `randgenre`, and `randchar` commands.
 
-`rt; gentype; randtype`: The same as above, except it randomly generates Pokémon types instead of genres.
+`rt; gentype; randtype`: Randomly generates a Pokémon type combination.
 
 `rs; randstats; randomstats <optional BST>`: Randomly generates a stat build using the Pokémon format. If you didn't specify a BST to use, it'll pick a random one.
+
+`randgenre; randstyle`: Randomly generates a genre or genre splice to base your story on.
 
 `rl; randscene; randlocation; randomlocation`: Generates a random location description, using one adjective and one location type.
 
 `rm; randmove; randommove <"physical"> (or) <"special"> (or) <"status"> (or/and) <Pokémon type>`: Generates a random move based on the parameters used. For instance: ";rm grass, physical" can return the move "Needle Arm".
 
-`voice`: Explains to the room how they can become a voice. 
+`randchar; genchar; randomcharacter`: Randomly generates a character build, including flaws and 'buffs'.
 
-Commands users with a Poetic License can use
---------------------------------------------
+`voice`: Explains to the room how they can become a voice. 
 
 `mail <user>, <message>`: This command sends a "mail" to another user on PS. They will see the message once they join the room or use the `readmail` command.
 
 `checkmail; readmail; readmessages`: This command, as stated above, is used to view all the unread messages you have in your Inbox. The messages are deleted afterwards, so don't lose them.
 
+`bio set <autobiography>`: This command sets the biography of the person that used the command to whatever they typed. This can then be accessed by the `bio` command by any user.
+
 Commands any user can use~!
 ---------------------------
 
-`seen <user>`: The bot returns the last time that user was seen online by the bot.
+`bio <optional user>`: This command returns the autobiography set by an authed user. If no user is specified, it will return the autobiography of the user that tried the command, if they had one.
 
-`poll`: Lists the poll that was set in the `setpoll`. . . Let's not start that again.
+`seen <user>`: The bot returns the last time that user was seen online by the bot.
 
 `word; wotd`: PMs the user, assuming they're not ranked, the Word of the Day
 
@@ -107,7 +110,7 @@ Installation
 **This is not recommended for beginners!**
 Why? Because I'm too lazy to explain everything in detail.
 
-Pokémon Showdown Bot requires [node.js][2] to run.
+Pokémon Showdown Writing Bot requires [node.js][2] to run.
 This bot has not been tested on every `node.js` version possible, but has the same version requirements as [Pokémon Showdown][3]: either v0.6.3 through v0.8.22, or v0.10.2 and up.
 Install `node.js` if you don't have it yet, try the last stable version.
 
@@ -118,18 +121,20 @@ To install dependencies, run:
 
     npm install
 
-Copy `config-example.js` to `config.js` and edit the needed variables.
+Make sure you run the above command from within the folder that you would like to run your bot in. Repeat this step for any extra bots you would like to use.
+Copy `config-example.js` and rename it to `config.js`, then edit the needed variables.
 To change the commands that the bot responds to, edit `commands.js`.
 
 Now, to start the bot, use:
 
     node main.js
+    
+    or run the file named `run.bat` if you are on a Windows computer. This will not work on Macintosh.
 
 Some information will be shown, and will automatically join the room(s) you specified if no error occurs.
 
   [2]: http://nodejs.org/
   [3]: https://github.com/Zarel/Pokemon-Showdown
-  [4]: http://www.strawpoll.me/
   [6]: http://en.wikipedia.org/wiki/Regular_expression
 
 Development
