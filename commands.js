@@ -9,42 +9,24 @@ var http = require('http');
 var sys = require('sys');
 
 // Lists for random generator commands
-var adjectives = ["crystal", "floating", "eternal-dusk", "sunset", "snowy", "rainy", "sunny", "chaotic", "peaceful", "colorful", "gooey", "fiery", "jagged", "glass", "vibrant", 
-	"rainbow", "foggy", "calm", "demonic", "polygonal", "glistening", "sexy", "overgrown", "frozen", "dark", "mechanical", "mystic", "steampunk", "subterranean", "polluted", "bleak", 
-	"dank", "smooth", "vast", "pixelated", "enigmatic", "illusionary", "sketchy", "spooky", "flying", "legendary", "cubic", "moist", "oriental", "fluffy", "odd", "fancy", "strange", 
-	"authentic", "bustling", "barren", "cluttered", "creepy", "dangerous", "distant", "massive", "exotic", "tainted", "filthy", "flawless", "forsaken", "frigid", "frosty", "grand", 
-	"grandiose", "grotesque", "harmful", "harsh", "hospitable", "hot", "jaded", "meek", "weird", "awkward", "silly", "cursed", "blessed", "drought-stricken", "futuristic", "ancient",
-	"medieval", "gothic", "radioactive"
+var adjectives = ["crystal","floating","eternal-dusk","sunset","snowy","rainy","sunny","chaotic","peaceful","colorful","gooey","fiery","jagged","glass","vibrant","rainbow","foggy","calm","demonic","polygonal","glistening","sexy","overgrown","frozen","dark","mechanical","mystic","steampunk","subterranean","polluted","bleak","dank","smooth","vast","pixelated","enigmatic","illusionary","sketchy","spooky","flying","legendary","cubic","moist","oriental","fluffy","odd","fancy","strange","authentic", "bustling","barren","cluttered","creepy","dangerous","distant","massive","exotic","tainted","filthy","flawless","forsaken","frigid","frosty","grand","grandiose","grotesque","harmful","harsh","hospitable","hot","jaded","meek","weird","awkward","silly","cursed","blessed","drought-stricken","futuristic","ancient","medieval", "gothic", "radioactive"
 ];
-var locations = ["river", "island", "desert", "forest", "jungle", "plains", "mountains", "mesa", "cave", "canyon", "marsh", "lake", "plateau", "tundra", "volcano", "valley", 
-	"waterfall", "atoll", "asteroid", "grove", "treetops", "cavern", "beach", "ocean", "heavens", "abyss", "city", "crag", "planetoid", "harbor", "evergreen", "cabin", 
-	"hill", "field", "ship", "glacier", "estuary", "wasteland", "clouds", "chamber", "ruin", "tomb", "park", "closet", "terrace", "hot air balloon", "shrine", "room", "swamp", "road", 
-	"path", "gateway", "school", "building", "vault", "pool", "pit", "temple", "lagoon", "prison", "harem", "mine", "catacombs", "rainforest", "laboratory", "library", "stadium", 
-	"museum", "mansion", "carnival", "amusement park", "farm", "factory", "castle", "spaceship", "space station", "cafe", "theater", "island", "hospital", "ruins", "bazaar" 
+var locations = ["river","island","desert","forest","jungle","plains","mountains","mesa","cave","canyon","marsh","lake","plateau","tundra","volcano","valley","waterfall","atoll","asteroid","grove","treetops","cavern","beach","ocean","heavens","abyss","city","crag","planetoid","harbor","evergreen","cabin","hill","field","ship","glacier","estuary","wasteland","clouds","chamber","ruin","tomb","park","closet","terrace","hotairballoon","shrine","room","swamp","road","path","gateway","school","building","vault","pool","pit","temple","lagoon","prison","harem","mine","catacombs","rainforest","laboratory","library","stadium","museum","mansion","carnival","amusementpark","farm","factory","castle","spaceship","spacestation","cafe","theater","island","hospital","ruins","bazaar"
 ];
-var characterAdjectives = ["sturdy", "helpless", "young", "rugged", "odd-looking", "amusing", "dynamic", "exuberant", "quirky", "awkward", "elderly", "adolescent", "'ancient'", 
-	"odd", "funny-looking", "tall", "short", "round", "blind", 
+var characterAdjectives = ["sturdy","helpless","young","rugged","odd-looking","amusing","dynamic","exuberant","quirky","awkward","elderly","adolescent","'ancient'","odd","funny-looking","tall","short","round","blind" 
 ];
-var characterTypes = ["Marksman", "Adventurer", "Pokemon Trainer", "Pokemon", "Dragonkin", "Chef", "Businessman", "Kitsune", "Youkai", "...thing", "Archer", "Taxi Driver", 
-	"Dentist", "Demon", "Paladin", "Writer", "Diety", "Spy", "Goverment Agent", "Farmer", "Teacher", "Warrior", "Athlete", "Artist", "Assassin", "Beast", "Journalist", 
-	"Designer", "Doctor", "Vampire", "Time Traveller", "Alien", "Butler", "Police Officer", "Toymaker", "Student", "Photographer", "Mage", "Computer Programmer"
+var characterTypes = ["Marksman","Adventurer","Pokemon Trainer","Pokemon","Dragonkin","Chef","Businessman","Kitsune","Youkai","...thing","Archer","Taxi Driver","Dentist","Demon","Paladin","Writer","Diety","Spy","Goverment Agent","Farmer","Teacher","Warrior","Athlete","Artist","Assassin","Beast","Journalist","Designer","Doctor","Vampire","Time Traveller","Alien","Butler","PoliceOfficer","Toymaker","Student","Photographer","Mage","Computer Programmer","Person"
 ];
-var perks = ["kind of heart", "powerful", "handsome", "ambitious", "amiable", "brave", "rational", "witty", "honest", "agile", "athletic", "quick on their feet", "assertive", 
-	"fearless", "intelligent", "persistent", "philosophical", "pioneering", "quiet", "wealthy", "not afraid to voice their opinion", "quick-witted", "lucky", "friendly", "neat", 
-	"sympathetic", "sincere", "mysterious", "loyal", "trustworthy", "imaginative", "gentle"
+var perks = ["kindofheart","powerful","handsome","ambitious","amiable","brave","rational","witty","honest","agile","athletic","quickontheirfeet","assertive","fearless","intelligent","persistent","philosophical","pioneering","quiet","wealthy","notafraidtovoicetheiropinion","quick-witted","lucky","friendly","neat","sympathetic","sincere","mysterious","loyal","trustworthy","imaginative","gentle"
 ];
-var debuffs = ["sly", "unclean", "smelly", "obnoxiously loud", "fond of 'tricks'", "fond of 'games'", "fond of 'jokes'", "prone to 'accidentally' taking others' things", "cocky", 
-	"prone to falling over", "prone to bad luck at times", "clingy", "foolish", "fussy", "greedy", "gullible", "impatient", "inconsiderate", "lazy", "moody", "obsessive", 
-	"narrow-minded", "patronizing", "resentful", "unreliable", "vague", "weak-willed", "egotistical", "sensitive", "Grammar Nazi-ish", "'bitchy'", "emotionally scarred",
-	"overly-serious", "volatile", "morally scrupulous", "lacking of empathy", "prone to overreacting", "overbearing", "prone to panic attacks", "self-pessimistic"
+var debuffs = ["sly","unclean","smelly","obnoxiously loud","fond of 'tricks'","fond of 'games'","fond of 'jokes'","prone to 'accidentally' taking others' things","cocky","prone to falling over","prone to bad luck at times","clingy","foolish","fussy","greedy","gullible","impatient","inconsiderate","lazy","moody","obsessive","narrow-minded","patronizing","resentful","unreliable","vague","weak-willed","egotistical","sensitive","Grammar Nazi-ish","'bitchy'","emotionally scarred","overly-serious","volatile","morally scrupulous","lacking of empathy","prone to overreacting","overbearing","prone to panic attacks","self-pessimistic"
 ];
-var genres = ["Action", "Adventure", "Comedy", "Crime", "Drama", "Fantasy", "Historical", "Horror", "Mystery", "Philosophical", "Romance", 
-	"Saga", "Satire", "Science Fiction", "Thriller"
+var genres = ["Action","Adventure","Comedy","Crime","Drama","Fantasy","Historical","Horror","Mystery","Philosophical","Romance","Saga","Satire","Science Fiction","Thriller"
 ];
-var roles = ["Protagonist", "Antagonist", "Major character", "Minor character"];
+var roles = ["Protagonist","Antagonist","Major character","Minor character"];
 var pronouns = {'male': 'he', 'female': 'she', 'hermaphrodite': 'shi', 'neuter': 'they'};
 var possessivePronouns = {'male': 'His', 'female': 'Her', 'hermaphrodite': 'Hir', 'neuter': 'Their'};
-var types = ["Normal", "Fire", "Water", "Electric", "Grass", "Ice", "Fighting", "Poison", "Flying", "Ground", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"];
+var types = ["Normal","Fire","Water","Electric","Grass","Ice","Fighting","Poison","Flying","Ground","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy","Bird"];
 
 exports.commands = {
 	/**
@@ -1167,5 +1149,123 @@ exports.commands = {
 				return this.say(room, text + "You haven't set a biography yet! :o")
 			}
 		}
-	}
+	},
+	genrp: 'randRP',
+    	genRP: 'randRP',
+    	randrp: 'randRP',
+    	randRP: function(arg, by, room) {
+        	var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
+        	arg = arg.split(", ");
+        	if (!arg || arg.length < 2) return this.say(room, "Please specify two names, seperated by a comma.");
+        	var X = arg[0];
+        	var Y = arg[1];
+        	var RANDNUM = Math.floor((Math.random() * 94));
+        	var ar = new Array();
+
+        	ar[0] = X + " as a superhero and " + Y + " as the sidekick.";
+        	ar[1] = X + " cooking lunch for " + Y + ".";
+        	ar[2] = X + " as a vampire feeding on " + Y + ".";
+        	ar[3] = X + " and " + Y + "  as children playing together.";
+        	ar[4] = X + " as a film noir detective and " + Y + " as the desperate client.";
+        	ar[5] = X + " and " + Y + " in hand to hand combat.";
+        	ar[6] = X + " taking care of an injured " + Y + ".";
+        	ar[7] = X + " giving " + Y + " a piggy back ride.";
+        	ar[8] = X + " frustrated by losing a board game or card game to " + Y + ".";
+        	ar[9] = X + " and " + Y + " fighting together, back to back.  ";
+        	ar[10] = X + " giving " + Y + " a present.";
+
+        	ar[11] = X + " and " + Y + " wearing each other's clothes.";
+        	ar[12] = X + " and " + Y + " cuddling.";
+        	ar[13] = X + " and " + Y + " dancing.";
+        	ar[14] = X + " striking the finishing blow on " + Y + ".";
+        	ar[15] = X + " and " + Y + " meeting after they haven't seen each other in a very long time.";
+        	ar[16] = X + " and " + Y + " watching a very sad movie. " + X + " is crying.";
+        	ar[17] = X + " and " + Y + " at a wild party." + X + " doesn't want to be there.";
+        	ar[18] = X + " and " + Y + " going to an event that requires formal attire.";
+        	ar[19] = X + " and " + Y + " as JRPG style characters.";
+        	ar[20] = X + " and " + Y + " as medieval-fantasy RPG characters archetypes.";
+
+        	ar[21] = X + " is the lead singer and " + Y + " is the guitarist in a band.";
+        	ar[22] = X + " and " + Y + " at the beach.";
+        	ar[23] = X + " and " + Y + " watching the sunset.";
+        	ar[24] = X + " and " + Y + " playing a sports game together.";
+        	ar[25] = X + " mourning over a dead " + Y + ".";
+        	ar[26] = X + " and " + Y + " eating dinner together";
+        	ar[27] = X + " helping " + Y + " with chores.";
+        	ar[28] = X + " is about to do something stupid. " + Y + " does not think this is a good idea.";
+        	ar[29] = X + " with a hangover, but " + Y + " is feeling fine.";
+        	ar[30] = X + " drawing " + Y + ".";
+
+        	ar[31] = X + " and " + Y + " taking care of a bunch of orphan puppies and/or kittens."
+        	ar[32] = X + " and " + Y + " in dressing in drag."
+        	ar[33] = X + " is a member of the royal family and " + Y + " is a lowly peasant."
+        	ar[34] = X + " comforting a sad " + Y + "."
+        	ar[35] = X + " confronting " + Y + " about something bad they have done."
+        	ar[36] = X + " reveals a secret to " + Y + "."
+        	ar[37] = X + " discovers " + Y + "'s terrible secret."
+        	ar[38] = X + " playing pranks on " + Y + "."
+        	ar[39] = X + " getting revenge on " + Y + "."
+        	ar[40] = X + " and " + Y + " as rivals in a competition or contest. " + X + " wins.";
+
+        	ar[41] = X + " and " + Y + " in matching cosplays";
+        	ar[42] = X + " and " + Y + " go to a bar. " + Y + " gets too drunk and " + X + " has to take them home.";
+        	ar[43] = X + " suspects " + Y + " is a werewolf. " + Y + " is actually hiding a more mundane secret.";
+        	ar[44] = X + " and " + Y + " meet during the zombie apocalypse." + Y + " needs" + X + "'s help.";
+        	ar[45] = X + " accidentally drinks a love potion and falls for " + Y + ".";
+        	ar[46] = X + " gets amnesia and forgets everything about " + Y + ".";
+        	ar[47] = X + " and " + Y + " get separated in a place that's easy to get lost in. They need to reunite.";
+        	ar[48] = X + " has something that " + Y + " desperately wants or needs. " + X + " won't give it up easily.";
+        	ar[49] = X + " has offended " + Y + " in some way but doesn't realize it.";
+        	ar[50] = X + " and " + Y + " as buddy cops.";
+
+        	ar[51] = X + " and " + Y + " play an MMO together." + X + " is the tank and " + Y + " is the healer.";
+        	ar[52] = X + " is a famous and " + Y + " is their biggest fan.";
+        	ar[53] = X + " is a super hero hiding their secret identity from " + Y + ".";
+        	ar[54] = X + " was bullied by " + Y + " when they were both children. " + Y + " doesn't remember doing it.";
+        	ar[55] = X + " is finally noticed by their sempai, " + Y + ".";
+        	ar[56] = X + " gets a contract to assassinate " + Y + ".";
+        	ar[57] = X + " and " + Y + " are in an arranged marriage, but " + X + " doesn't want to go through with it.";
+        	ar[58] = X + " is " + Y + "'s hired body guard.";
+        	ar[59] = X + " and " + Y + " meet when " + X + " finds " + Y + "'s lost pet.";
+        	ar[60] = X + " and " + Y + " are atheletes from different countries that meet at the Olympics.";
+
+        	ar[61] = X + " is too nervous to approach " + Y + ", and only admires them from afar.";
+        	ar[62] = X + " and " + Y + " are part of a team, but their constant arguing causes problems. They have to pull it together for the sake of the team.";
+        	ar[63] = X + " is a barista at " + Y + "'s favorite coffee shop.";
+        	ar[64] = X + " has stowed away on a ship that " + Y + " works on.";
+        	ar[65] = X + " saved " + Y + "'s life." + Y + " is honorbound to return the favor.";
+        	ar[66] = X + " is a demon summoned by wizard " + Y + " to do their bidding.";
+        	ar[67] = "A prophecy foretold that " + X + " would be the only one who could defeat the evil " + Y + ".";
+        	ar[68] = X + " and " + Y + " are reincarnated lovers, but aren't initially compatable to each other.";
+        	ar[69] = X + " and " + Y + " meet on a blind date." + Y + " wants to go on another date, but " + X + " isn't sure.";
+        	ar[70] = X + " is under a terrible curse. " + Y + " knows how to cure it.";
+
+        	ar[71] = X + " and " + Y + " are the leaders of rival gangs.";
+        	ar[72] = X + " is the leader of an organization. " + Y + " is their loyal second-in-command";
+        	ar[73] = X + " confessed their love to " + Y + ", but was rejected.";
+        	ar[74] = X + " and " + Y + " pretend to be in a relationship for the purpose of an undercover mission.";
+        	ar[75] = X + " frequently has dreams or nightmares about " + Y + ".";
+        	ar[76] = X + " is hired to spy on " + Y + ".";
+        	ar[77] = X + " and " + Y + " got handcuffed together and lost the key.";
+        	ar[78] = X + " is cornered by a bully, but " + Y + " comes to the rescue.";
+        	ar[79] = X + " is bitten by a zombie and has to be put down by " + Y + ".";
+        	ar[80] = X + " and " + Y + " go on a road trip.";
+
+        	ar[81] = X + " tries to tell " + Y + " that 'It isn't what it looks like, I swear!'";
+        	ar[82] = X + " and " + Y + " swap bodies.";
+        	ar[83] = X + " knits an ugly sweater and forces " + Y + " to wear it.";
+        	ar[84] = X + " loses a bet to " + Y + ".";
+		ar[85] = X + " and " + Y + " decide to go camping." + Y + " reads the map upside down and they both become terribly lost.";
+        	ar[86] = X + ", a knight in shining armor, must rescue the distressed " + Y + ".";
+        	ar[87] = X + " gives up their life so that " + Y + " can live.";
+        	ar[88] = X + " and " + Y + " fight over who will sleep where on the bunk bed.";
+        	ar[89] = X + " trains " + Y + " in combat.";
+        	ar[90] = X + " and " + Y + " go ice skating." + Y + " is not very good and " + X + " has to help them.";
+
+        	ar[91] = X + " and " + Y + " watch fireworks together.";
+        	ar[92] = X + " and " + Y + " are Pokemon trainers that cross paths and end up traveling together.";
+        	ar[93] = X + " and " + Y + " get caught up in a storm and must stay sheltered together until it passes.";
+
+        	this.say(room, text + "Randomly Generated RP: " + ar[RANDNUM]);
+    	}
 };
