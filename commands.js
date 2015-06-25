@@ -1180,7 +1180,7 @@ exports.commands = {
         	ar[14] = X + " striking the finishing blow on " + Y + ".";
         	ar[15] = X + " and " + Y + " meeting after they haven't seen each other in a very long time.";
         	ar[16] = X + " and " + Y + " watching a very sad movie. " + X + " is crying.";
-        	ar[17] = X + " and " + Y + " at a wild party." + X + " doesn't want to be there.";
+        	ar[17] = X + " and " + Y + " at a wild party. " + X + " doesn't want to be there.";
         	ar[18] = X + " and " + Y + " going to an event that requires formal attire.";
         	ar[19] = X + " and " + Y + " as JRPG style characters.";
         	ar[20] = X + " and " + Y + " as medieval-fantasy RPG characters archetypes.";
@@ -1206,11 +1206,11 @@ exports.commands = {
         	ar[38] = X + " playing pranks on " + Y + "."
         	ar[39] = X + " getting revenge on " + Y + "."
         	ar[40] = X + " and " + Y + " as rivals in a competition or contest. " + X + " wins.";
-
+        
         	ar[41] = X + " and " + Y + " in matching cosplays";
         	ar[42] = X + " and " + Y + " go to a bar. " + Y + " gets too drunk and " + X + " has to take them home.";
         	ar[43] = X + " suspects " + Y + " is a werewolf. " + Y + " is actually hiding a more mundane secret.";
-        	ar[44] = X + " and " + Y + " meet during the zombie apocalypse." + Y + " needs" + X + "'s help.";
+        	ar[44] = X + " and " + Y + " meet during the zombie apocalypse. " + Y + " needs" + X + "'s help.";
         	ar[45] = X + " accidentally drinks a love potion and falls for " + Y + ".";
         	ar[46] = X + " gets amnesia and forgets everything about " + Y + ".";
         	ar[47] = X + " and " + Y + " get separated in a place that's easy to get lost in. They need to reunite.";
@@ -1229,17 +1229,18 @@ exports.commands = {
         	ar[59] = X + " and " + Y + " meet when " + X + " finds " + Y + "'s lost pet.";
         	ar[60] = X + " and " + Y + " are atheletes from different countries that meet at the Olympics.";
 
+
         	ar[61] = X + " is too nervous to approach " + Y + ", and only admires them from afar.";
         	ar[62] = X + " and " + Y + " are part of a team, but their constant arguing causes problems. They have to pull it together for the sake of the team.";
         	ar[63] = X + " is a barista at " + Y + "'s favorite coffee shop.";
         	ar[64] = X + " has stowed away on a ship that " + Y + " works on.";
-        	ar[65] = X + " saved " + Y + "'s life." + Y + " is honorbound to return the favor.";
+        	ar[65] = X + " saved " + Y + "'s life. " + Y + " is honorbound to return the favor.";
         	ar[66] = X + " is a demon summoned by wizard " + Y + " to do their bidding.";
         	ar[67] = "A prophecy foretold that " + X + " would be the only one who could defeat the evil " + Y + ".";
         	ar[68] = X + " and " + Y + " are reincarnated lovers, but aren't initially compatable to each other.";
-        	ar[69] = X + " and " + Y + " meet on a blind date." + Y + " wants to go on another date, but " + X + " isn't sure.";
+        	ar[69] = X + " and " + Y + " meet on a blind date. " + Y + " wants to go on another date, but " + X + " isn't sure.";
         	ar[70] = X + " is under a terrible curse. " + Y + " knows how to cure it.";
-
+        
         	ar[71] = X + " and " + Y + " are the leaders of rival gangs.";
         	ar[72] = X + " is the leader of an organization. " + Y + " is their loyal second-in-command";
         	ar[73] = X + " confessed their love to " + Y + ", but was rejected.";
@@ -1250,18 +1251,18 @@ exports.commands = {
         	ar[78] = X + " is cornered by a bully, but " + Y + " comes to the rescue.";
         	ar[79] = X + " is bitten by a zombie and has to be put down by " + Y + ".";
         	ar[80] = X + " and " + Y + " go on a road trip.";
-
+        
         	ar[81] = X + " tries to tell " + Y + " that 'It isn't what it looks like, I swear!'";
         	ar[82] = X + " and " + Y + " swap bodies.";
         	ar[83] = X + " knits an ugly sweater and forces " + Y + " to wear it.";
         	ar[84] = X + " loses a bet to " + Y + ".";
-		ar[85] = X + " and " + Y + " decide to go camping." + Y + " reads the map upside down and they both become terribly lost.";
+        	ar[85] = X + " and " + Y + " decide to go camping. " + Y + " reads the map upside down and they both become terribly lost.";
         	ar[86] = X + ", a knight in shining armor, must rescue the distressed " + Y + ".";
         	ar[87] = X + " gives up their life so that " + Y + " can live.";
         	ar[88] = X + " and " + Y + " fight over who will sleep where on the bunk bed.";
         	ar[89] = X + " trains " + Y + " in combat.";
-        	ar[90] = X + " and " + Y + " go ice skating." + Y + " is not very good and " + X + " has to help them.";
-
+        	ar[90] = X + " and " + Y + " go ice skating. " + Y + " is not very good and " + X + " has to help them.";
+        
         	ar[91] = X + " and " + Y + " watch fireworks together.";
         	ar[92] = X + " and " + Y + " are Pokemon trainers that cross paths and end up traveling together.";
         	ar[93] = X + " and " + Y + " get caught up in a storm and must stay sheltered together until it passes.";
