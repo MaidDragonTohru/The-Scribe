@@ -228,6 +228,12 @@ exports.parse = {
 				delete this.messages[user];
 				this.writeMessages();
 			}
+			//Word of the Day tracking
+			if ((Date.now() - this.settings.wotd.time) > 86400000 && this.hasRank(by, '+%@#~')) {
+				this.say(room, "/msg " + user + ", The Word of the Day has not been updated for at least a day. You should probably get on that. :/");
+			} else if ((Date.now() - this.settings.wotd.time) > 77760000 && this.hasRank(by, '+%@#~')) {
+				this.say(room, "/msg " + user + ", The Word of the Day will need to be updated soon. Just a friendly head's up. ^.^'");
+			}
 			if (Config.logmain) console.log(by.cyan + " has " + "joined".green + " the room " + room);
 			if (Config.reply) {
 				for (var i = 0, len = Config.greetings.length; i < len; i++) {
