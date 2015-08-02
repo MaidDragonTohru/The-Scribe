@@ -1173,7 +1173,7 @@ exports.commands = {
 		ar[6] = X + " taking care of an injured " + Y + ".";
 		ar[7] = X + " giving " + Y + " a piggy back ride.";
 		ar[8] = X + " frustrated by losing a board game or card game to " + Y + ".";
-		ar[9] = X + " and " + Y + " fighting together, back to back.  ";
+		ar[9] = X + " and " + Y + " fighting together, back to back.";
 		ar[10] = X + " giving " + Y + " a present.";
 
 		ar[11] = X + " and " + Y + " wearing each other's clothes.";
@@ -1212,7 +1212,7 @@ exports.commands = {
 		ar[41] = X + " and " + Y + " in matching cosplays";
 		ar[42] = X + " and " + Y + " go to a bar. " + Y + " gets too drunk and " + X + " has to take them home.";
 		ar[43] = X + " suspects " + Y + " is a werewolf. " + Y + " is actually hiding a more mundane secret.";
-		ar[44] = X + " and " + Y + " meet during the zombie apocalypse. " + Y + " needs" + X + "'s help.";
+		ar[44] = X + " and " + Y + " meet during the zombie apocalypse. " + Y + " needs " + X + "'s help.";
 		ar[45] = X + " accidentally drinks a love potion and falls for " + Y + ".";
 		ar[46] = X + " gets amnesia and forgets everything about " + Y + ".";
 		ar[47] = X + " and " + Y + " get separated in a place that's easy to get lost in. They need to reunite.";
