@@ -841,6 +841,8 @@ exports.commands = {
         var hr = today.getHours();
         var mi = today.getMinutes();
         var se = today.getSeconds();
+        var tz = today.getTimezoneOffset() / 60;
+	if (tz > 0) tz = "+" + tz;
         if (mm === 1) { this.mmm = "January"; var sea = "winter"};
         if (mm === 2) { this.mmm = "Febuary"; var sea = "winter"};
         if (mm === 3) { this.mmm = "March"; var sea = "spring"};
@@ -916,7 +918,7 @@ exports.commands = {
         if (theDay === 5) { this.theDay = "Friday" };
         if (theDay === 6) { this.theDay = "Saturday"};
         var today = hr + ":" + mi + ":" + se + " " + AMorPM + ", " + mm + '/' + dd + '/' + yyyy + ', the ' + this.ddd + " of the " + sea + " month of " + this.mmm + ', ' + yyyy + ' (' + this.theDay + ')';
-        this.say(room, "The current time is: " + today);
+        this.say(room, "The current time is: " + today + " (UTC" + tz + ")");
 	},
 	newbie: 'rules',
 	faq: 'rules',
