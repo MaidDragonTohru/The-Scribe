@@ -75,7 +75,7 @@ Voices and Above
 
 `bio set <autobiography>`: This command sets the biography of the person that used the command to whatever they typed. This can then be accessed by the `bio` command by any user.
 
-Commands any user can use~!
+Commands any user can use!
 ---------------------------
 
 `bio <optional user>`: This command returns the autobiography set by an authed user. If no user is specified, it will return the autobiography of the user that tried the command, if they had one.
@@ -103,6 +103,8 @@ Commands any user can use~!
 `newbie`: Gives a newcomer to the room a nice friendly greeting~
 
 `time`: Returns the current time (for the bot) to the room.
+
+`randRP <person 1>, <person 2>`: Generates a random interaction between character X and character Y. 
 
 Installation
 ============
