@@ -932,7 +932,7 @@ exports.commands = {
 	},
 	drive: function (arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
-		this.say(room, text + 'Community Drive: https://drive.google.com/folderview?id=0BwItKj7hRNHQNC10dkx5bUF0VHM&usp=sharing');
+		this.say(room, text + 'Community Drive: http://bit.do/ps-writing-archive');
 	},
 	contests: 'events',
 	contest: 'events',
