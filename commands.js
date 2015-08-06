@@ -86,7 +86,7 @@ exports.commands = {
 		}
 	},
 	uptime: function (arg, by, room) {
-		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '/pm ' + by + ', **Uptime:** ' : '**Uptime:** ';
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '**Uptime:** ' : '/pm ' + by + ', **Uptime:** ';
 		var divisors = [52, 7, 24, 60, 60];
 		var units = ['week', 'day', 'hour', 'minute', 'second'];
 		var buffer = [];
