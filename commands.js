@@ -822,7 +822,7 @@ exports.commands = {
 			word: arg[0],
             pron: arg[1],
             kind: arg[2],
-			definition: arg.slice(3).join(',').trim(),
+			definition: arg.slice(3).join(', ').trim(),
 			time: Date.now(),
 			user: by.substr(1)
 		};
