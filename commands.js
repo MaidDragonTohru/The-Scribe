@@ -440,7 +440,7 @@ exports.commands = {
 		this.say(room, text);
 	},
 
-	/**
+	/*
 	 * General commands
 	 *
 	 * Add custom commands here.
@@ -463,15 +463,15 @@ exports.commands = {
 		this.say(room, text);
 	},
 
-	/* 
-    This is a template for all Random Commands; please don't use this as an actual command.
+	/*
+	This is a template for all Random Commands; please don't use this as an actual command.
 	randomcommands: function (arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		var variableone = list1[Math.floor(list1.length * Math.random())];
 		var variabletwo = list2[Math.floor(list2.length * Math.random())];
 		this.say(room, text + "Randomly generated thing: __" + variableone + " " + variabletwo + "__.");
-	}, 
-    */
+	},
+	*/
     
 	//Random Commands Section!
 	//Place all 'random thing generator' commands in this area!
@@ -548,7 +548,8 @@ exports.commands = {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		var randompokes = [];
 		var parameters = [];
-		/**	OBJECT KEY
+		/*
+		 *  OBJECT KEY
 		 *  0 = will reject roll if it has property
 		 *  1 = property will not affect roll
 		 *  2 = roll will be rejected if it lacks this property
@@ -807,9 +808,9 @@ exports.commands = {
 		var perk3 = perkList[Math.floor(perkList.length * Math.random())];
 		var debuff = debuffs[Math.floor(debuffs.length * Math.random())];
 		this.say(room, text + "Randomly generated story | Setting: __" + adjective + " " + location + "__ | Genre: __" + genre1 + (genre2 ? "/" + genre2 : "") + "__ | " + role + ": __a " + gender + ", " + characterAdjective + " " + type + ". " + possessivePronoun + " postive factors include: " + perk1 + ", " + perk2 + ", and " + perk3 + ", though " + pronoun + (gender === "neuter" ? " are" : " is") + " unfortunately rather " + debuff + ".__");
-    },
-    
-    //End Random Commands
+		
+	},
+	//End Random Commands
 
 	'word': 'wotd',
 	wotd: function (arg, by, room) {
