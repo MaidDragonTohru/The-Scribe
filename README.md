@@ -142,14 +142,13 @@ Development
 ===========
 
 Everyone is more than welcome to contribute to the bot.
-However, please refrain from adding more example commands.
 
 Credits:
  - TalkTakesTime (Original Bot and a bit of troubleshooting)
  - Quinella (Original Bot)
  - Morfent (Modified Original Bot)
- - AxeBane (Owner)
- - sirDonovan (Our wonderful VPN Host~ <3) Love ya, Dono.
+ - AxeBane (Creator & Owner)
+ - sirDonovan (Development & VPN Hosting)
  - Solarisfox (Development)
 
 License
