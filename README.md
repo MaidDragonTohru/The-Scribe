@@ -1,7 +1,7 @@
 Writing Room Bot
 ====================
 
-A chat bot for [Pokémon Showdown][1]. This bot has a number of commands, some helpful and some less so, as well as the capability to mod. It only reacts to basic offences such as flooding/caps/stretching.
+A chat bot for [Pokémon Showdown][1]. This bot has a number of commands, some helpful and some less so, as well as the capability to mod. It only reacts to basic offences such as flooding, caps, and stretching.
 
   [1]: http://www.pokemonshowdown.com/
 
@@ -109,15 +109,12 @@ Commands any user can use!
 Installation
 ============
 
-**This is not recommended for beginners!**
-Why? Because I'm too lazy to explain everything in detail.
-
 Pokémon Showdown Writing Bot requires [node.js][2] to run.
 This bot has not been tested on every `node.js` version possible, but has the same version requirements as [Pokémon Showdown][3]: either v0.6.3 through v0.8.22, or v0.10.2 and up.
 Install `node.js` if you don't have it yet, try the last stable version.
 
-Next up is cloning this bot. This can be done in two ways: cloning it via `git` or downloading as ZIP.
-Downloading it as ZIP is the easy and lazy way, but is a lot less handy to update than cloning this repository.
+Next up is cloning this bot. This can be done in two ways: cloning it via `git`, or downloading as ZIP.
+Downloading it as ZIP is the easy and lazy way, but is a lot less handy to update than cloning this repository in the long run.
 
 To install dependencies, run:
 
@@ -130,14 +127,16 @@ To change the commands that the bot responds to, edit `commands.js`.
 Now, to start the bot, use:
 
     node main.js
-    
-    or run the file named `run.bat` if you are on a Windows computer. This will not work on Macintosh.
-
+  
+  ...Or, alternatively, run the file named `run.bat` if you are on a Windows computer. This will only work on operating systems that can run `.bat` files. For example, this will not work on a Macintosh system. *Please note that run.bat will not work if you do not have NPM installed. Run* `npm install` *first!*
+  
 Some information will be shown, and will automatically join the room(s) you specified if no error occurs.
 
   [2]: http://nodejs.org/
   [3]: https://github.com/Zarel/Pokemon-Showdown
   [6]: http://en.wikipedia.org/wiki/Regular_expression
+
+If any of your commands rely on information normally sent to the Pokémon Showdown Client (i.e. functions that execute based on PM that aren't directly related to normal commands), you will need to make changes to the message method in `parser.js` under the appropriate case.
 
 Development
 ===========
