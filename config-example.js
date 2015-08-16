@@ -90,7 +90,7 @@ exports.greetings = [["axebane","/me kicks down the door for lord AxeBane."]];
 exports.replies = [["example 1","reply 1"],["example 2","reply 2"]];
 
 //Here, you specify the avatar you want the bot to use. Nice and handy if you don't want it to constantly have the default avatar.
-exports.avatarNumber = ['52'];
+exports.avatarNumber = ['61'];
 
 // Add a link to the git repository for the bot here for .git to link to.
 exports.fork = 'https://github.com/AxeBane/Showdown-Writing-Bot';
