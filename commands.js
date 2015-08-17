@@ -1025,6 +1025,7 @@ exports.commands = {
 		var mail = {
 			from: by.substr(1),
 			text: message,
+			destination: arg[0], /* This is included only for reading by ;countmail. It is used nowhere else. */
 			time: Date.now()
 		}
 		this.messages[user].push(mail);
@@ -1071,19 +1072,31 @@ exports.commands = {
 	},
 	countmessages: 'countmail',
 	countmail: function (arg, by, room) {
-		if (!this.hasRank(by, '#&~')) return false;
+		if (!this.hasRank(by, '+%@#&~')) return false;
 		if (!this.messages) this.say(room, 'The message file is empty');
 		var messageCount = 0;
 		var oldestMessage = Date.now();
+		var messageArray = []; //Array that stores messages to be uploaded to Hastebin.
 		for (var user in this.messages) {
 			for (var i = 0; i < this.messages[user].length; i++) {
 				if (this.messages[user][i].time < oldestMessage) oldestMessage = this.messages[user][i].time;
 				messageCount++;
+				messageArray.push(["From: " + this.messages[user][i].from, "To: " + this.messages[user][i].destination, "Message: " + this.messages[user][i].text, "Days Since Sent: " + Math.round((Date.now() - this.messages[user][i].time) / (24 * 60 * 60 * 1000))]);
 			}
 		}
 		//convert oldestMessage to days
 		var day = Math.floor((Date.now() - oldestMessage) / (24 * 60 * 60 * 1000));
 		this.say(room, 'There are currently **' + messageCount + '** pending messages. ' + (messageCount ? 'The oldest message ' + (!day ? 'was left today.' : 'is __' + day + '__ days old.') : ''));
+		
+		if (this.hasRank(by, '@#&~')) {
+			var output = [];
+			for (i = 0; i < messageArray.length; i++) {
+				output.push(messageArray[i][0] + "\n" + messageArray[i][1] + "\n" + messageArray[i][2] + "\n" + messageArray[i][3] + "\n");
+			}
+			this.uploadToHastebin('Messages:\n\n' + output.join('\n'), function (link) {
+				this.say(room, "/msg " + by + ", Messages Log: " + link);
+			}.bind(this));
+		}
 	},
 	upl: 'messageblacklist',
 	unpoeticlicense: 'messageblacklist',
@@ -1111,7 +1124,9 @@ exports.commands = {
 		if (!this.hasRank(by, '@#&~')) return false;
 		if (!this.settings.messageBlacklist) return this.say(room, 'No users are blacklisted from the message system');
 		var messageBlacklist = Object.keys(this.settings.messageBlacklist);
-		this.uploadToHastebin(room, by, "The following users are blacklisted from the message system:\n\n" + messageBlacklist.join('\n'));
+		this.uploadToHastebin('The following users are banned in ' + room + ':\n\n' + messageBlacklist.join('\n'), function (link) {
+			this.say(room, "/pm " + by + ", Message Blacklist: " + link);
+		}.bind(this));
 	},
 	bio: 'biography',
 	biography: function(arg, by, room) {
