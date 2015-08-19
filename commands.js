@@ -1091,7 +1091,7 @@ exports.commands = {
 		if (this.hasRank(by, '@#&~')) {
 			var output = [];
 			for (i = 0; i < messageArray.length; i++) {
-				output.push(messageArray[i][0] + "\n" + messageArray[i][1] + "\n" + messageArray[i][2] + "\n" + messageArray[i][3] + "\n");
+				output.push(messageArray[i][0] + "\n" + messageArray[i][1] + "\n" + messageArray[i][2] + "\n");
 			}
 			this.uploadToHastebin('Messages:\n\n' + output.join('\n'), function (link) {
 				this.say(room, "/msg " + by + ", Messages Log: " + link);
