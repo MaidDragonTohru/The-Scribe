@@ -229,7 +229,7 @@ exports.parse = {
 				this.writeMessages();
 			}
 			//Word of the Day tracking
-			if (this.settings.wotd && this.hasRank(by, '+%@#')) {
+			if (this.settings.wotd && this.hasRank(by, '+%@#') && toId(room) === "writing") {
 				var now = Date.now();
 				if ((now - this.settings.wotd.time) > 86400000) {
 					this.say(room, "/msg " + user + ", The Word of the Day has not been updated for at least a day. You should probably get on that. :/");
