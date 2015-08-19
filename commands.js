@@ -1081,7 +1081,7 @@ exports.commands = {
 			for (var i = 0; i < this.messages[user].length; i++) {
 				if (this.messages[user][i].time < oldestMessage) oldestMessage = this.messages[user][i].time;
 				messageCount++;
-				messageArray.push(["From: " + this.messages[user][i].from, "To: " + this.messages[user][i].destination, "Message: " + this.messages[user][i].text, "Days Since Sent: " + Math.round((Date.now() - this.messages[user][i].time) / (24 * 60 * 60 * 1000))]);
+				messageArray.push(["From: " + this.messages[user][i].from, "To: " + this.messages[user][i].destination, "Days Since Sent: " + Math.round((Date.now() - this.messages[user][i].time) / (24 * 60 * 60 * 1000))]);
 			}
 		}
 		//convert oldestMessage to days
@@ -1240,7 +1240,7 @@ exports.commands = {
 		ar[52] = X + " is a famous and " + Y + " is their biggest fan.";
 		ar[53] = X + " is a super hero hiding their secret identity from " + Y + ".";
 		ar[54] = X + " was bullied by " + Y + " when they were both children. " + Y + " doesn't remember doing it.";
-		ar[55] = X + " is finally noticed by their sempai, " + Y + ".";
+		ar[55] = X + " is finally noticed by their senpai, " + Y + ".";
 		ar[56] = X + " gets a contract to assassinate " + Y + ".";
 		ar[57] = X + " and " + Y + " are in an arranged marriage, but " + X + " doesn't want to go through with it.";
 		ar[58] = X + " is " + Y + "'s hired body guard.";
