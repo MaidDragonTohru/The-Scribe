@@ -1,5 +1,5 @@
 ﻿{
-	"name": "Pokemon-Showdown-Bot",
+	"name": "The-Scribe",
 	"version": "0.0.1",
 	"dependencies": {
 		"sugar": "1.4.1",
@@ -14,11 +14,11 @@
 	"bin": "./main.js",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Quinella/Pokemon-Showdown-Bot.git"
+		"url": "https://github.com/AxeBane/The-Scribe.git"
 	},
 	"author": {
-		"name": "Robin Vandenbrande",
-		"email": "vandenbrande.robin@gmail.com"
+		"name": "Alexander Lazenby-Catherwood",
+		"email": "axebane007@hotmail.com"
 	},
 	"private": true
 }
