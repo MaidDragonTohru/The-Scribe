@@ -489,7 +489,7 @@ exports.pokedex = {
 487:{species:"Giratina",type:["Ghost","Dragon"],forms:["norm","origin"],uber:1,legend:1},
 488:{species:"Cresselia",type:["Psychic"],legend:1},
 489:{species:"Phione",type:["Water"],legend:1},
-490:{species:"Manaphy",type:["Water"],uber:1,legend:1},
+490:{species:"Manaphy",type:["Water"],legend:1},
 491:{species:"Darkrai",type:["Dark"],uber:1,legend:1},
 492:{species:"Shaymin",type:["Grass"],forms:["norm","sky"],legend:1},
 493:{species:"Arceus",type:["Normal"],uber:1,legend:1},
