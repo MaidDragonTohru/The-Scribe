@@ -251,6 +251,11 @@ exports.parse = {
 			this.updateSeen(toId(spl[2]), spl[1], room);
 			if (Config.logmain) console.log(spl[2].cyan + " has " + "left".red + " the room " + room);
 			break;
+		case 'users':
+			var userCount = spl[2].split(',')[0];
+			var userList = spl[2].split(',').slice(1, spl[2].split(',').length).join(', ');
+			console.log("Userlist: ".red + userList.cyan + " || (" + userCount + " users)");
+			break;
 		default:
 			if (Config.readElse) {
 				var oS = spl.toString();
