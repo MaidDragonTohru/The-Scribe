@@ -34,10 +34,12 @@ exports.commands = {
 	 *
 	 * These commands are here to provide information about the bot.
 	 */
+	 //Returns basic information about the bot.
 	about: function (arg, by, room) {
 		var text = this.hasRank(by, '#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + "**Writing Bot** by AxeBane & sirDonovan __(forked from Pokémon Showdown Bot by: Quinella, TalkTakesTime, and Morfent)__");
 	},
+	//Returns a link to a guide on the bot's commands.
 	help: 'guide',
 	guide: function (arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
@@ -56,7 +58,7 @@ exports.commands = {
 	 * to perform arbitrary actions that can't be done through any other commands
 	 * or to help with upkeep of the bot.
 	 */
-
+	//Updates commands.js to include changes to commands.
 	reload: function (arg, by, room) {
 		if (Config.excepts.indexOf(toId(by)) === -1) return false;
 		try {
@@ -68,6 +70,7 @@ exports.commands = {
 			error('failed to reload: ' + sys.inspect(e));
 		}
 	},
+	//Has the bot return any text given after the command itself. Dangerous if the bot is ranked.
 	do: function (arg, by, room) {
 		if (!this.hasRank(by, '#')) return false;
 		if (arg.indexOf('[') === 0 && arg.indexOf(']') > -1) {
@@ -76,6 +79,7 @@ exports.commands = {
 		}
 		this.say(tarRoom || room, arg);
 	},
+	//Has the bot act out any JavaScript functions given. Only let people you trust use this, as it can cause some serious damage if you don't know what you're doing (and they do)
 	js: function (arg, by, room) {
 		if (Config.excepts.indexOf(toId(by)) === -1 || toId(arg) === "configpass") return false;
 		try {
@@ -85,6 +89,7 @@ exports.commands = {
 			this.say(room, e.name + ": " + e.message);
 		}
 	},
+	//Returns how long the bot has been running, similar to Shodown's /uptime command.
 	uptime: function (arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '**Uptime:** ' : '/pm ' + by + ', **Uptime:** ';
 		var divisors = [52, 7, 24, 60, 60];
@@ -124,26 +129,17 @@ exports.commands = {
 	 *
 	 * These commands allow room owners to personalise settings for moderation and command use.
 	 */
-
+	//Used to set various values on and off, as well as alter what sorts of things the bot reacts to (typically best to leave unchanged).
 	settings: 'set',
 	set: function (arg, by, room) {
 		if (!this.hasRank(by, '%@&#~') || room.charAt(0) === ',') return false;
-
 		var settable = {
 			say: 1,
 			joke: 1,
 			choose: 1,
 			usagestats: 1,
-			buzz: 1,
-			'8ball': 1,
-			survivor: 1,
 			games: 1,
-			wifi: 1,
-			monotype: 1,
 			autoban: 1,
-			happy: 1,
-			guia: 1,
-			studio: 1,
 			'switch': 1,
 			banword: 1
 		};
@@ -243,6 +239,7 @@ exports.commands = {
 			}
 		}
 	},
+	//Usage of this command adds the specified user to the list of people the bot checks through and automatically bans upon their joining.
 	blacklist: 'autoban',
 	ban: 'autoban',
 	ab: 'autoban',
@@ -279,6 +276,7 @@ exports.commands = {
 		if (illegalNick.length) text += 'All ' + (text.length ? 'other ' : '') + 'users had illegal nicks and were not blacklisted.';
 		this.say(room, text);
 	},
+	//Usage of this command undoes the above.
 	unblacklist: 'unautoban',
 	unban: 'unautoban',
 	unab: 'unautoban',
@@ -312,6 +310,7 @@ exports.commands = {
 		if (notRemoved.length) text += (text.length ? 'No other ' : 'No ') + 'specified users were present in the blacklist.';
 		this.say(room, text);
 	},
+	//Usage of this command is identical to Autoban in function, but the name is specified using Regular Expressions. Be careful with these.
 	rab: 'regexautoban',
 	regexautoban: function (arg, by, room) {
 		if (Config.regexautobanwhitelist.indexOf(toId(by)) < 0 || !this.canUse('autoban', room, by) || room.charAt(0) === ',') return false;
@@ -330,6 +329,7 @@ exports.commands = {
 		this.writeSettings();
 		this.say(room, '/' + arg + ' was added to the blacklist successfully.');
 	},
+	//Undoes the above.
 	unrab: 'unregexautoban',
 	unregexautoban: function (arg, by, room) {
 		if (Config.regexautobanwhitelist.indexOf(toId(by)) < 0 || !this.canUse('autoban', room, by) || room.charAt(0) === ',') return false;
@@ -342,6 +342,7 @@ exports.commands = {
 		this.writeSettings();
 		this.say(room, '/' + arg + ' was removed from the blacklist successfully.');
 	},
+	//Returns a list (through PM) of the users banned in the room you post the command in.
 	viewbans: 'viewblacklist',
 	vab: 'viewblacklist',
 	viewautobans: 'viewblacklist',
@@ -370,6 +371,7 @@ exports.commands = {
 		}
 		this.say(room, '/pm ' + by + ', ' + text);
 	},
+	//Adds the specified phrase to a list of banned strings that the bot checks for. Useful if a particular troll has a catchphrase of sorts.
 	banphrase: 'banword',
 	banword: function (arg, by, room) {
 		if (!this.canUse('banword', room, by)) return false;
@@ -389,6 +391,7 @@ exports.commands = {
 		this.writeSettings();
 		this.say(room, "Phrase \"" + arg + "\" is now banned.");
 	},
+	//Undoes the above.
 	unbanphrase: 'unbanword',
 	unbanword: function (arg, by, room) {
 		if (!this.canUse('banword', room, by)) return false;
@@ -409,6 +412,7 @@ exports.commands = {
 		this.writeSettings();
 		this.say(room, "Phrase \"" + arg + "\" is no longer banned.");
 	},
+	//Returns a list of banned phrases (through PM) in the room you post the command in.
 	viewbannedphrases: 'viewbannedwords',
 	vbw: 'viewbannedwords',
 	viewbannedwords: function (arg, by, room) {
@@ -445,8 +449,8 @@ exports.commands = {
 	 *
 	 * Add custom commands here.
 	 */
-
-	seen: function (arg, by, room) { // this command is still a bit buggy
+	//Returns the last action that this bot has seen the specified user do, if they have been.
+	seen: function (arg, by, room) {
 		var text = (room.charAt(0) === ',' ? '' : '/pm ' + by + ', ');
 		arg = toId(arg);
 		if (!arg || arg.length > 18) return this.say(room, text + 'Invalid username.');
@@ -462,19 +466,19 @@ exports.commands = {
 		}
 		this.say(room, text);
 	},
-
-	/*
-	This is a template for all Random Commands; please don't use this as an actual command.
-	randomcommands: function (arg, by, room) {
-		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
-		var variableone = list1[Math.floor(list1.length * Math.random())];
-		var variabletwo = list2[Math.floor(list2.length * Math.random())];
-		this.say(room, text + "Randomly generated thing: __" + variableone + " " + variabletwo + "__.");
-	},
-	*/
     
-	//Random Commands Section!
-	//Place all 'random thing generator' commands in this area!
+	/*
+	 * Random Commands Section!
+	 * Place all 'random thing generator' commands in this area!
+	 * This is a template for all Random Commands; please don't use this as an actual command.
+	 * randomcommands: function (arg, by, room) {
+	 *	var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
+	 *	var variableone = list1[Math.floor(list1.length * Math.random())];
+	 *	var variabletwo = list2[Math.floor(list2.length * Math.random())];
+	 *	this.say(room, text + "Randomly generated thing: __" + variableone + " " + variabletwo + "__.");
+	 * },
+	 */
+	//Returns a random character build.
 	randchar: 'randomcharacter',
 	chargen: 'randomcharacter',
 	genchar: 'randomcharacter',
@@ -497,6 +501,7 @@ exports.commands = {
 		var debuff = debuffs[Math.floor(debuffs.length * Math.random())];
 		this.say(room, text + "Randomly generated character: __A " + gender + ", " + adjective + " " + type + " (" + role + "). " + possessivePronoun + " positive factors include: " + perk1 + ", " + perk2 + ", and " + perk3 + ", though " + pronoun + (gender === "neuter" ? " are" : " is") + " unfortunately rather " + debuff + ".__");
 	},
+	//Returns a random Pokemon type or type combination.
 	gentype: 'randomtype',
 	randtype: 'randomtype',
 	randomtype: function (arg, by, room) {
@@ -512,6 +517,7 @@ exports.commands = {
 		}
 		this.say(room, text + "Randomly generated type: __" + firstType + (secondType ? "/" + secondType : "") + "__.");
 	},
+	//Returns a random statistical build.
 	randstats: 'randomstats',
 	randomstats: function (arg, by, room, shuffle) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
@@ -540,6 +546,127 @@ exports.commands = {
 		stats = this.shuffle(stats);
 		this.say(room, text + "Randomly generated stats: HP: " + stats[0] + " Atk: " + stats[1] + " Def: " + stats[2] + " SpA: " + stats[3] + " SpD: " + stats[4] + " Spe: " + stats[5] + " BST: " + bst);
 	},
+	//Generates a random interaction between two specified characters. Can have some humourous outcomes. c:
+	genrp: 'randRP',
+	genRP: 'randRP',
+	randrp: 'randRP',
+	randRP: function(arg, by, room) {
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
+		arg = arg.split(", ");
+		if (!arg || arg.length < 2) return this.say(room, "Please specify two names, seperated by a comma.");
+		var X = arg[0];
+		var Y = arg[1];
+		var RANDNUM = Math.floor((Math.random() * 94));
+		var ar = new Array();
+
+		ar[0] = X + " as a superhero and " + Y + " as the sidekick.";
+		ar[1] = X + " cooking lunch for " + Y + ".";
+		ar[2] = X + " as a vampire feeding on " + Y + ".";
+		ar[3] = X + " and " + Y + "  as children playing together.";
+		ar[4] = X + " as a film noir detective and " + Y + " as the desperate client.";
+		ar[5] = X + " and " + Y + " in hand to hand combat.";
+		ar[6] = X + " taking care of an injured " + Y + ".";
+		ar[7] = X + " giving " + Y + " a piggy back ride.";
+		ar[8] = X + " frustrated by losing a board game or card game to " + Y + ".";
+		ar[9] = X + " and " + Y + " fighting together, back to back.";
+		ar[10] = X + " giving " + Y + " a present.";
+
+		ar[11] = X + " and " + Y + " wearing each other's clothes.";
+		ar[12] = X + " and " + Y + " cuddling.";
+		ar[13] = X + " and " + Y + " dancing.";
+		ar[14] = X + " striking the finishing blow on " + Y + ".";
+		ar[15] = X + " and " + Y + " meeting after they haven't seen each other in a very long time.";
+		ar[16] = X + " and " + Y + " watching a very sad movie. " + X + " is crying.";
+		ar[17] = X + " and " + Y + " at a wild party. " + X + " doesn't want to be there.";
+		ar[18] = X + " and " + Y + " going to an event that requires formal attire.";
+		ar[19] = X + " and " + Y + " as JRPG style characters.";
+		ar[20] = X + " and " + Y + " as medieval-fantasy RPG characters archetypes.";
+
+		ar[21] = X + " is the lead singer and " + Y + " is the guitarist in a band.";
+		ar[22] = X + " and " + Y + " at the beach.";
+		ar[23] = X + " and " + Y + " watching the sunset.";
+		ar[24] = X + " and " + Y + " playing a sports game together.";
+		ar[25] = X + " mourning over a dead " + Y + ".";
+		ar[26] = X + " and " + Y + " eating dinner together";
+		ar[27] = X + " helping " + Y + " with chores.";
+		ar[28] = X + " is about to do something stupid. " + Y + " does not think this is a good idea.";
+		ar[29] = X + " with a hangover, but " + Y + " is feeling fine.";
+		ar[30] = X + " drawing " + Y + ".";
+
+		ar[31] = X + " and " + Y + " taking care of a bunch of orphan puppies and/or kittens."
+		ar[32] = X + " and " + Y + " in dressing in drag."
+		ar[33] = X + " is a member of the royal family and " + Y + " is a lowly peasant."
+		ar[34] = X + " comforting a sad " + Y + "."
+		ar[35] = X + " confronting " + Y + " about something bad they have done."
+		ar[36] = X + " reveals a secret to " + Y + "."
+		ar[37] = X + " discovers " + Y + "'s terrible secret."
+		ar[38] = X + " playing pranks on " + Y + "."
+		ar[39] = X + " getting revenge on " + Y + "."
+		ar[40] = X + " and " + Y + " as rivals in a competition or contest. " + X + " wins.";
+	
+		ar[41] = X + " and " + Y + " in matching cosplays";
+		ar[42] = X + " and " + Y + " go to a bar. " + Y + " gets too drunk and " + X + " has to take them home.";
+		ar[43] = X + " suspects " + Y + " is a werewolf. " + Y + " is actually hiding a more mundane secret.";
+		ar[44] = X + " and " + Y + " meet during the zombie apocalypse. " + Y + " needs " + X + "'s help.";
+		ar[45] = X + " accidentally drinks a love potion and falls for " + Y + ".";
+		ar[46] = X + " gets amnesia and forgets everything about " + Y + ".";
+		ar[47] = X + " and " + Y + " get separated in a place that's easy to get lost in. They need to reunite.";
+		ar[48] = X + " has something that " + Y + " desperately wants or needs. " + X + " won't give it up easily.";
+		ar[49] = X + " has offended " + Y + " in some way but doesn't realize it.";
+		ar[50] = X + " and " + Y + " as buddy cops.";
+
+		ar[51] = X + " and " + Y + " play an MMO together. " + X + " is the tank and " + Y + " is the healer.";
+		ar[52] = X + " is a famous and " + Y + " is their biggest fan.";
+		ar[53] = X + " is a super hero hiding their secret identity from " + Y + ".";
+		ar[54] = X + " was bullied by " + Y + " when they were both children. " + Y + " doesn't remember doing it.";
+		ar[55] = X + " is finally noticed by their senpai, " + Y + ".";
+		ar[56] = X + " gets a contract to assassinate " + Y + ".";
+		ar[57] = X + " and " + Y + " are in an arranged marriage, but " + X + " doesn't want to go through with it.";
+		ar[58] = X + " is " + Y + "'s hired body guard.";
+		ar[59] = X + " and " + Y + " meet when " + X + " finds " + Y + "'s lost pet.";
+		ar[60] = X + " and " + Y + " are atheletes from different countries that meet at the Olympics.";
+
+
+		ar[61] = X + " is too nervous to approach " + Y + ", and only admires them from afar.";
+		ar[62] = X + " and " + Y + " are part of a team, but their constant arguing causes problems. They have to pull it together for the sake of the team.";
+		ar[63] = X + " is a barista at " + Y + "'s favorite coffee shop.";
+		ar[64] = X + " has stowed away on a ship that " + Y + " works on.";
+		ar[65] = X + " saved " + Y + "'s life. " + Y + " is honorbound to return the favor.";
+		ar[66] = X + " is a demon summoned by wizard " + Y + " to do their bidding.";
+		ar[67] = "A prophecy foretold that " + X + " would be the only one who could defeat the evil " + Y + ".";
+		ar[68] = X + " and " + Y + " are reincarnated lovers, but aren't initially compatable to each other.";
+		ar[69] = X + " and " + Y + " meet on a blind date. " + Y + " wants to go on another date, but " + X + " isn't sure.";
+		ar[70] = X + " is under a terrible curse. " + Y + " knows how to cure it.";
+	
+		ar[71] = X + " and " + Y + " are the leaders of rival gangs.";
+		ar[72] = X + " is the leader of an organization. " + Y + " is their loyal second-in-command";
+		ar[73] = X + " confessed their love to " + Y + ", but was rejected.";
+		ar[74] = X + " and " + Y + " pretend to be in a relationship for the purpose of an undercover mission.";
+		ar[75] = X + " frequently has dreams or nightmares about " + Y + ".";
+		ar[76] = X + " is hired to spy on " + Y + ".";
+		ar[77] = X + " and " + Y + " got handcuffed together and lost the key.";
+		ar[78] = X + " is cornered by a bully, but " + Y + " comes to the rescue.";
+		ar[79] = X + " is bitten by a zombie and has to be put down by " + Y + ".";
+		ar[80] = X + " and " + Y + " go on a road trip.";
+	
+		ar[81] = X + " tries to tell " + Y + " that 'It isn't what it looks like, I swear!'";
+		ar[82] = X + " and " + Y + " swap bodies.";
+		ar[83] = X + " knits an ugly sweater and forces " + Y + " to wear it.";
+		ar[84] = X + " loses a bet to " + Y + ".";
+		ar[85] = X + " and " + Y + " decide to go camping. " + Y + " reads the map upside down and they both become terribly lost.";
+		ar[86] = X + ", a knight in shining armor, must rescue the distressed " + Y + ".";
+		ar[87] = X + " gives up their life so that " + Y + " can live.";
+		ar[88] = X + " and " + Y + " fight over who will sleep where on the bunk bed.";
+		ar[89] = X + " trains " + Y + " in combat.";
+		ar[90] = X + " and " + Y + " go ice skating. " + Y + " is not very good and " + X + " has to help them.";
+	
+		ar[91] = X + " and " + Y + " watch fireworks together.";
+		ar[92] = X + " and " + Y + " are Pokemon trainers that cross paths and end up traveling together.";
+		ar[93] = X + " and " + Y + " get caught up in a storm and must stay sheltered together until it passes.";
+
+		this.say(room, text + "Randomly Generated RP: " + ar[RANDNUM]);
+	},
+	//Returns a random Pokemon.
 	rollpokemon: 'randpokemon',
 	randpoke: 'randpokemon',
 	randompoke: 'randpokemon',
@@ -685,6 +812,7 @@ exports.commands = {
 		}
 		this.say(room, (text === "!dt " ? text + randompokes.join(", ") : text + "Randomly generated Pokemon: " + randompokes.join(", ")));
 	},
+	//Returns a random 'scene'.
 	randscene: 'randomlocation',
 	randomscene: 'randomlocation',
 	randlocation: 'randomlocation',
@@ -694,6 +822,7 @@ exports.commands = {
 		var location = locations[Math.floor(locations.length * Math.random())];
 		this.say(room, text + "Randomly generated scene: __" + adjective + " " + location + "__.");
 	},
+	//Returns a random Pokemon move.
 	randmove: 'randommove',
 	randommove: function (arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
@@ -765,6 +894,7 @@ exports.commands = {
 		}
 		this.say(room, text + randomMoves.join(', '));
 	},
+	//Returns a random genre combination.
 	randstyle: 'randomgenre',
 	randomstyle: 'randomgenre',
 	randgenre: 'randomgenre',
@@ -777,6 +907,7 @@ exports.commands = {
 		}
 		this.say(room, text + "Randomly generated genre: __" + genre1 + "/" + genre2 + "__.");
 	},
+	//Returns a random story idea. Mashup of the above commands.
 	idea: 'randomstory',
 	randidea: 'randomstory',
 	randomidea: 'randomstory',
@@ -811,7 +942,8 @@ exports.commands = {
 		
 	},
 	//End Random Commands
-
+	
+	//Returns the Word of the Day! One of Writing's most-used commands.
 	'word': 'wotd',
 	wotd: function (arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
@@ -830,18 +962,20 @@ exports.commands = {
 		this.writeSettings();
 		this.say(room, text + "The Word of the Day has been set to '" + arg[0] + "'!");
 	},
+	//Returns the link to the Writing Room's website.
 	site: function (arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + "Writing Room's Website: http://pswriting.weebly.com/");
 	},
+	//Returns the current time of day! ...For the bot, that is.
 	time: function (arg, by, room) {
-        var today = new Date(); 
-        var dd = today.getDate(); 
-        var mm = today.getMonth()+1; 
-        var yyyy = today.getFullYear();
-        var hr = today.getHours();
-        var mi = today.getMinutes();
-        var se = today.getSeconds();
+	var today = new Date(); 
+       	var dd = today.getDate(); 
+       	var mm = today.getMonth()+1; 
+       	var yyyy = today.getFullYear();
+       	var hr = today.getHours();
+       	var mi = today.getMinutes();
+       	var se = today.getSeconds();
         var tz = today.getTimezoneOffset() / 60;
 	if (tz > 0) tz = "+" + tz;
         if (mm === 1) { this.mmm = "January"; var sea = "winter"};
@@ -921,26 +1055,32 @@ exports.commands = {
         var today = hr + ":" + mi + ":" + se + " " + AMorPM + ", " + mm + '/' + dd + '/' + yyyy + ', the ' + this.ddd + " of the " + sea + " month of " + this.mmm + ', ' + yyyy + ' (' + this.theDay + ')';
         this.say(room, "The current time is: " + today + " (UTC" + tz + ")");
 	},
+	//Quick and generic introduction. Usually better to answer questions perosonally, though.
 	newbie: 'rules',
 	faq: 'rules',
 	rules: function (arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + "If you're new to the Writing room, be sure to read our introduction: http://pswriting.weebly.com/introduction.html Feel free to ask any room staff any questions that you may have!");
 	},
+	//For when you need a little love.
 	esupport: function (arg, by, room) {
 		var text = this.hasRank(by, '%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + 'I love you, ' + by + '.');
 	},
+	//Returns the link for the room's Google Drive.
 	drive: function (arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + 'Community Drive: http://bit.do/ps-writing-archive');
 	},
+	//Quick link to a list of contests and events.
 	contests: 'events',
 	contest: 'events',
 	events: function (arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + 'Visit this page for a list of our weekly challenges and contests: http://pswriting.weebly.com/events.html');
 	},
+	//Sunday scribing hype. :o
+	//NOTE: Probably needs updating.
 	hype: 'sundayscribing',
 	slam: 'sundayscribing',
 	sundayslam: 'sundayscribing',
@@ -949,27 +1089,34 @@ exports.commands = {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + "Every week we hold a Sunday Scribing challenge in which participants are to write a story or a poem (depending on the week) based on the topic announced on Sunday. They have until the following Friday to submit it. For more info and the submission link: http://goo.gl/Ezik4q");
 	},
+	//Returns a link to the room's Plug.dj.
 	plug: function (arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + 'Come join our Plug.dj~! https://plug.dj/pokemon-showdown-writing-room');
 	},
+	//Returns a handy tool for capitalising things.
 	titlehelp: 'title',
 	title: function (arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + 'Need help capitalising a title? Try out this helpful tool! http://titlecapitalization.com/');
 	},
+	//Returns a link to the Writing Room's poems list.
 	poems: function (arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + 'Writing Room Poems: http://bit.do/PSwritingpoems');
 	},
+	//Returns a link to the Writing Room's stories list.
 	stories: function (arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + 'Writing Room Stories: http://bit.do/PSwritingstories');
 	},
+	//Returns a brief guide to becoming voice.
 	voice: function (arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + 'Interested in becoming a voice? Check out the guideines for your chance at having a shot! http://bit.do/pswritingvoicerules or http://bit.do/pswritingvoicerap');
 	},
+	//Starts timed announcements. 
+	//NOTE: Broken? Hard to tell.
 	announce: function (arg, by, room) {
 		if (!this.hasRank(by, '%@#&~')) return false;
 		arg = toId(arg);
@@ -1002,11 +1149,11 @@ exports.commands = {
 		}
 	},
 
-	/**
-	 * Messaging related commands
+	/*
+	 * Messaging-related commands
 	 *
 	 */
-
+	//Mails the specified user the specified text when they next join the room or run the checkmail command.
 	mail: 'message',
 	msg: 'message',
 	message: function (arg, by, room) {
@@ -1032,6 +1179,7 @@ exports.commands = {
 		this.writeMessages();
 		this.say(room, text + 'Your message has been sent to ' + arg[0] + '.');
 	},
+	//Checks the mail.
 	checkmail: 'readmessages',
 	readmail: 'readmessages',
 	readmessages: function (arg, by, room) {
@@ -1044,6 +1192,7 @@ exports.commands = {
 		delete this.messages[user];
 		this.writeMessages();
 	},
+	//Clears the mail of a specific user, or all of it.
 	clearmail: 'clearmessages',
 	clearmessages: function (arg, by, room) {
 		if (!this.hasRank(by, '#&~')) return false;
@@ -1070,6 +1219,7 @@ exports.commands = {
 			this.say(room, 'Messages for ' + arg + ' have been cleared.');
 		}
 	},
+	//Counts how much mail is currently pending and returns a link (in PMs) to the user about who sent what when and to whom if they're of a certain rank.
 	countmessages: 'countmail',
 	countmail: function (arg, by, room) {
 		if (!this.hasRank(by, '+%@#&~')) return false;
@@ -1098,6 +1248,8 @@ exports.commands = {
 			}.bind(this));
 		}
 	},
+	//Used to blacklist people that frequently abuse the mail system from the mail system.
+	//Thankfully, this hasn't been used as of the time of writing this.
 	upl: 'messageblacklist',
 	unpoeticlicense: 'messageblacklist',
 	messageblacklist: function (arg, by, room) {
@@ -1119,6 +1271,7 @@ exports.commands = {
 		if (errors.length) this.say(room, errors.join(', ') + ' is already on the message blacklist');
 		if (users.length) this.say(room, '/modnote ' + users.join(', ') + ' added to the message blacklist by ' + by.substr(1));
 	},
+	//Returns the list of users blacklisted from using the messaging system.
 	vmb: 'viewmessageblacklist',
 	viewmessageblacklist: function (arg, by, room) {
 		if (!this.hasRank(by, '@#&~')) return false;
@@ -1128,6 +1281,7 @@ exports.commands = {
 			this.say(room, "/pm " + by + ", Message Blacklist: " + link);
 		}.bind(this));
 	},
+	//Used to both set (if you're a ranked user) your own autobiography and view (any user can do so) the specified user's biography, or your own if you don't specify anyone and are applicable to own one.
 	bio: 'biography',
 	biography: function(arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
@@ -1167,124 +1321,5 @@ exports.commands = {
 				return this.say(room, text + "You haven't set a biography yet! :o")
 			}
 		}
-	},
-	genrp: 'randRP',
-	genRP: 'randRP',
-	randrp: 'randRP',
-	randRP: function(arg, by, room) {
-		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
-		arg = arg.split(", ");
-		if (!arg || arg.length < 2) return this.say(room, "Please specify two names, seperated by a comma.");
-		var X = arg[0];
-		var Y = arg[1];
-		var RANDNUM = Math.floor((Math.random() * 94));
-		var ar = new Array();
-
-		ar[0] = X + " as a superhero and " + Y + " as the sidekick.";
-		ar[1] = X + " cooking lunch for " + Y + ".";
-		ar[2] = X + " as a vampire feeding on " + Y + ".";
-		ar[3] = X + " and " + Y + "  as children playing together.";
-		ar[4] = X + " as a film noir detective and " + Y + " as the desperate client.";
-		ar[5] = X + " and " + Y + " in hand to hand combat.";
-		ar[6] = X + " taking care of an injured " + Y + ".";
-		ar[7] = X + " giving " + Y + " a piggy back ride.";
-		ar[8] = X + " frustrated by losing a board game or card game to " + Y + ".";
-		ar[9] = X + " and " + Y + " fighting together, back to back.";
-		ar[10] = X + " giving " + Y + " a present.";
-
-		ar[11] = X + " and " + Y + " wearing each other's clothes.";
-		ar[12] = X + " and " + Y + " cuddling.";
-		ar[13] = X + " and " + Y + " dancing.";
-		ar[14] = X + " striking the finishing blow on " + Y + ".";
-		ar[15] = X + " and " + Y + " meeting after they haven't seen each other in a very long time.";
-		ar[16] = X + " and " + Y + " watching a very sad movie. " + X + " is crying.";
-		ar[17] = X + " and " + Y + " at a wild party. " + X + " doesn't want to be there.";
-		ar[18] = X + " and " + Y + " going to an event that requires formal attire.";
-		ar[19] = X + " and " + Y + " as JRPG style characters.";
-		ar[20] = X + " and " + Y + " as medieval-fantasy RPG characters archetypes.";
-
-		ar[21] = X + " is the lead singer and " + Y + " is the guitarist in a band.";
-		ar[22] = X + " and " + Y + " at the beach.";
-		ar[23] = X + " and " + Y + " watching the sunset.";
-		ar[24] = X + " and " + Y + " playing a sports game together.";
-		ar[25] = X + " mourning over a dead " + Y + ".";
-		ar[26] = X + " and " + Y + " eating dinner together";
-		ar[27] = X + " helping " + Y + " with chores.";
-		ar[28] = X + " is about to do something stupid. " + Y + " does not think this is a good idea.";
-		ar[29] = X + " with a hangover, but " + Y + " is feeling fine.";
-		ar[30] = X + " drawing " + Y + ".";
-
-		ar[31] = X + " and " + Y + " taking care of a bunch of orphan puppies and/or kittens."
-		ar[32] = X + " and " + Y + " in dressing in drag."
-		ar[33] = X + " is a member of the royal family and " + Y + " is a lowly peasant."
-		ar[34] = X + " comforting a sad " + Y + "."
-		ar[35] = X + " confronting " + Y + " about something bad they have done."
-		ar[36] = X + " reveals a secret to " + Y + "."
-		ar[37] = X + " discovers " + Y + "'s terrible secret."
-		ar[38] = X + " playing pranks on " + Y + "."
-		ar[39] = X + " getting revenge on " + Y + "."
-		ar[40] = X + " and " + Y + " as rivals in a competition or contest. " + X + " wins.";
-	
-		ar[41] = X + " and " + Y + " in matching cosplays";
-		ar[42] = X + " and " + Y + " go to a bar. " + Y + " gets too drunk and " + X + " has to take them home.";
-		ar[43] = X + " suspects " + Y + " is a werewolf. " + Y + " is actually hiding a more mundane secret.";
-		ar[44] = X + " and " + Y + " meet during the zombie apocalypse. " + Y + " needs " + X + "'s help.";
-		ar[45] = X + " accidentally drinks a love potion and falls for " + Y + ".";
-		ar[46] = X + " gets amnesia and forgets everything about " + Y + ".";
-		ar[47] = X + " and " + Y + " get separated in a place that's easy to get lost in. They need to reunite.";
-		ar[48] = X + " has something that " + Y + " desperately wants or needs. " + X + " won't give it up easily.";
-		ar[49] = X + " has offended " + Y + " in some way but doesn't realize it.";
-		ar[50] = X + " and " + Y + " as buddy cops.";
-
-		ar[51] = X + " and " + Y + " play an MMO together. " + X + " is the tank and " + Y + " is the healer.";
-		ar[52] = X + " is a famous and " + Y + " is their biggest fan.";
-		ar[53] = X + " is a super hero hiding their secret identity from " + Y + ".";
-		ar[54] = X + " was bullied by " + Y + " when they were both children. " + Y + " doesn't remember doing it.";
-		ar[55] = X + " is finally noticed by their senpai, " + Y + ".";
-		ar[56] = X + " gets a contract to assassinate " + Y + ".";
-		ar[57] = X + " and " + Y + " are in an arranged marriage, but " + X + " doesn't want to go through with it.";
-		ar[58] = X + " is " + Y + "'s hired body guard.";
-		ar[59] = X + " and " + Y + " meet when " + X + " finds " + Y + "'s lost pet.";
-		ar[60] = X + " and " + Y + " are atheletes from different countries that meet at the Olympics.";
-
-
-		ar[61] = X + " is too nervous to approach " + Y + ", and only admires them from afar.";
-		ar[62] = X + " and " + Y + " are part of a team, but their constant arguing causes problems. They have to pull it together for the sake of the team.";
-		ar[63] = X + " is a barista at " + Y + "'s favorite coffee shop.";
-		ar[64] = X + " has stowed away on a ship that " + Y + " works on.";
-		ar[65] = X + " saved " + Y + "'s life. " + Y + " is honorbound to return the favor.";
-		ar[66] = X + " is a demon summoned by wizard " + Y + " to do their bidding.";
-		ar[67] = "A prophecy foretold that " + X + " would be the only one who could defeat the evil " + Y + ".";
-		ar[68] = X + " and " + Y + " are reincarnated lovers, but aren't initially compatable to each other.";
-		ar[69] = X + " and " + Y + " meet on a blind date. " + Y + " wants to go on another date, but " + X + " isn't sure.";
-		ar[70] = X + " is under a terrible curse. " + Y + " knows how to cure it.";
-	
-		ar[71] = X + " and " + Y + " are the leaders of rival gangs.";
-		ar[72] = X + " is the leader of an organization. " + Y + " is their loyal second-in-command";
-		ar[73] = X + " confessed their love to " + Y + ", but was rejected.";
-		ar[74] = X + " and " + Y + " pretend to be in a relationship for the purpose of an undercover mission.";
-		ar[75] = X + " frequently has dreams or nightmares about " + Y + ".";
-		ar[76] = X + " is hired to spy on " + Y + ".";
-		ar[77] = X + " and " + Y + " got handcuffed together and lost the key.";
-		ar[78] = X + " is cornered by a bully, but " + Y + " comes to the rescue.";
-		ar[79] = X + " is bitten by a zombie and has to be put down by " + Y + ".";
-		ar[80] = X + " and " + Y + " go on a road trip.";
-	
-		ar[81] = X + " tries to tell " + Y + " that 'It isn't what it looks like, I swear!'";
-		ar[82] = X + " and " + Y + " swap bodies.";
-		ar[83] = X + " knits an ugly sweater and forces " + Y + " to wear it.";
-		ar[84] = X + " loses a bet to " + Y + ".";
-		ar[85] = X + " and " + Y + " decide to go camping. " + Y + " reads the map upside down and they both become terribly lost.";
-		ar[86] = X + ", a knight in shining armor, must rescue the distressed " + Y + ".";
-		ar[87] = X + " gives up their life so that " + Y + " can live.";
-		ar[88] = X + " and " + Y + " fight over who will sleep where on the bunk bed.";
-		ar[89] = X + " trains " + Y + " in combat.";
-		ar[90] = X + " and " + Y + " go ice skating. " + Y + " is not very good and " + X + " has to help them.";
-	
-		ar[91] = X + " and " + Y + " watch fireworks together.";
-		ar[92] = X + " and " + Y + " are Pokemon trainers that cross paths and end up traveling together.";
-		ar[93] = X + " and " + Y + " get caught up in a storm and must stay sheltered together until it passes.";
-
-		this.say(room, text + "Randomly Generated RP: " + ar[RANDNUM]);
 	}
 };
