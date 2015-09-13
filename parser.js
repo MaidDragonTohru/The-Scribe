@@ -415,8 +415,14 @@ exports.parse = {
 	},
 	processChatData: function (user, room, msg) {
 		// NOTE: this is still in early stages
+		// Start test data
+		if (toId(user) === toId(config.nick)) {
+			this.ranks[room] = user.charAt(0);
+			return;
+		}
+		// End test data
+		user = toId(user);
 		if (!user || room.charAt(0) === ',') return;
-
 		msg = msg.trim().replace(/[ \u0000\u200B-\u200F]+/g, ' '); // removes extra spaces and null characters so messages that should trigger stretching do so
 		this.updateSeen(user, 'c', room);
 		var now = Date.now();
