@@ -1089,6 +1089,12 @@ exports.commands = {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
 		this.say(room, text + "Every week we hold a Sunday Scribing challenge in which participants are to write a story or a poem (depending on the week) based on the topic announced on Sunday. They have until the following Friday to submit it. For more info and the submission link: http://goo.gl/Ezik4q");
 	},
+	//Returns a link to a Google Form where one can request for a new folder.
+	reqfolder: 'folderreq',
+	folderreq: function (arg, by, room) {
+		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
+		this.say(room, text + 'Need a folder for our Google Drive Writing Archive? Submit a request here: http://bit.do/ps-folderreq');
+	},
 	//Returns a link to the room's Plug.dj.
 	plug: function (arg, by, room) {
 		var text = this.hasRank(by, '+%@#&~') || room.charAt(0) === ',' ? '' : '/pm ' + by + ', ';
