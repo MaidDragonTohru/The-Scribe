@@ -8,7 +8,7 @@
  * @license MIT license
  */
 
-var sys = require('sys');
+var fs = require('fs');
 var http = require('http');
 var https = require('https');
 var url = require('url');
@@ -20,56 +20,56 @@ const FLOOD_MESSAGE_TIME = 6 * 1000;
 const MIN_CAPS_LENGTH = 18;
 const MIN_CAPS_PROPORTION = 0.8;
 
-var settings = {};
+// TODO: move to rooms.js
+// TODO: store settings by room, not command/blacklists
+var settings;
 try {
 	settings = JSON.parse(fs.readFileSync('settings.json'));
-	if (!Object.keys(settings).length && settings !== {}) settings = {};
 } catch (e) {} // file doesn't exist [yet]
+if (!Object.isObject(settings)) settings = {};
 
-var messages = {};
+var messages;
 try {
 	messages = JSON.parse(fs.readFileSync('messages.json'));
-	if (!Object.keys(messages).length && messages !== {}) messages = {};
 } catch (e) {} // file doesn't exist [yet]
+if (!Object.isObject(messages)) messages = {};
 
 exports.parse = {
 	actionUrl: url.parse('https://play.pokemonshowdown.com/~~' + Config.serverid + '/action.php'),
 	'settings': settings,
 	'messages': messages,
+	// TODO: handle chatdata in users.js
 	chatData: {},
-	ranks: {},
+	// TODO: handle blacklists in rooms.js
 	blacklistRegexes: {},
 
 	data: function (data) {
-		if (data.substr(0, 1) === 'a') {
-			data = JSON.parse(data.substr(1));
-			if (Array.isArray(data)) {
-				for (var i = 0, len = data.length; i < len; i++) {
-					this.splitMessage(data[i]);
-				}
-			} else {
-				this.splitMessage(data);
+		if (data.charAt(0) !== 'a') return false;
+		data = JSON.parse(data.substr(1));
+		if (Array.isArray(data)) {
+			for (var i = 0, len = data.length; i < len; i++) {
+				this.splitMessage(data[i]);
 			}
+		} else {
+			this.splitMessage(data);
 		}
 	},
 	splitMessage: function (message) {
 		if (!message) return;
 
-		var room = '';
+		var room = null;
 		if (message.indexOf('\n') < 0) return this.message(message, room);
 
 		var spl = message.split('\n');
 		if (spl[0].charAt(0) === '>') {
-			if (spl[1].substr(1, 10) === 'tournament') return;
-			room = spl.shift().substr(1);
+			if (spl[1].substr(1, 10) === 'tournament') return false;
+			var roomid = spl.shift().substr(1);
+			room = Rooms.get(roomid);
 			if (spl[0].substr(1, 4) === 'init') {
-				var users = spl[2].substr(7).split(',');
-				var nickId = toId(Config.nick);
-				for (var i = 0, len = users.length; i < len; i++) {
-					if (toId(users[i]) === nickId) this.ranks[room] = users[i].trim().charAt(0);
-					break;
-				}
-				return ok('joined ' + room);
+				var users = spl[2].substr(7);
+				room = Rooms.add(roomid, Config.rooms.indexOf(roomid) === 1);
+				room.onUserlist(users);
+				return ok('joined ' + room.id);
 			}
 		}
 
@@ -92,22 +92,22 @@ exports.parse = {
 				agent: false
 			};
 
+			var data;
 			if (!Config.pass) {
 				requestOptions.method = 'GET';
 				requestOptions.path += '?act=getassertion&userid=' + toId(Config.nick) + '&challengekeyid=' + id + '&challenge=' + str;
 			} else {
 				requestOptions.method = 'POST';
-				var data = 'act=login&name=' + Config.nick + '&pass=' + Config.pass + '&challengekeyid=' + id + '&challenge=' + str;
+				data = 'act=login&name=' + Config.nick + '&pass=' + Config.pass + '&challengekeyid=' + id + '&challenge=' + str;
 				requestOptions.headers = {
 					'Content-Type': 'application/x-www-form-urlencoded',
 					'Content-Length': data.length
 				};
 			}
 
-			var data;
 			var req = https.request(requestOptions, function (res) {
-				data = '';
 				res.setEncoding('utf8');
+				data = '';
 				res.on('data', function (chunk) {
 					data += chunk;
 				});
@@ -151,7 +151,7 @@ exports.parse = {
 			}.bind(this));
 
 			req.on('error', function (err) {
-				error('login error: ' + sys.inspect(err));
+				error('login error: ' + err.stack);
 			});
 
 			if (data) req.write(data);
@@ -166,81 +166,92 @@ exports.parse = {
 			}
 
 			ok('logged in as ' + spl[2]);
+			send('|/blockchallenges');
+			if (Config.avatarNumber) send('|/avatar ' + Config.avatarNumber);
 
 			// Now join the rooms
-			var roomid;
-			for (var i = 0, len = Config.rooms.length; i < len; i++) {
-				roomid = toId(Config.rooms[i]);
-				if (roomid === 'lobby' && Config.serverid === 'showdown') continue;
-				send('|/join ' + roomid);
-			}
-			for (var i = 0, len = Config.privaterooms.length; i < len; i++) {
-				roomid = toId(Config.privaterooms[i]);
-				if (roomid === 'lobby' && Config.serverid === 'showdown') continue;
-				send('|/join ' + roomid);
-			}
-			if (Config.avatarNumber) send('|/avatar ' + Config.avatarNumber);
+			Rooms.join();
+
 			if (this.settings.blacklist) {
 				var blacklist = this.settings.blacklist;
-				for (var roomid in blacklist) {
-					this.updateBlacklistRegex(roomid);
+				for (var list in blacklist) {
+					this.updateBlacklistRegex(list);
 				}
 			}
 			setInterval(this.cleanChatData.bind(this), 30 * 60 * 1000);
 			break;
 		case 'c':
-			var by = spl[2];
-			if (this.isBlacklisted(toId(by), room)) this.say(room, '/roomban ' + by + ', Blacklisted user');
+			var username = spl[2];
+			var user = Users.get(username);
+			if (!user) return false; // various "chat" responses contain other data
+			if (user === Users.self) return false;
+			if (this.isBlacklisted(user.id, room.id)) this.say(room, '/roomban ' + user.id + ', Blacklisted user');
 
 			spl = spl.slice(3).join('|');
-			if ('%@#&~'.indexOf(by.charAt(0)) < 0) this.processChatData(toId(by), room, spl);
-			this.chatMessage(spl, by, room);
+			if (!user.hasRank(room.id, '%')) this.processChatData(user.id, room.id, spl);
+			this.chatMessage(spl, user, room);
 			break;
 		case 'c:':
-			var by = spl[3];
-			if (this.isBlacklisted(toId(by), room)) this.say(room, '/roomban ' + by + ', Blacklisted user');
+			var username = spl[3];
+			var user = Users.get(username);
+			if (!user) return false; // various "chat" responses contain other data
+			if (user === Users.self) return false;
+			if (this.isBlacklisted(user.id, room.id)) this.say(room, '/roomban ' + user.id + ', Blacklisted user');
 
 			spl = spl.slice(4).join('|');
-			if ('%@#&~'.indexOf(by.charAt(0)) < 0) this.processChatData(toId(by), room, spl);
-			this.chatMessage(spl, by, room);
+			if (!user.hasRank(room.id, '%')) this.processChatData(user.id, room.id, spl);
+			this.chatMessage(spl, user, room);
 			break;
 		case 'pm':
-			var by = spl[2];
-			this.chatMessage(spl.slice(4).join('|'), by, ',' + by);
+			var username = spl[2];
+			var user = Users.get(username);
+			var group = username.charAt(0);
+			if (!user) user = Users.add(username);
+			if (user === Users.self) return false;
+
+			spl = spl.slice(4).join('|');
+			if (spl.startsWith('/invite ') && user.hasRank(group, '%') &&
+					!(toId(spl.substr(8)) === 'lobby' && Config.serverid === 'showdown')) {
+				return send('|/join ' + spl.substr(8));
+			}
+			this.chatMessage(spl, user, user);
 			break;
 		case 'N':
-			var by = spl[2];
-			if (this.isBlacklisted(toId(by), room)) this.say(room, '/roomban ' + by + ', Blacklisted user');
-			this.updateSeen(spl[3], spl[1], toId(by));
-			if (Config.logmain) console.log(spl[3].cyan + " has changed their nickname to " + by.cyan);
+			var username = spl[2];
+			var oldid = spl[3];
+			var user = room.onRename(username, oldid);
+			if (this.isBlacklisted(user.id, room.id)) this.say(room, '/roomban ' + user.id + ', Blacklisted user');
+			this.updateSeen(oldid, spl[1], user.id);
+			if (Config.logmain) console.log(oldid.cyan + " has changed their nickname to " + username.cyan);
 			break;
 		case 'J': case 'j':
-			var by = spl[2];
-			if (this.isBlacklisted(toId(by), room)) return this.say(room, '/roomban ' + by + ', Blacklisted user');
-			this.updateSeen(toId(by), spl[1], room);
+			var username = spl[2];
+			var user = room.onJoin(username, username.charAt(0));
+			if (user === Users.self) return false;
+			if (this.isBlacklisted(user.id, room.id)) this.say(room, '/roomban ' + user.id + ', Blacklisted user');
+			this.updateSeen(user.id, spl[1], room.id);
 			// Send pending mail
-			var user = toId(by);
-			var mail = this.messages[user];
+			var mail = this.messages[user.id];
 			if (mail) {
 				for (var i = 0, len = mail.length; i < len; i++) {
-					this.say(room, "/pm " + by + ", " + this.getTimeAgo(mail[i].time) + " ago, " + mail[i].from + " said: " + mail[i].text);
+					this.say(room, "/pm " + user.id + ", " + this.getTimeAgo(mail[i].time) + " ago, " + mail[i].from + " said: " + mail[i].text);
 				}
-				delete this.messages[user];
+				delete this.messages[user.id];
 				this.writeMessages();
 			}
 			//Word of the Day tracking
-			if (this.settings.wotd && this.hasRank(by, '+%@#') && toId(room) === "writing") {
+			if (this.settings.wotd && room.id === "writing" && user.hasRank(room.id, '+')) {
 				var now = Date.now();
 				if ((now - this.settings.wotd.time) > 86400000) {
-					this.say(room, "/msg " + user + ", The Word of the Day has not been updated for at least a day. You should probably get on that. :/");
+					this.say(room, "/msg " + user.id + ", The Word of the Day has not been updated for at least a day. You should probably get on that. :/");
 				} else if ((now - this.settings.wotd.time) > 77760000) {
-					this.say(room, "/msg " + user + ", The Word of the Day will need to be updated soon. Just a friendly heads up. ^.^'");
+					this.say(room, "/msg " + user.id + ", The Word of the Day will need to be updated soon. Just a friendly heads up. ^.^'");
 				}
 			}
-			if (Config.logmain) console.log(by.cyan + " has " + "joined".green + " the room " + room);
+			if (Config.logmain) console.log(user.name.cyan + " has " + "joined".green + " the room " + room.id);
 			if (Config.reply) {
 				for (var i = 0, len = Config.greetings.length; i < len; i++) {
-					if (toId(Config.greetings[i][0]) === user) {
+					if (toId(Config.greetings[i][0]) === user.id) {
 						this.say(room, Config.greetings[i][1]);
 						break;
 					}
@@ -248,13 +259,15 @@ exports.parse = {
 			}
 			break;
 		case 'l': case 'L':
-			this.updateSeen(toId(spl[2]), spl[1], room);
-			if (Config.logmain) console.log(spl[2].cyan + " has " + "left".red + " the room " + room);
-			break;
-		case 'users':
-			var userCount = spl[2].split(',')[0];
-			var userList = spl[2].split(',').slice(1, spl[2].split(',').length).join(', ');
-			console.log("Userlist: ".red + userList.cyan + " || (" + userCount + " users)");
+			var username = spl[2];
+			var user = room.onLeave(username);
+			if (user) {
+				if (user === Users.self) return false;
+				this.updateSeen(user.id, spl[1], room.id);
+			} else {
+				this.updateSeen(toId(username), spl[1], room.id);
+			}
+			if (Config.logmain) console.log(username.cyan + " has " + "left".red + " the room " + room.id);
 			break;
 		default:
 			if (Config.readElse) {
@@ -264,32 +277,31 @@ exports.parse = {
 			}
 		}
 	},
-	chatMessage: function (message, by, room) {
-		if (toId(by) === toId(Config.nick)) return;
-		var cmdrMessage = '["' + room + '|' + by + '|' + message + '"]';
+	chatMessage: function (message, user, room) {
+		var cmdrMessage = '["' + room.id + '|' + user.name + '|' + message + '"]';
 		message = message.trim();
-		if (room.charAt(0) === ',') {
+		if (room === user) {
 			// auto accept invitations to rooms
-			if (message.substr(0, 8) === '/invite ' && this.hasRank(by, '%@&~') && !(Config.serverid === 'showdown' && toId(message.substr(8)) === 'lobby')) {
+			if (message.substr(0, 8) === '/invite ' && user.hasRank(room.id, '%') && !(Config.serverid === 'showdown' && toId(message.substr(8)) === 'lobby')) {
 				this.say('', '/join ' + message.substr(8));
 			}
-			if (Config.logpms) console.log("Private Message from ".red + by.cyan + ": ".cyan + message);
+			if (Config.logpms) console.log("Private Message from ".red + user.name.cyan + ": ".cyan + message);
 		} else if (Config.logmain) {
 			var sender;
-			if (!this.hasRank(by, '+%@#~')) {
-				sender = by;
-			} else if (this.hasRank(by, '+')) {
-				sender = by.yellow;
-			} else if (this.hasRank(by, '%')) {
-				sender = by.cyan;
-			} else if (this.hasRank(by, '@')) {
-				sender = by.blue;
-			} else if (this.hasRank(by, '#')) {
-				sender = by.red;
-			} else if (this.hasRank(by, '~')) {
-				sender = by.green;
+			if (!user.hasRank(room.id, '+')) {
+				sender = user.name;
+			} else if (user.hasRank(room.id, '~')) {
+				sender = user.name.yellow;
+			} else if (user.hasRank(room.id, '#')) {
+				sender = user.name.cyan;
+			} else if (user.hasRank(room.id, '@')) {
+				sender = user.name.blue;
+			} else if (user.hasRank(room.id, '%')) {
+				sender = user.name.red;
+			} else if (user.hasRank(room.id, '+')) {
+				sender = user.name.green;
 			}
-			console.log(room.cyan + ': '.cyan + sender + ': '.cyan + message);
+			console.log(room.id.cyan + ': '.cyan + sender + ': '.cyan + message);
 		}
 		if (Config.reply) {
 			var spl = toId(message);
@@ -300,17 +312,15 @@ exports.parse = {
 				}
 			}
 		}
-		if (message.substr(0, Config.commandcharacter.length) !== Config.commandcharacter) return;
+		if (message.substr(0, Config.commandcharacter.length) !== Config.commandcharacter) return false;
 
 		message = message.substr(Config.commandcharacter.length);
 		var index = message.indexOf(' ');
 		var arg = '';
-		var cmd;
+		var cmd = message;
 		if (index > -1) {
-			cmd = message.substr(0, index);
+			cmd = cmd.substr(0, index);
 			arg = message.substr(index + 1).trim();
-		} else {
-			cmd = message;
 		}
 
 		if (!!Commands[cmd]) {
@@ -320,75 +330,60 @@ exports.parse = {
 			}
 			if (typeof Commands[cmd] === "function") {
 				cmdr(cmdrMessage);
-				Commands[cmd].call(this, arg, by, room);
+				Commands[cmd].call(this, arg, user, room);
 			} else {
 				error("invalid command type for " + cmd + ": " + (typeof Commands[cmd]));
 			}
 		}
 	},
-	say: function (room, text) {
-		if (room.charAt(0) !== ',') {
-			send((room !== 'lobby' ? room : '') + '|' + text);
+	say: function (target, text) {
+		var targetId = target.id;
+		if (Rooms.get(targetId)) {
+			send((targetId !== 'lobby' ? targetId : '') + '|' + text);
 		} else {
-			send('|/pm ' + room.substr(1) + ', ' + text);
+			send('|/pm ' + targetId + ', ' + text);
 		}
 	},
-	hasRank: function (user, rank) {
-		var hasRank = (rank.split('').indexOf(user.charAt(0)) !== -1) || (Config.excepts.indexOf(toId(user)) !== -1);
-		return hasRank;
+	isBlacklisted: function (userid, roomid) {
+		var blacklistRegex = this.blacklistRegexes[roomid];
+		return blacklistRegex && blacklistRegex.test(userid);
 	},
-	canUse: function (cmd, room, user) {
-		var canUse = false;
-		var ranks = ' +%@&#~';
-		if (!this.settings[cmd] || !this.settings[cmd][room]) {
-			canUse = this.hasRank(user, ranks.substr(ranks.indexOf((cmd === 'autoban' || cmd === 'banword') ? '#' : Config.defaultrank)));
-		} else if (this.settings[cmd][room] === true) {
-			canUse = true;
-		} else if (ranks.indexOf(this.settings[cmd][room]) > -1) {
-			canUse = this.hasRank(user, ranks.substr(ranks.indexOf(this.settings[cmd][room])));
-		}
-		return canUse;
-	},
-	isBlacklisted: function (user, room) {
-		var blacklistRegex = this.blacklistRegexes[room];
-		return blacklistRegex && blacklistRegex.test(user);
-	},
-	blacklistUser: function (user, room) {
+	blacklistUser: function (userid, roomid) {
 		var blacklist = this.settings.blacklist || (this.settings.blacklist = {});
-		if (blacklist[room]) {
-			if (blacklist[room][user]) return false;
+		if (blacklist[roomid]) {
+			if (blacklist[roomid][userid]) return false;
 		} else {
-			blacklist[room] = {};
+			blacklist[roomid] = {};
 		}
 
-		blacklist[room][user] = 1;
-		this.updateBlacklistRegex(room);
+		blacklist[roomid][userid] = 1;
+		this.updateBlacklistRegex(roomid);
 		return true;
 	},
-	unblacklistUser: function (user, room) {
+	unblacklistUser: function (userid, roomid) {
 		var blacklist = this.settings.blacklist;
-		if (!blacklist || !blacklist[room] || !blacklist[room][user]) return false;
+		if (!blacklist || !blacklist[roomid] || !blacklist[roomid][userid]) return false;
 
-		delete blacklist[room][user];
-		if (Object.isEmpty(blacklist[room])) {
-			delete blacklist[room];
-			delete this.blacklistRegexes[room];
+		delete blacklist[roomid][userid];
+		if (Object.isEmpty(blacklist[roomid])) {
+			delete blacklist[roomid];
+			delete this.blacklistRegexes[roomid];
 		} else {
-			this.updateBlacklistRegex(room);
+			this.updateBlacklistRegex(roomid);
 		}
 		return true;
 	},
-	updateBlacklistRegex: function (room) {
-		var blacklist = this.settings.blacklist[room];
+	updateBlacklistRegex: function (roomid) {
+		var blacklist = this.settings.blacklist[roomid];
 		var buffer = [];
 		for (var entry in blacklist) {
-			if (entry.charAt(0) === '/' && entry.substr(-2) === '/i') {
+			if (entry.startsWith('/') && entry.endsWith('/i')) {
 				buffer.push(entry.slice(1, -2));
 			} else {
 				buffer.push('^' + entry + '$');
 			}
 		}
-		this.blacklistRegexes[room] = new RegExp(buffer.join('|'), 'i');
+		this.blacklistRegexes[roomid] = new RegExp(buffer.join('|'), 'i');
 	},
 	uploadToHastebin: function (toUpload, callback) {
 		if (typeof callback !== 'function') return false;
@@ -400,9 +395,9 @@ exports.parse = {
 
 		var req = http.request(reqOpts, function (res) {
 			res.on('data', function (chunk) {
-				chunk = chunk.toString();
-				if (chunk.substr(0, 15) === '<!DOCTYPE html>') return callback('Error connecting to Hastebin. Is the site down?');
-				var filename = JSON.parse(chunk).key;
+				// CloudFlare can go to hell for sending the body in a header request like this
+				if (typeof chunk === 'string' && chunk.substr(0, 15) === '<!DOCTYPE html>') return callback('Error uploading to Hastebin.');
+				var filename = JSON.parse(chunk.toString()).key;
 				callback('http://hastebin.com/raw/' + filename);
 			});
 		});
@@ -413,46 +408,37 @@ exports.parse = {
 		req.write(toUpload);
 		req.end();
 	},
-	processChatData: function (user, room, msg) {
+	processChatData: function (userid, roomid, msg) {
 		// NOTE: this is still in early stages
-		// Start test data
-		if (toId(user) === toId(config.nick)) {
-			this.ranks[room] = user.charAt(0);
-			return;
-		}
-		// End test data
-		user = toId(user);
-		if (!user || room.charAt(0) === ',') return;
 		msg = msg.trim().replace(/[ \u0000\u200B-\u200F]+/g, ' '); // removes extra spaces and null characters so messages that should trigger stretching do so
-		this.updateSeen(user, 'c', room);
+		this.updateSeen(userid, 'c', roomid);
 		var now = Date.now();
-		if (!this.chatData[user]) this.chatData[user] = {
+		if (!this.chatData[userid]) this.chatData[userid] = {
 			zeroTol: 0,
 			lastSeen: '',
 			seenAt: now
 		};
-		var userData = this.chatData[user];
-
-		if (!this.chatData[user][room]) this.chatData[user][room] = {
+		var userData = this.chatData[userid];
+		if (!userData[roomid]) userData[roomid] = {
 			times: [],
 			points: 0,
 			lastAction: 0
 		};
-		var roomData = userData[room];
+		var roomData = userData[roomid];
 
 		roomData.times.push(now);
 
 		// this deals with punishing rulebreakers, but note that the bot can't think, so it might make mistakes
-		if (Config.allowmute && this.hasRank(this.ranks[room] || ' ', '%@&#~') && Config.whitelist.indexOf(user) === -1) {
-			var useDefault = !(this.settings.modding && this.settings.modding[room]);
+		if (Config.allowmute && Users.self.hasRank(roomid, '%') && Config.whitelist.indexOf(userid) < 0) {
+			var useDefault = !(this.settings.modding && this.settings.modding[roomid]);
 			var pointVal = 0;
 			var muteMessage = '';
-			var modSettings = useDefault ? null : this.settings.modding[room];
+			var modSettings = useDefault ? null : this.settings.modding[roomid];
 
 			// moderation for banned words
-			if ((useDefault || !this.settings.banword[room]) && pointVal < 2) {
+			if ((useDefault || !this.settings.banword[roomid]) && pointVal < 2) {
 				var bannedPhraseSettings = this.settings.bannedphrases;
-				var bannedPhrases = !!bannedPhraseSettings ? (Object.keys(bannedPhraseSettings[room] || {})).concat(Object.keys(bannedPhraseSettings.global || {})) : [];
+				var bannedPhrases = !!bannedPhraseSettings ? (Object.keys(bannedPhraseSettings[roomid] || {})).concat(Object.keys(bannedPhraseSettings.global || {})) : [];
 				for (var i = 0; i < bannedPhrases.length; i++) {
 					if (msg.toLowerCase().indexOf(bannedPhrases[i]) > -1) {
 						pointVal = 2;
@@ -500,16 +486,16 @@ exports.parse = {
 					cmd = Config.punishvals[pointVal] || cmd;
 					roomData.points = pointVal; // next action will be one level higher than this one (in most cases)
 				}
-				if (Config.privaterooms.indexOf(room) > -1 && cmd === 'warn') cmd = 'mute'; // can't warn in private rooms
+				if (Config.privaterooms.indexOf(roomid) > -1 && cmd === 'warn') cmd = 'mute'; // can't warn in private rooms
 				// if the bot has % and not @, it will default to hourmuting as its highest level of punishment instead of roombanning
-				if (roomData.points >= 4 && !this.hasRank(this.ranks[room] || ' ', '@&#~')) cmd = 'hourmute';
+				if (roomData.points >= 4 && !Users.self.hasRank(roomid, '@')) cmd = 'hourmute';
 				if (userData.zeroTol > 4) { // if zero tolerance users break a rule they get an instant roomban or hourmute
 					muteMessage = ', Automated response: zero tolerance user';
-					cmd = this.hasRank(this.ranks[room] || ' ', '@&#~') ? 'roomban' : 'hourmute';
+					cmd = Users.self.hasRank(roomid, '@') ? 'roomban' : 'hourmute';
 				}
 				if (roomData.points > 1) userData.zeroTol++; // getting muted or higher increases your zero tolerance level (warns do not)
 				roomData.lastAction = now;
-				this.say(room, '/' + cmd + ' ' + user + muteMessage);
+				this.say(Rooms.get(roomid), '/' + cmd + ' ' + userid + muteMessage);
 			}
 		}
 	},
@@ -540,7 +526,7 @@ exports.parse = {
 	},
 
 	updateSeen: function (user, type, detail) {
-		if (type !== 'n' && Config.rooms.indexOf(detail) === -1 || Config.privaterooms.indexOf(toId(detail)) > -1) return;
+		if (type !== 'n' && Config.rooms.indexOf(detail) < 0 || Config.privaterooms.indexOf(detail) > -1) return;
 		var now = Date.now();
 		if (!this.chatData[user]) this.chatData[user] = {
 			zeroTol: 0,

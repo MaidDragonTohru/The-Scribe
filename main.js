@@ -31,9 +31,10 @@ function runNpm(command) {
 	});
 }
 
-// Check if everything that is needed is available
+// First dependencies and welcome message
 try {
 	require('sugar');
+	require('es6-shim');
 	global.colors = require('colors');
 } catch (e) {
 	console.log('Dependencies are not installed!');
@@ -74,6 +75,11 @@ global.ok = function (text) {
 	console.log('ok'.green + '    ' + text);
 };
 
+console.log('-----------------------------------|'.red);
+console.log('|'.red + ' Welcome to AxeBane\'s'.green + ' Writing Bot!|'.red);
+console.log('-----------------------------------|'.red);
+console.log('');
+
 global.toId = function (text) {
 	return text.toLowerCase().replace(/[^a-z0-9]/g, '');
 };
@@ -95,14 +101,7 @@ global.stripCommands = function (text) {
 	return text;
 };
 
-console.log('-----------------------------------|'.red);
-console.log('|'.red + ' Welcome to AxeBane\'s'.green + ' Writing Bot!|'.red);
-console.log('-----------------------------------|'.red);
-console.log('');
-
 // Config and config.js watching...
-global.fs = require('fs');
-
 try {
 	global.Config = require('./config.js');
 } catch (e) {
@@ -119,6 +118,7 @@ var checkCommandCharacter = function () {
 
 checkCommandCharacter();
 
+var fs = require('fs');
 if (Config.watchconfig) {
 	fs.watchFile('./config.js', function (curr, prev) {
 		if (curr.mtime <= prev.mtime) return;
@@ -134,13 +134,15 @@ if (Config.watchconfig) {
 // And now comes the real stuff...
 info('starting server');
 
+var WebSocketClient = require('websocket').client;
 global.Commands = require('./commands.js').commands;
+global.Users = require('./users.js');
+global.Rooms = require('./rooms.js');
 global.Parse = require('./parser.js').parse;
 global.Pokedex = require('./pokedex.js').pokedex;
 global.Movedex = require('./movedex.js').movedex;
 global.Connection = null;
 
-var WebSocketClient = require('websocket').client;
 var queue = [];
 var dequeueTimeout = null;
 var lastSentAt = 0;
@@ -149,7 +151,7 @@ global.send = function (data) {
 	if (!data || !Connection.connected) return false;
 
 	var now = Date.now();
-	if (now < (lastSentAt + MESSAGE_THROTTLE - 5)) {
+	if (now < lastSentAt + MESSAGE_THROTTLE - 5) {
 		queue.push(data);
 		if (!dequeueTimeout) {
 			dequeueTimeout = setTimeout(dequeue, now - lastSentAt + MESSAGE_THROTTLE);
@@ -182,6 +184,7 @@ var connect = function (retry) {
 	}
 
 	var ws = new WebSocketClient();
+
 	ws.on('connectFailed', function (err) {
 		error('Could not connect to server ' + Config.server + ': ' + err.stack);
 		info('retrying in one minute');
@@ -204,6 +207,10 @@ var connect = function (retry) {
 			error('connection closed: ' + reason + ' (' + code + ')');
 			info('retrying in one minute');
 
+			for (var i in Users.users) {
+				delete Users.users[i];
+			}
+			Rooms.rooms.clear();
 			setTimeout(function () {
 				connect(true);
 			}, 60000);
