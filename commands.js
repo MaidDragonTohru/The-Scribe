@@ -137,6 +137,10 @@ exports.commands = {
 	//Has the bot act out any JavaScript functions given. Only let people you trust use this, as it can cause some serious damage if you don't know what you're doing (and they do)
 	js: function (arg, user, room) {
 		if (!user.isExcepted()) return false;
+		if (toId(arg) === 'configpass') {
+			this.say(room, "Seriously? Please don't try to access the bot's password; this incident has been reported.");
+			return console.log(user + " has tried to access the bot's password with JS privileges!");
+		}
 		try {
 			var result = eval(arg.trim());
 			this.say(room, JSON.stringify(result));
