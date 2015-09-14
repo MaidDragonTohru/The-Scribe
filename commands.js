@@ -1129,7 +1129,7 @@ exports.commands = {
             kind: arg[2],
 			definition: arg.slice(3).join(', ').trim(),
 			time: Date.now(),
-			user: user.name.substr(1)
+			user: user.name
 		};
 		this.writeSettings();
 		this.say(room, text + "The Word of the Day has been set to '" + arg[0] + "'!");
@@ -1348,7 +1348,7 @@ exports.commands = {
 		if (!this.messages[tarUser]) this.messages[tarUser] = [];
 		if (this.messages[tarUser].length >= 5) return this.say(room, text + arg[0] + '\'s inbox is full.');
 		var mail = {
-			from: user.name.substr(1),
+			from: user.name,
 			text: message,
 			destination: arg[0], /* This is included only for reading by ;countmail. It is used nowhere else. */
 			time: Date.now()
@@ -1477,12 +1477,12 @@ exports.commands = {
 				if (bios[i].name === tarUser) {
 					bios[i].bio = input;
 					this.writeSettings();
-					return this.say(room, text + "Biography for user " + user.name.substr(1) + " has been edited.");
+					return this.say(room, text + "Biography for user " + user.name + " has been edited.");
 				}
 			}
 			bios.push({"name": tarUser, "bio": input});
 			this.writeSettings();
-			return this.say(room, text + "Biography for user " + user.name.substr(1) + " has been set.");
+			return this.say(room, text + "Biography for user " + user.name + " has been set.");
 		} else {
 			for (var i = 0, len = bios.length; i < len; i++) {
 				if (user.id === bios[i].name) {
