@@ -69,6 +69,7 @@ exports.parse = {
 				var users = spl[2].substr(7);
 				room = Rooms.add(roomid, Config.rooms.indexOf(roomid) === 1);
 				room.onUserlist(users);
+				send('|/roomauth ' + room.id);
 				return ok('joined ' + room.id);
 			}
 		}
@@ -240,7 +241,7 @@ exports.parse = {
 				this.writeMessages();
 			}
 			//Word of the Day tracking
-			if (this.settings.wotd && room.id === "writing" && user.hasRank(room.id, '+')) {
+			if (this.settings.wotd && room.id === "writing" && user.hasRank(room.id, '+') && Config.roomauth && Config.roomauth[room.id] && Config.roomauth[room.id][user.id]) {
 				var now = Date.now();
 				if ((now - this.settings.wotd.time) > 86400000) {
 					this.say(room, "/msg " + user.id + ", The Word of the Day has not been updated for at least a day. You should probably get on that. :/");
@@ -268,6 +269,30 @@ exports.parse = {
 				this.updateSeen(toId(username), spl[1], room.id);
 			}
 			if (Config.logmain) console.log(username.cyan + " has " + "left".red + " the room " + room.id);
+			break;
+		case 'popup':
+			if (spl[2].indexOf('room auth') !== -1) {
+				var tarRoom = toId(spl[2].split('room auth')[0]);
+				if (!tarRoom) return;
+				var data = spl.slice(3).join("|").split('||');
+				var ranks = {'roomowners': '#', 'moderators': '@', 'drivers': '%', 'voices': '+'};
+				var auth = {};
+				var rank, line;
+				for (var i = 0, len = data.length; i < len; i++) {
+					line = toId(data[i].split('(')[0]);
+					if (!line) continue;
+					if (line in ranks) {
+						rank = ranks[line];
+					} else {
+						line = data[i].split(", ");
+						for (var l = 0, lineLen = line.length; l < lineLen; l++) {
+							auth[line[l]] = rank;
+						}
+					}
+				}
+				if (!Config.roomauth) Config.roomauth = {};
+				Config.roomauth[tarRoom] = auth;
+			}
 			break;
 		default:
 			if (Config.readElse) {
