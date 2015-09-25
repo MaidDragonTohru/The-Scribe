@@ -1244,12 +1244,12 @@ exports.commands = {
 		var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
 		this.say(room, text + 'Community Drive: http://bit.do/ps-writing-archive');
 	},
-	//Quick link to a list of contests and events.
-	contests: 'events',
-	contest: 'events',
-	events: function (arg, user, room) {
+	//Quick link to a list of games and activities
+	fun: 'games',
+	activities: 'games',
+	games: function (arg, user, room) {
 		var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
-		this.say(room, text + 'Visit this page for a list of our weekly challenges and contests: http://pswriting.weebly.com/events.html');
+		this.say(room, text + 'Visit this page for a list of our various games and activities: http://pswriting.weebly.com/games--activities.html');
 	},
 	//Sunday scribing hype. :o
 	//NOTE: Probably needs updating.
