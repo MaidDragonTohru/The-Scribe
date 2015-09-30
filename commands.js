@@ -1267,11 +1267,6 @@ exports.commands = {
 		var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
 		this.say(room, text + 'Need a folder for our Google Drive Writing Archive? Submit a request here: http://bit.do/ps-folderreq');
 	},
-	//Returns a link to the room's Plug.dj.
-	plug: function (arg, user, room) {
-		var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
-		this.say(room, text + 'Come join our Plug.dj~! https://plug.dj/pokemon-showdown-writing-room');
-	},
 	//Returns a handy tool for capitalising things.
 	titlehelp: 'title',
 	title: function (arg, user, room) {
@@ -1303,6 +1298,7 @@ exports.commands = {
 			return this.say(room, 'Announcements have been disabled.');
 		} else if (arg === 'on') {
 			var self = this;
+			this.say(room, 'Announcements have been enabled');
 			this.buzzer = setInterval(function() {
 				var tips = ["Don't forget to allow people to comment on your work when it's done! Click 'Share', and set permissions accordingly.",
 					"We like to play writing games, too! Click 'Activities' in our room introduction (the fancy box you saw when you joined) to see what games are available!",
@@ -1316,7 +1312,6 @@ exports.commands = {
 					"Every week we hold a Pokemon Showdown! Sunday Scribing contest. Participants are to write a story or a poem, depending on which week it is, based on the topic announced on Saturday. They have the whole of Sunday to write it. For more info, visit http://goo.gl/Ay6U5N",
 					"Today's Word of the Day is: " + self.settings.wotd.word + ". Its definition is: " + self.settings.wotd.definition,
 					"Need help getting started on a story? Try out the ``;idea`` command! Or, if you need to be a little more specific, try things like ``;randchar`` or ``;randscene``. You'll be writing in no time!",
-					"Did you know that we have an official place to share music? It's a great place to listen to something whilst writing, perhaps even gaining some inspiration! Of course, you could also just hang out there and chat. Interested? Good! Head on over to https://plug.dj/pokemon-showdown-writing-room",
 					"Need a quick way to access our Community Drive? Type ``;drive``!",
 					"Psst... You. Yeah, you! Did you know that you can send messages to your scribing buddies just by using the ``;mail`` command? It works, even when they're offline! :o",
 					"Need some love? Try using the ``esupport`` command. I promise I won't bite. <3"
