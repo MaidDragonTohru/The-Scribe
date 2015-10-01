@@ -111,6 +111,7 @@ exports.commands = {
 			error('failed to reload: ' + e.stack);
 		}
 	},
+	do: 'custom',
 	custom: function (arg, user, room) {
 		if (!user.isExcepted()) return false;
 		// Custom commands can be executed in an arbitrary room using the syntax
