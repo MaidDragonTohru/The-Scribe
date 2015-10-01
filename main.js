@@ -242,25 +242,3 @@ var connect = function (retry) {
 };
 
 connect();
-
-var stdin = process.openStdin();
-var currentRoom = '';
-if (Config.rooms.length) {
-	currentRoom = Config.rooms[0];
-} else if (Config.privaterooms.length) {
-	currentRoom = Config.privaterooms[0];
-}
-console.log("Now initiating direct control over chat input.");
-console.log("Type '" + Config.commandcharacter + "' without the quotation marks, followed by the room name to ");
-console.log("speak to a certain room from that point onwards.");
-console.log("I am currently speaking to room " + toTitleCase(currentRoom));
-stdin.addListener("data", function (d) {
-	var om = d.toString().substring(0, d.length - 1);
-	if (om.substr(0, Config.commandcharacter.length) === Config.commandcharacter) {
-		currentRoom = toId(om.substr(Config.commandcharacter.length));
-		return console.log("Understood. From this point forwards, I shall speak in room " + toTitleCase(currentRoom));
-	} else if (currentRoom === "") {
-		return console.log("Please select a room, first.");
-	}
-	Parse.say(currentRoom, om);
-});
