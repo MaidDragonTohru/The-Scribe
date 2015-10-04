@@ -2799,8 +2799,10 @@ exports.pokedex = {
 	},
 	421: {
 		species: "Cherrim",
-		randomBattleMoves: ["sunnyday","solarbeam","weatherball","hiddenpowerice","energyball","synthesis"],
-		randomDoubleBattleMoves: ["sunnyday","solarbeam","weatherball","hiddenpowerice","protect"],
+		randomBattleMoves: ["energyball","dazzlinggleam","hiddenpowerfire","synthesis","healingwish"],
+		randomDoubleBattleMoves: ["sunnyday","solarbeam","weatherball","gigadrain","protect"],
+		sunnyRandomBattleMoves: ["sunnyday","solarbeam","gigadrain","weatherball","hiddenpowerice"],
+		sunnyRandomDoubleBattleMoves: ["sunnyday","solarbeam","gigadrain","weatherball","protect"],
 		type: ["Grass"],
 		forms: ["overcast", "sunshine"]
 	},
