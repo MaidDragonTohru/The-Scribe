@@ -635,7 +635,7 @@ exports.commands = {
 	 * Place all 'random thing generator' commands in this area!
 	 * This is a template for all Random Commands; please don't use this as an actual command.
 	 * randomcommands: function (arg, user, room) {
-	 *	!user.canUse('randomcommands', room.id) return false;
+	 *	if (!user.canUse('randomcommands', room.id)) return false;
 	 *	var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
 	 *	var variableone = list1[Math.floor(list1.length * Math.random())];
 	 *	var variabletwo = list2[Math.floor(list2.length * Math.random())];
@@ -647,7 +647,7 @@ exports.commands = {
 	chargen: 'randomcharacter',
 	genchar: 'randomcharacter',
 	randomcharacter: function (arg, user, room) {
-		!user.canUse('randomcommands', room.id) return false;
+		if (!user.canUse('randomcommands', room.id)) return false;
 		var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
 		var adjective = characterAdjectives[Math.floor(characterAdjectives.length * Math.random())];
 		var type = characterTypes[Math.floor(characterTypes.length * Math.random())];
@@ -670,7 +670,7 @@ exports.commands = {
 	gentype: 'randomtype',
 	randtype: 'randomtype',
 	randomtype: function (arg, user, room) {
-		!user.canUse('randomcommands', room.id) return false;
+		if (!user.canUse('randomcommands', room.id)) return false;
 		var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
 		arg = toId(arg);
 		if (arg && arg !== 'single' && arg !== 'dual') this.say(room, text + "Please input either 'single' or 'dual' as arguments, or leave it blank for a random decision. Continuing as if you left it blank.");
@@ -686,7 +686,7 @@ exports.commands = {
 	//Returns a random statistical build.
 	randstats: 'randomstats',
 	randomstats: function (arg, user, room, shuffle) {
-		!user.canUse('randomcommands', room.id) return false;
+		if (!user.canUse('randomcommands', room.id)) return false;
 		var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
 		arg = parseInt(arg);
 		if (arg && (isNaN(arg) || arg < 30 || arg > 780)) return this.say(room, text + "Specified BST must be a whole number between 30 and 780.");
@@ -718,7 +718,7 @@ exports.commands = {
 	genRP: 'randRP',
 	randrp: 'randRP',
 	randRP: function(arg, user, room) {
-		!user.canUse('randomcommands', room.id) return false;
+		if (!user.canUse('randomcommands', room.id)) return false;
 		var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
 		arg = arg.split(", ");
 		if (!arg || arg.length < 2) return this.say(room, "Please specify two names, seperated by a comma.");
@@ -840,7 +840,7 @@ exports.commands = {
 	randompoke: 'randpokemon',
 	randompokemon: 'randpokemon',
 	randpokemon: function (arg, user, room) {
-		!user.canUse('randomcommands', room.id) return false;
+		if (!user.canUse('randomcommands', room.id)) return false;
 		var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
 		var randompokes = [];
 		var parameters = [];
@@ -986,7 +986,7 @@ exports.commands = {
 	randomscene: 'randomlocation',
 	randlocation: 'randomlocation',
 	randomlocation: function (arg, user, room) {
-		!user.canUse('randomcommands', room.id) return false;
+		if (!user.canUse('randomcommands', room.id)) return false;
 		var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
 		var adjective = adjectives[Math.floor(adjectives.length * Math.random())];
 		var location = locations[Math.floor(locations.length * Math.random())];
@@ -995,7 +995,7 @@ exports.commands = {
 	//Returns a random Pokemon move.
 	randmove: 'randommove',
 	randommove: function (arg, user, room) {
-		!user.canUse('randomcommands', room.id) return false;
+		if (!user.canUse('randomcommands', room.id)) return false;
 		var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
 		var types = {"normal":1, "fire":1, "water":1, "grass":1, "electric":1, "ice":1, "fighting":1, "poison":1, "ground":1, "flying":1, "psychic":1, "bug":1, "rock":1, "ghost":1, "dragon":1, "dark":1, "steel":1, "fairy":1};
 		var classes = {"physical": 1, "special": 1, "status": 1};
@@ -1070,7 +1070,7 @@ exports.commands = {
 	randomstyle: 'randomgenre',
 	randgenre: 'randomgenre',
 	randomgenre: function (arg, user, room) {
-		!user.canUse('randomcommands', room.id) return false;
+		if (!user.canUse('randomcommands', room.id)) return false;
 		var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
 		var genre1 = genres[Math.floor(genres.length * Math.random())];
 		var genre2 = genres[Math.floor(genres.length * Math.random())];
@@ -1085,7 +1085,7 @@ exports.commands = {
 	randomidea: 'randomstory',
 	randstory: 'randomstory',
 	randomstory: function (arg, user, room) {
-		!user.canUse('randomcommands', room.id) return false;
+		if (!user.canUse('randomcommands', room.id)) return false;
 		var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
 		var genre1 = genres[Math.floor(genres.length * Math.random())];
 		if (Math.floor(Math.random() * 2)) {
