@@ -1125,12 +1125,13 @@ exports.commands = {
 			return this.say(room, text + "Today's Word of the Day is **" + this.settings.wotd.word + "**: " + this.settings.wotd.kind + " [__" + this.settings.wotd.pron + "__] - " + this.settings.wotd.definition);
 		}
 		if (toId(arg) === 'check' || toId(arg) === 'time') return this.say(room, text + "The Word of the Day was last updated to **" + this.settings.wotd.word + "** " + this.getTimeAgo(this.settings.wotd.time) + " ago by " + this.settings.wotd.user);
+		if (!user.hasRank(room.id, '+')) return this.say(room, text + 'You must be at least Voice or higher to set the Word of the Day.');
 		arg = arg.split(', ');
 		if (arg.length < 4) return this.say(room, text + "Invalid arguments specified. The format is: __word__, __pronunciation__, __part of speech__, __defintion__.");
 		this.settings.wotd = {
 			word: arg[0],
-            pron: arg[1],
-            kind: arg[2],
+            		pron: arg[1],
+            		kind: arg[2],
 			definition: arg.slice(3).join(', ').trim(),
 			time: Date.now(),
 			user: user.name
