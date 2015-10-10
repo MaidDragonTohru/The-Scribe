@@ -417,19 +417,26 @@ exports.parse = {
 			method: 'POST',
 			path: '/documents'
 		};
-
+		
 		var req = http.request(reqOpts, function (res) {
 			res.on('data', function (chunk) {
-				// CloudFlare can go to hell for sending the body in a header request like this
-				if (typeof chunk === 'string' && chunk.substr(0, 15) === '<!DOCTYPE html>') return callback('Error uploading to Hastebin.');
-				var filename = JSON.parse(chunk.toString()).key;
-				callback('http://hastebin.com/raw/' + filename);
+                // CloudFlare can go to hell for sending the body in a header request like this
+				try {
+                    var filename = JSON.parse(chunk).key;
+                } catch (e) {
+                    if (typeof chunk === 'string' && /^[^\<]*\<!DOCTYPE html\>/.test(chunk)) {
+                        callback('Cloudflare-related error uploading to Hastebin: ' + e.message);
+                    } else {
+                        callback('Unknown error uploading to Hastebin: ' + e.message);
+                    }
+                }
+                callback('http://hastebin.com/raw/' + filename);
 			});
-		});
-		req.on('error', function (e) {
+        });
+        req.on('error', function (e) {
 			callback('Error uploading to Hastebin: ' + e.message);
+			throw e;
 		});
-
 		req.write(toUpload);
 		req.end();
 	},
