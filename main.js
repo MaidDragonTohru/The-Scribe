@@ -88,7 +88,7 @@ global.toTitleCase = function (str) {
 	var strArr = str.split(' ');
 	var newArr = [];
 	for (var i = 0; i < strArr.length; i++) {
-		newArr.push(strArr[i].charAt(0).toUpperCase() + strArr[i].slice(1));
+		newArr.push(strArr[i].charAt(0).toUpperCase() + strArr[i].slice(1).toLowerCase());
 	}
 	str = newArr.join(' ');
 	return str;
