@@ -75,9 +75,12 @@ global.ok = function (text) {
 	console.log('ok'.green + '    ' + text);
 };
 
-console.log('-----------------------------------|'.red);
-console.log('|'.red + ' Welcome to AxeBane\'s'.green + ' Writing Bot!|'.red);
-console.log('-----------------------------------|'.red);
+colors.setTheme({
+    intro: ['bgRed', 'inverse']
+});
+console.log('--------------------------'.red);
+console.log('|'.red + ' Welcome to ' + 'The Scribe!'.intro + ' |'.red);
+console.log('--------------------------'.red);
 console.log('');
 
 global.toId = function (text) {
