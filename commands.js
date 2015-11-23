@@ -784,7 +784,7 @@ exports.commands = {
 		ar[50] = X + " and " + Y + " as buddy cops.";
 
 		ar[51] = X + " and " + Y + " play an MMO together. " + X + " is the tank and " + Y + " is the healer.";
-		ar[52] = X + " is a famous and " + Y + " is their biggest fan.";
+		ar[52] = X + " is famous and " + Y + " is their biggest fan.";
 		ar[53] = X + " is a super hero hiding their secret identity from " + Y + ".";
 		ar[54] = X + " was bullied by " + Y + " when they were both children. " + Y + " doesn't remember doing it.";
 		ar[55] = X + " is finally noticed by their senpai, " + Y + ".";
