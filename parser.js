@@ -296,9 +296,14 @@ exports.parse = {
 			break;
 		default:
 			if (Config.readElse) {
-				var oS = spl.toString();
-				if (oS.substr(0, 9) === ",formats," || oS === ",queryresponse,rooms,null" || oS === "You are already blocking challenges!" || oS.substr(0, 4) === ",raw" || oS.substr(0, 18) === ",updatechallenges,") return false;
-				console.log(oS);
+				var oS = spl.toString().split(',');
+				if (oS[1] === "formats" || oS[1] === "queryresponse" || oS[0] === "You are already blocking challenges!" || oS[1] === "raw" || oS[1] === "updatechallenges" || oS[0] === "Avatar changed to:") return false;
+                		var output = oS.toString();
+        			if (oS[1] === "html") output = "(SERVER): ".red + oS[2];
+                		var pollTest = oS[2].substr(0, 4); // I have to use this instead of sticking it straight in the IF statement because Node likes to crash for some odd reason when I do so. So... yay for craeting variables that are only referenced immediately afterwards, once!
+                		if (pollTest === "poll") output = "(SYSTEM): ".green + "Something to do with a poll going on in " + room.id.cyan + "!";
+                		//Someday, I'll get around to actually listing what's in the poll. But meh. This works for now.
+				console.log(output);
 			}
 		}
 	},
