@@ -1,7 +1,7 @@
 Writing Room Bot
 ====================
 
-A chat bot for [Pokémon Showdown][1]. This bot has a number of commands, some helpful and some less so, as well as the capability to mod. It only reacts to basic offences such as flooding, caps, and stretching.
+A chat bot for [Pokémon Showdown][1]. This bot has a number of commands, some helpful and some less so, as well as the capability to moderate the chatroom; It only reacts to basic offences such as flooding, caps, and stretching.
 
   [1]: http://www.pokemonshowdown.com/
 
@@ -53,6 +53,8 @@ Voices and Above
 
 `help; guide`: Links to this page.
 
+`git`: Links to this repository.
+
 `idea`: Merges the `randscene`, `randgenre`, and `randchar` commands.
 
 `rt; gentype; randtype`: Randomly generates a Pokémon type combination.
@@ -91,8 +93,6 @@ Commands any user can use!
 `drive`: Gives you a nice friendly link to the Writing Room's Google Drive.
 
 `contests; events`: Links the user to the page containing updates on any contests and/or events going on in the room at the moment.
-
-`plug`: Links the user to the Writing Room's Official Plug.dj, a music sharing website. 
 
 `faq`: Links the user to the Writing Room's FAQ page.
 
