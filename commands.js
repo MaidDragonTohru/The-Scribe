@@ -9,6 +9,7 @@ var http = require('http');
 var https, csv;
 if (Config.serverid === 'showdown') {
 	https = require('https');
+	csv = require('csv-parse');
 }
 
 // .set constants
@@ -18,7 +19,6 @@ const CONFIGURABLE_COMMANDS = {
 	say: true,
 	joke: true,
 	usagestats: true,
-	'8ball': true,
 	randomcommands: true,
 };
 
@@ -61,7 +61,58 @@ var roles = ["Protagonist","Antagonist","Major character","Minor character"];
 var pronouns = {'male': 'he', 'female': 'she', 'hermaphrodite': 'shi', 'neuter': 'they'};
 var possessivePronouns = {'male': 'His', 'female': 'Her', 'hermaphrodite': 'Hir', 'neuter': 'Their'};
 var types = ["Normal","Fire","Water","Electric","Grass","Ice","Fighting","Poison","Flying","Ground","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy","Bird"];
-
+/* Shop Merchandise 
+ * 1st Element: Name
+ * 2nd Element: Description
+ * 3rd Element: Price
+ * 4th Element: Price with comma included (used for advertising)
+ * 5th Element: Usage Instructions
+ */
+var shopMerch = [
+    ["Cookie",
+     "Does nothing, but you'll want it anyway!",
+     "5",
+     5,
+     "cookie, amount of cookies"],
+    ["Inspirational Quote",
+     "You'll receive a nugget of wisdom that's sure to fire you up!",
+     "10",
+     10,
+     "inspirational quote"],
+    ["Inspire The Masses",
+     "After redeeming this, talk to an RO about having a picture of your choosing displayed to the whole room!",
+     "300",
+     300,
+     "inspire the masses, picture URL"],
+    ["Personal Greeting (PM)",
+     "From now on, The Scribe will PM you whenever you join the room with a greeting of your choosing!",
+     "500",
+     500,
+     "personal greeting, greeting text (note that there is a 150 word limit )"],
+    ["Take The Stage",
+     "For up to 2 minutes, we will set the room to modchat(+) and let you recite your poem in the chat live! There is no greater way to receive feedback and recognition.",
+     "500",
+     500],
+    ["Poetic License",
+     "Set the topic for the next Sunday Scribing activity! (within reason)",
+     "550",
+     550],
+    ["Personal Greeting (Public)",
+     "Use this to gain the ability to set a personal greeting for The Scribe to say whenever you join the room after being gone for a while! What better way to make an entrance?",
+     "1,500",
+     1500],
+    ["Let's Save The World!",
+     "Get yourself immortalized as a PROTAGONIST in a short story written by some of the Writing Room's best story writers. ETA: 3 weeks from purchase.",
+     "2,000",
+     2000],
+    ["Destroy It All!",
+     "Get yourself immortalized as an ANTAGONIST in a short story written by some of the Writing Room's best story writers. ETA: 3 weeks from purchase.",
+     "2,000",
+     2000],
+    ["Your Soul",
+     "???",
+     "1,000,000"]
+];
 exports.commands = {
 	/**
 	 * Help commands
@@ -78,7 +129,7 @@ exports.commands = {
 	},
 	git: function (arg, user, room) {
 		var text = (room === user || user.isExcepted()) ? '' : '/pm ' + user.id + ', ';
-		text += '**Pokemon Showdown Bot** source code: ' + Config.fork;
+		text += '**The Scribe** source code: ' + Config.fork;
 		this.say(room, text);
 	},
 	//Returns a link to a guide on the bot's commands.
@@ -514,34 +565,6 @@ exports.commands = {
 		if (room === user || !user.canUse('say', room.id)) return false;
 		this.say(room, stripCommands(arg) + ' (' + user.name + ' said this)');
 	},
-	joke: function (arg, user, room) {
-		if (room === user || !user.canUse('joke', room.id)) return false;
-		var self = this;
-
-		var reqOpt = {
-			hostname: 'api.icndb.com',
-			path: '/jokes/random',
-			method: 'GET'
-		};
-		var req = http.request(reqOpt, function (res) {
-			res.on('data', function (chunk) {
-				try {
-					var data = JSON.parse(chunk);
-					self.say(room, data.value.joke.replace(/&quot;/g, "\""));
-				} catch (e) {
-					self.say(room, 'Sorry, couldn\'t fetch a random joke... :(');
-				}
-			});
-		});
-		req.end();
-	},
-	usage: 'usagestats',
-	usagestats: function (arg, user, room) {
-		if (arg) return false;
-		var text = (room === user || user.canUse('usagestats', room.id)) ? '' : '/pm ' + user.id + ', ';
-		text += 'http://www.smogon.com/stats/2015-08/';
-		this.say(room, text);
-	},
 	//Returns the last action that this bot has seen the specified user do, if they have been.
 	seen: function (arg, user, room) { // this command is still a bit buggy
 		var text = (room === user ? '' : '/pm ' + user.id + ', ');
@@ -557,76 +580,6 @@ exports.commands = {
 			text += arg + ' was last seen ' + this.getTimeAgo(this.chatData[arg].seenAt) + ' ago' + (
 				this.chatData[arg].lastSeen ? ', ' + this.chatData[arg].lastSeen : '.');
 		}
-		this.say(room, text);
-	},
-	'8ball': function (arg, user, room) {
-		if (room === user) return false;
-		var text = user.canUse('8ball', room.id) ? '' : '/pm ' + user.id + ', ';
-		var rand = ~~(20 * Math.random());
-
-		switch (rand) {
-		case 0:
-			text += "Signs point to yes.";
-			break;
-		case 1:
-			text += "Yes.";
-			break;
-		case 2:
-			text += "Reply hazy, try again.";
-			break;
-		case 3:
-			text += "Without a doubt.";
-			break;
-		case 4:
-			text += "My sources say no.";
-			break;
-		case 5:
-			text += "As I see it, yes.";
-			break;
-		case 6:
-			text += "You may rely on it.";
-			break;
-		case 7:
-			text += "Concentrate and ask again.";
-			break;
-		case 8:
-			text += "Outlook not so good.";
-			break;
-		case 9:
-			text += "It is decidedly so.";
-			break;
-		case 10:
-			text += "Better not tell you now.";
-			break;
-		case 11:
-			text += "Very doubtful.";
-			break;
-		case 12:
-			text += "Yes - definitely.";
-			break;
-		case 13:
-			text += "It is certain.";
-			break;
-		case 14:
-			text += "Cannot predict now.";
-			break;
-		case 15:
-			text += "Most likely.";
-			break;
-		case 16:
-			text += "Ask again later.";
-			break;
-		case 17:
-			text += "My reply is no.";
-			break;
-		case 18:
-			text += "Outlook good.";
-			break;
-		case 19:
-			text += "Don't count on it.";
-			break;
-		}
-
 		this.say(room, text);
 	},
 
