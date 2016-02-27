@@ -94,12 +94,6 @@ exports.readElse = false;
 //This enables automated replies to the chat.
 exports.reply = true;
 
-//Tied in with greetings. These are automated messages sent upon a user's joining.
-exports.greetings = [["example user","example greeting!"]];
-
-//These are the replies. They search for the exact string.
-exports.replies = [["example 1","reply 1"],["example 2","reply 2"]];
-
 //Here, you specify the avatar you want the bot to use. Nice and handy if you don't want it to constantly have the default avatar.
 exports.avatarNumber = 61;
 
