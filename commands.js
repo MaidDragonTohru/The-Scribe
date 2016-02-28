@@ -1441,5 +1441,727 @@ exports.commands = {
 				return this.say(room, text + "You haven't set a biography yet! :o")
 			}
 		}
+	},
+	/*
+	 * Scribe Shop Commands!
+	 */
+	addquills: 'addfunds',
+	pay: 'addfunds',
+    addfunds: function(arg, user, room) {
+        if (!user.hasRank(room.id, '@')) return false;
+        var arg = arg.split(', ');
+        if (!arg[0] || !arg[1] || arg.length > 2) return this.say(room, "Incorrect number of arguments. Usage: user, funds to add");
+        if (isNaN(arg[1]) === true) return this.say(room, "Currency amount to add is not equal to a number.");
+		//Whilst it certainly shouldn't be an issue in the rooms I'm personally stationed in, we may as well prevent moderators from abusing their rights and giving themselves infinite money. No need to enforce this on ROs.
+		if ((toId(arg[0]) === user.id) && !user.hasRank(room.id, '#')) return this.say(room, "Sorry, but you're not allowed to add funds to your own account unless it's for debugging purposes. ^.^'");
+        arg[1] = Number(arg[1]);
+        
+        //Build instance of the Scribe Shop if it does not exist; this will always happen on the first use of the command on a new bot, or if Settings.json has been erased or damaged.
+        if (!this.settings.scribeShop) {
+            this.settings.scribeShop = [];
+            var amount = arg[1] + Math.round(arg[1] / 2);
+            var pushObj = {
+                account:toId(arg[0]),
+                bal:amount,
+                totalEarned:amount,
+            }
+            this.settings.scribeShop.push(pushObj);
+            this.writeSettings();
+            return this.say(room, "A new Scribe Shop service has been created, and its very first account, " + arg[0] + "'s, has had ``" + arg[1] + "`` Quills added. And as a bonus for this event, we're throwing in an extra ``" + Math.round(arg[1] / 2) + "`` Quills, absolutely free of charge! Now aren't we just so nice? c:");
+        }
+        
+        //Search through all accounts.
+        for (i = 0; i < this.settings.scribeShop.length; i++) {
+            //If account is found...
+            if (this.settings.scribeShop[i].account === toId(arg[0])) {
+                //Add funds.
+                this.settings.scribeShop[i].bal += arg[1];
+                this.settings.scribeShop[i].totalEarned += arg[1];
+                //Save changes.
+                this.writeSettings();
+                //Report changes.
+                return this.say(room, "``" + arg[1] + "`` Quills have been added to " + arg[0] + "'s account! Current Balance: ``" + this.settings.scribeShop[i].bal + "``");
+            }
+        }
+        //Build user wallet if not already in existence.
+        var pushObj = {
+            account:toId(arg[0]),
+            bal:arg[1],
+            totalEarned:arg[1],
+        }
+        //Add new account and save changes.
+        this.settings.scribeShop.push(pushObj);
+        this.writeSettings();
+        //Report completion.
+        return this.say(room, "New account for " + arg[0] + " has been created and ``" + arg[1] + "`` Quills have been added!");
+    },
+    //Subtract funds from a user's account.
+    takequills: 'takefunds',
+    take: 'takefunds',
+    takefunds: function (arg, user, room) {
+        if (!user.hasRank(room.id, '@')) return false;
+        if (!this.settings.scribeShop) return this.say(room, "No users have any funds to take!");
+        var arg = arg.split(', ');
+        if (!arg[0] || !arg[1] || arg.length > 2) return this.say(room, "Incorrect number of arguments. Usage: user, quills to subtract");
+		//Whilst it certainly shouldn't be an issue in the rooms I'm personally stationed in, we may as well prevent moderators from abusing their rights and giving themselves infinite money. No need to enforce this on ROs.
+		if ((toId(arg[0]) === user.id) && user.hasRank(room.id, '@')) return this.say(room, "Sorry, but you're not allowed to add funds to your own account unless it's for debugging purposes. ^.^'");
+        if (isNaN(arg[1]) === true) return this.say(room, "Currency amount to take is not equal to a number.");
+        arg[1] = Number(arg[1]);
+        
+        for (i = 0; i < this.settings.scribeShop.length; i++) {
+            if (this.settings.scribeShop[i].account === toId(arg[0])) {
+                //Checking to see if the user has enough money to subtract.
+                if (this.settings.scribeShop[i].bal - arg[1] < 0) {
+                    return this.say(room, "Sorry, " + user.name + ", but doing that would leave " + arg[0] + " with " + (this.settings.scribeShop[i].bal - arg[1]) + " Quills, which isn't possible!");
+                } else {
+                    this.settings.scribeShop[i].bal -= arg[1];
+                    this.say(room, "``" + arg[1] + "`` Quills have been deducted from " + arg[0] + "'s account! Their new balance is ``" + this.settings.scribeShop[i].bal + "``");
+                    this.writeSettings();
+                }
+            }
+        }
+    },
+    // Returns current balance for a particular user. Or yourself, if nobody is specified.
+    bal: function (arg, user, room) {
+        var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
+        if (!this.settings.scribeShop) return this.say(room, text + "The Scribe Shop does not exist! Perhaps Quills should be given out first before trying to view a non-existent currency, hmm?");
+        
+        //If no user is specified, check the user's own balance.
+        if (!arg) {
+            for (i = 0; i < this.settings.scribeShop.length; i++) {
+                if (this.settings.scribeShop[i].account === user.id) {
+                    if (this.settings.scribeShop[i].totalEarned !== this.settings.scribeShop[i].bal) {
+                        return this.say(room, text + user.name + ", you currently have ``" + this.settings.scribeShop[i].bal + "`` Quills to spend! Over the whole lifetime of your account, you have earned a whole ``" + this.settings.scribeShop[i].totalEarned + "`` Quills!");
+                    } else {
+                        return this.say(room, text + user.name + ", you currently have ``" + this.settings.scribeShop[i].bal + "`` Quills to spend!");
+                    }
+                }
+            }
+            return this.say(room, text + "You don't have an account! oAo Earn funds to get one automagically!");
+        } else {
+            var theUser = toId(arg); //Doing to avoid overuse of toId();
+            for (i = 0; i < this.settings.scribeShop.length; i++) {
+                if (this.settings.scribeShop[i].account === theUser) {
+                    if (this.settings.scribeShop[i].totalEarned !== this.settings.scribeShop[i].bal) {
+                        return this.say(room, text + arg + " currently has ``" + this.settings.scribeShop[i].bal + "`` Quills to spend! Over the whole lifetime of their account, they have earned a whole ``" + this.settings.scribeShop[i].totalEarned + "`` Quills!");
+                    } else {
+                        return this.say(room, text + arg + " currently has ``" + this.settings.scribeShop[i].bal + "`` Quills to spend!");
+                    }
+                }
+            }
+            return this.say(room, text + "Account for '" + arg + "' does not exist. :c");
+        }
+    },
+	// Automatically generates the 'UI' for the shop, and uploads it to Hastebin.
+    ss: 'shop',
+    scribeshop: 'shop',
+    shop: function (arg, user, room) {
+        var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
+        var line = "__________________________________________________________________________________________________________________________________________"
+        var post = [line,
+                    "\nScribe Shop!\n",
+                    '"Got spare Quills? This is where you spend them!"\n',
+                    "Use " + Config.commandcharacter + "buy ITEM NAME, ITEM QUANTITY to purchase something!",
+                    "Alternatively, you can leave out the item quantity to just buy one of the item, and use the number in brackets in place of the item's full name!\n\n",
+                    "As a general rule of thumb, to purchase things, you simply type " + Config.commandcharacter + "buy, followed by the item's name or number. For instance, to purchase the item '" + shopMerch[0][0] + "', you would ype " + Config.commandcharacter + "buy " + shopMerch[0][0] + " or " + Config.commandcharacter + "buy 0\n",
+                     "Additionally, it's also possible to specify just how many of something you want to buy by including that at the end of the message! Returning to our " + shopMerch[0][0] + " example from earlier, " + Config.commandcharacter + "buy " + shopMerch[0][0] + ", 10 will purchase the item 10 times!\n",
+                    line + "\n"];
+        
+		var accFound = false;
+        if (this.settings.scribeShop) {
+            for (i = 0; i < this.settings.scribeShop.length; i++) {
+                if (this.settings.scribeShop[i].account === user.id) {
+                    post.push("Greetings, " + user.name + "! Welcome to the Scribe Shop!\n\nCurrent Balance: " + this.settings.scribeShop[i].bal + "\nTotal Earned Over Time: " + this.settings.scribeShop[i].totalEarned + "\n" + line + "\n");
+					accFound = true;
+					break;
+                }
+            }
+        }
+		if (!accFound) {
+			post.push("Greetings, " + user.name + "! It... would seem that you don't have an account with us yet! Feel free to ask our staff about earning Quills (the currency that The Scribe uses in the store!)" + "\n" + line + "\n");
+		}
+        
+        for (i = 0; i < shopMerch.length; i++) {
+            post.push("[" + i + "] " + shopMerch[i][0] + "\nPrice: " + shopMerch[i][2] + " Quills\nDescription: " + shopMerch[i][1] + "\nUsage: " + Config.commandcharacter + "buy " + shopMerch[i][4] + "\nApplicable Room(s): " + shopMerch[i][5] + "\n");
+        }
+        
+        post.push("\n\n\n" + line + "\nWe here at the Scribe Shop reserve the right to deny a user their purchase or demand that their request be altered on a case-by-case basis");
+        
+        post = post.join('\n');
+        this.uploadToHastebin(post, function (link) {
+            this.say(room, text + "Scribe Shop! " + link);
+        }.bind(this));
+    },
+	// Buy stuff. .-.
+    buy: function (arg, user, room) {
+        var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
+        if (!this.settings.scribeShop) return this.say(room, text + "The Scribe Shop does not exist! Perhaps funds should be given out first before trying to view a non-existent currency, hmm?");
+        if (!arg) return this.say(room, text + "Please provide the name or number of the item you wish to buy. Thank you. c:")
+        arg = arg.split(', ');
+        if (arg[1] === '0') return this.say(room, text + "Buying '0' of something is a waste of time!");
+        var count = 1;
+        for (i = 0; i < this.settings.scribeShop.length; i++) {
+            if (this.settings.scribeShop[i].account === user.id) {
+                if (this.settings.scribeShop[i].bal <= 0) return this.say(room, text + "You don't exactly have any money to spend, do you?");
+                if (arg[1]) {
+                    if (isNaN(arg[1]) === true) {
+                        return this.say(room, text + "The second argument must be a number! It's to specify the amount of the first argument you want to buy! Example: " + Config.commandcharacter + "buy Cookie, 50");
+                    } else {
+                        count = arg[1];
+                    }
+                }
+                var numBr = 0;
+                
+                //If the user specified a number instead of the actual name, substitute out the number of the item for the name of it.
+                if (!isNaN(Number(arg[0])) && Number(arg[0]) <= shopMerch.length) arg[0] = shopMerch[Number(arg[0])][0];
+                
+                switch (toId(arg[0])) {
+                    case "cookie":
+                        //Locating the item in the shop, as it's ordered by price and I'd rather not have to go through and change these every time we add something. c:
+                        for (var j = 0; j < shopMerch.length; j++) {
+                            if (shopMerch[j][0] == "Cookie") {
+                                numBr = j;
+                                break;
+                            }
+                        }
+                        if (this.settings.scribeShop[i].bal < (shopMerch[numBr][3] * count)) {
+                            if (count === 1) {
+                                return this.say(room, text + "You can't afford to buy a Cookie! You must be very sad. :c");
+                            } else {
+                                return this.say(room, text + "You can't afford " + count + " Cookies. You must be extremely sad. :c");
+                            }
+                        }
+                        this.settings.scribeShop[i].bal -= (shopMerch[numBr][3] * count);
+                        if (!this.settings.scribeShop[i].cookies) {
+                            this.settings.scribeShop[i].cookies = 0;
+                        }
+                        this.settings.scribeShop[i].cookies += Number(count);
+                        this.say(room, text + "Cookie (x" + count + ") bought!");
+                        break;
+                    case "inspirationalquote":
+                    case "quote":
+                        if (count > 1) return this.say(room, text + "Sorry, but you can only buy one quote at a time. c:");
+                        for (var j = 0; j < shopMerch.length; j++) {
+                            if (shopMerch[j][0] == "Inspirational Quote") {
+                                numBr = j;
+                                break;
+                            }
+                        }
+                        if (this.settings.scribeShop[i].bal < shopMerch[numBr][3]) return this.say(room, text + "You can't afford any quotes! You must be very disheartened. :c");
+                        this.settings.scribeShop[i].bal -= shopMerch[numBr][3];
+                        var quote = "Don't let your dreams be dreams! (This is a placeholder. Sorry :c)";
+                        this.say(room, text + "Your inspirational quote is: " + quote);
+                        break;
+                    case "inspirethemasses":
+                    case "inspire":
+                        if (count > 1) return this.say(room, text + "Sorry, but you can only buy one of these.");
+                        if (this.settings.scribeShop[i].masses === 1) return this.say(room, text + "Sorry, but you already own one of these!");
+                        for (var j = 0; j < shopMerch.length; j++) {
+                            if (shopMerch[j][0] === "Inspire The Masses") {
+                                numBr = j;
+                                break;
+                            }
+                        }
+                        if (this.settings.scribeShop[i].bal < shopMerch[numBr][3]) return this.say(room, text + "You can't afford to inspire the masses! Uh-oh...");
+                        this.settings.scribeShop[i].bal -= shopMerch[numBr][3];
+                        this.settings.scribeShop[i].masses = 1;
+                        this.say(room, text + "Bought! Congratulations! Go ahead and talk to an RO now about having your image publicly displayed for the whole room to see!");
+                        break;
+					case "privategreeting":
+                    case "personalgreetingpm":
+                    case "greetingpm":
+                        if (count > 1) return this.say(room, text + "Sorry, but you can only buy one of these.");
+                        if(this.settings.scribeShop[i].greetings) {
+                            if (this.settings.scribeShop[i].greetings.private) return this.say(room, text + "Sorry, but you already own one of these! Feel free to edit it with the " + Config.commandcharacter + "editgreeting command!");
+                        }
+                        for (var j = 0; j < shopMerch.length; j++) {
+                            if (shopMerch[j][0] === "Personal Greeting (PM)") {
+                                numBr = j;
+                                break;
+                            }
+                        }
+                        
+                        if (this.settings.scribeShop[i].bal < shopMerch[numBr][3]) return this.say(room, text + "You can't afford to buy a personal greeting! Awh...");
+                        this.settings.scribeShop[i].bal -= shopMerch[numBr][3];
+                        if (!this.settings.scribeShop[i].greetings) {
+                            this.settings.scribeShop[i].greetings = {};
+                        }
+                        this.settings.scribeShop[i].greetings.private = {};
+                        var object = {
+                            text: "Don't forget to set your new Personal Greeting with " + Config.commandcharacter + "editgreeting!",
+                            lastTriggered: null,
+                            enabled: true
+                        }
+                        this.settings.scribeShop[i].greetings.private = object;
+                        this.say(room, text + "Bought! Congratulations! Go ahead and use the " + Config.commandcharacter + "editgreeting command to set your new greeting!");
+                        break;
+                    case "takethestage":
+                    case "stage":
+                        if (count > 2) return this.say(room, text + "Sorry, but you can only buy one of these.");
+                        if (this.settings.scribeShop[i].stage + count > 2) return this.say(room, text + "Sorry, but you already own two of these at any one time.");
+                        for (var j = 0; j < shopMerch.length; j++) {
+                            if (shopMerch[j][0] === "Take The Stage") {
+                                numBr = j;
+                                break;
+                            }
+                        }
+                        if (this.settings.scribeShop[i].bal < shopMerch[numBr][3] * count) return this.say(room, text + "You can't afford to take the stage! Boo... :c");
+                        this.settings.scribeShop[i].bal -= shopMerch[numBr][3] * count;
+                        if (!this.settings.scribeShop[i].stage) {
+                            this.settings.scribeShop[i].stage = 0;
+                        }
+                        this.settings.scribeShop[i].stage += Number(count);
+                        this.say(room, text + "Bought! Congratulations! Feel free to use the " + Config.commandcharacter + "spotlight command to Take The Stage!");
+                        break;
+                    case "poeticlicense":
+                    case "license":
+                        if (count > 1) return this.say(room, text + "Sorry, but you can only buy one of these. :c");
+                        if (this.settings.scribeShop[i].wotd) return this.say(room, text + "You already own a Poetic License! Remember to set the WOTD with " + Config.commandcharacter + "wotd ``word``, ``pronunciation``, ``part of speech`` (Noun, Verb, Adjective, Etc.), and ``Definition``.");
+                        for (var j = 0; j < shopMerch.length; j++) {
+                            if (shopMerch[j][0] === "Poetic License") {
+                                numBr = j;
+                                break;
+                            }
+                        }
+                        if (this.settings.scribeShop[i].bal < shopMerch[numBr][3]) return this.say(room, text + "You can't afford to buy a poetic license! Should we... arrest you, or something?");
+                        this.settings.scribeShop[i].bal -= shopMerch[numBr][3];
+                        this.settings.scribeShop[i].wotd = 1;
+                        this.say(room, text + "Bought! Congratulations, you now have the ability to edit the Word of the Day! The format is: " + Config.commandcharacter + "wotd ``word``, ``pronunciation``, ``part of speech`` (Noun, Verb, Adjective, Etc.), and ``Definition``.");
+                        break;
+					case "privategreeting":
+                    case "personalgreetingpublic":
+                    case "greetingpublic":
+                        if (count > 1) return this.say(room, text + "Sorry, but you can only buy one of these.");
+                        if (this.settings.scribeShop[i].greetings) {
+                            if (this.settings.scribeShop[i].greetings.public) return this.say(room, text + "Sorry, but you already own one of these! Feel free to edit it with the " + Config.commandcharacter + "editgreeting command!");
+                        }
+                        for (var j = 0; j < shopMerch.length; j++) {
+                            if (shopMerch[j][0] === "Personal Greeting (Public)") {
+                                numBr = j;
+                                break;
+                            }
+                        }
+                        if (this.settings.scribeShop[i].bal < shopMerch[numBr][3]) return this.say(room, text + "You can't afford to buy a personal greeting! Awh...");
+                        this.settings.scribeShop[i].bal -= shopMerch[numBr][3];
+                        if (!this.settings.scribeShop[i].greetings) {
+                            this.settings.scribeShop[i].greetings = {};
+                        }
+                        this.settings.scribeShop[i].greetings.public = {};
+                        var object = {
+                            text: "/msg " + user.name + ", Don't forget to set your new Personal Greeting with " + Config.commandcharacter + "editgreeting!",
+                            lastTriggered: null,
+                            enabled: true
+                        }
+                        this.settings.scribeShop[i].greetings.public = object;
+                        this.say(room, text + "Bought! Congratulations! Go ahead and use the " + Config.commandcharacter + "editgreeting command to set your new greeting!");
+                        break;
+                    case "letssavetheworld":
+                    case "savetheworld":
+                    case "protagonist":
+                        if (count > 1) return this.say(room, text + "Sorry... You can only buy one of these. :c");
+                        for (var j = 0; j < shopMerch.length; j++) {
+                            if (shopMerch[j][0] === "Let's Save The World!") {
+                                numBr = j;
+                                break;
+                            }
+                        }
+                        if (this.settings.scribeShop[i].bal < shopMerch[numBr][3]) return this.say(room, text + "You can't afford to save the world! ...Welp. We're done for now, aren't we? >:/ Good job, " + user.name + "! You had one job.");
+                        this.settings.scribeShop[i].bal -= shopMerch[numBr][3];
+                        var object = {
+                            enabled: true,
+                            sponsored: false,
+                            deadline: null,
+                            sponsor: null
+                        }
+                        if (this.settings.scribeShop[i].protag) {
+                            if (this.settings.scribeShop[i].protag.enabled) return this.say(room, text + "Sorry. you can only own one of these at once. Go ahead and redeem yours first before you try to buy another!");
+                        }
+                        this.settings.scribeShop[i].protag = object;
+                        this.say(room, text + "Bought! Congratulations! Now, your next goal is to try and convince someone in the approved list of Sponsors to ``" + Config.commandcharacter + "sponsor`` you! For a list of users who can do this, go ahead and use ``" + Config.commandcharacter + "sponsors``.");
+                        this.say(room, text + "If the Sponsor doesn't submit their story by the deadline (3 weeks from the date of sponsorship), then you will recieve your copy of Let's Save the World back! Yaaaaay. c:");
+                        break;
+                    case "destroyitall":
+                    case "destroy":
+                    case "antagonist":
+                        for (var j = 0; j < shopMerch.length; j++) {
+                            if (shopMerch[j][0] === "Destroy It All!") {
+                                numBr = j;
+                                break;
+                            }
+                        }
+                        if (this.settings.scribeShop[i].bal < shopMerch[numBr][3]) return this.say(room, text + "You can't afford to destroy it all! ...W-wait... Isn't that a good thing?");
+                        this.settings.scribeShop[i].bal -= shopMerch[numBr][3];
+                        var object = {
+                            enabled: true,
+                            sponsored: false,
+                            deadline: null,
+                            sponsor: null
+                        }
+                        if (this.settings.scribeShop[i].antag) {
+                            if (this.settings.scribeShop[i].antag.enabled) return this.say(room, text + "Sorry. you can only own one of these at once. Go ahead and redeem yours first before you try to buy another!");
+                        }
+						this.settings.scribeShop[i].antag = object;
+                        this.say(room, text + "Bought! Congratulations! Now, your next goal is to try and convince someone in the approved list of Sponsors to ``" + Config.commandcharacter + "sponsor`` you! For a list of users who can do this, go ahead and use ``" + Config.commandcharacter + "sponsors``.");
+                        this.say(room, text + "If the Sponsor doesn't submit their story by the deadline (3 weeks from the date of sponsorship), then you will recieve your copy of Destroy It All back! Yaaaaay. c:");
+                        break;
+                    case "mysoul":
+                    case "yoursoul":
+                    case "soul":
+                        if (user.hasRank(room.id, '+')) {
+                            return this.say(room, text + "You cannot.");
+                        } else {
+                            return this.say(room, text + "...You really are a funny sort, aren't you?");
+                        }
+                        break;
+                    default:
+                        return this.say(room, text + "That item doesn't exist! Check that you're typing the right name, or contact a staff member if something's not working properly!");
+                }
+                this.writeSettings();
+                return this.say(room, text + "Thank you for doing business at the Scribe Shop! Your new balance is: ``" + this.settings.scribeShop[i].bal + "``!")
+            }
+        }
+        return this.say(room, text + "An account under your name does not exist! :o Perhaps you were never given any funds in the first place? Or perhaps you're just trying out the command after seeing someone else use it? Either way, use " + Config.commandcharacter + "shop to learn more!");
+    },
+    cookies: 'cookie',
+    cookie: function(arg, user, room) {
+        var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
+        if (!this.settings.scribeShop) return this.say(room, text + "The Scribe Shop does not exist! Perhaps funds should be given out first before trying to view a non-existent currency, hmm?");
+        for (i = 0; i < this.settings.scribeShop.length; i++) {
+            if (this.settings.scribeShop[i].account === user.id) {
+                if (this.settings.scribeShop[i].cookies) {
+                    return this.say(room, text + "You have " + this.settings.scribeShop[i].cookies + " cookies!");
+                } else {
+                    return this.say(room, text + "You haven't any cookies... Awh.");
+                }
+            }
+        }
+        return this.say(room, text + "Odd... You don't seem to even have an account! :c");
+    },
+    inspire: 'checkmasses',
+    masses: 'checkmasses',
+    checkmasses: function(arg, user, room) {
+        if (!this.settings.scribeShop) return this.say(room, "Error: The Scribe Shop does not exist. Please instruct someone with a rank to add funds to somebody's account before continuing.");
+        if (!user.hasRank(room.id, '#')) return false;
+        if (!arg) return this.say(room, "Please input the name of the user to search for.");
+        var arg = arg.split(', ');
+        var buyer = toId(arg[0]);
+        for (i = 0; i < this.settings.scribeShop.length; i++) {
+            if (this.settings.scribeShop[i].account === buyer) {
+                if (this.settings.scribeShop[i].masses === 1) {
+                    if (arg[1]) arg[1] = toId(arg[1]);
+                    if (arg[1] === "use" || arg[1] === "redeem") {
+                        this.settings.scribeShop[i].masses = 0;
+                        this.writeSettings();
+                        return this.say(room, "Now redeeming... Transation complete! Feel free to summon the requested image. " + arg[0] + " may now buy another copy of Inspire the Masses if they wish.");
+                    } else {
+                        return this.say(room, "**Yes!** " + arg[0] + " has the rights to Inspire The Masses!");
+                    }
+                } else {
+                    return this.say(room, "__Nope.__ " + arg[0] + " doesn't have the rights to Inspire The masses.");
+                }
+            }
+        }
+    },
+    editgreeting: function(arg, user, room) {
+        if (!this.settings.scribeShop) return this.say(room, "Error: The Scribe Shop does not exist. Please instruct someone with a rank to add funds to somebody's account before continuing.");
+        if (!arg) return this.say(room, "Incorrect usage. ``(" + Config.commandcharacter + "editgreeting [public/private], New Greeting)``");
+        arg = arg.split(', ');
+        if (!arg[1] || (toId(arg[0]) !== "public" && toId(arg[0]) !== "private")) return this.say(room, "Incorrect usage. ``(" + Config.commandcharacter + "editgreeting [public/private], New Greeting)``");
+        var newGreetingText = arg[1];
+        for (i = 0; i < this.settings.scribeShop.length; i++) {
+            if (this.settings.scribeShop[i].account === user.id) {
+                if (!this.settings.scribeShop[i].greetings) {
+                    return this.say(room, "You didn't even buy a greeting first to edit, " + user.name + "!");
+                } else if (toId(arg[0]) === ("public" || "pub")) {
+                    if (!this.settings.scribeShop[i].greetings.public) return this.say(room, "You don't own a Public Greeting! QAQ");
+                    // And now, to begin the changes! PS message length hard cap: 300 characters.
+                    // Softcap: 300 take (28 plus username length).
+                    // This limit exists so that AxeBot has an excuse to say something before the public greeting. Otherwise, people could get the bot to use commands. Whilst something like /me is relatively harmless... what happens when someone sets their 'greeting' to /ban a bunch of people?
+                    var customLimit = 300 - (28 + this.settings.scribeShop[i].account.length);
+                    if (newGreetingText.length > customLimit) return this.say(room, "Sorry, but the length of your message is too long! Your personal limit is set to " + customLimit + " characters. Try shortening your greeting or using a shorter username for your account.");
+                    this.settings.scribeShop[i].greetings.public.text = newGreetingText;
+                    this.writeSettings();
+                    return this.say(room, "Greeting updated: " + newGreetingText);
+                    
+                } else if (toId(arg[0]) === ("private" || "pri")) {
+                    if (!this.settings.scribeShop[i].greetings.private) return this.say(room, "You don't own a Private Greeting! QAQ");
+                    this.settings.scribeShop[i].greetings.private.text = newGreetingText;
+                    this.writeSettings();
+                    return this.say(room, "Greeting updated: " + newGreetingText);
+                }
+                break;
+            }
+        }
+    },
+    spotlight: function(arg, user, room) {
+		if (toId(Config.nick) === "axebot") return this.say(room, "This command cannot be used on AxeBot because it's too spammy.");
+        // Two minutes.
+        var found = false;
+        var origVoice = false;
+        for (var i = 0; i < this.settings.scribeShop.length; i++) {
+            if (user.id === this.settings.scribeShop[i].account) {
+                found = true;
+                if (!this.settings.scribeShop[i].stage) return this.say(room, "Seems like you haven't bought a copy of Take the Stage yet!");
+                this.settings.scribeShop[i].stage -= 1;
+                var self = this;
+                this.say(room, "**WARNING:** " + user.name + " has redeemed their copy of 'Take the Stage!' Due to this, Moderated Chat (+) will be put in place in **one minute!** Please finish up any discussions you may be having quickly. :3");
+                this.enable = setTimeout(function() {
+                    self.say(room, "/modchat +");
+                    if (!user.hasRank(room.id, '+')) {
+                        self.say(room, "/roomvoice " + user.id);
+                    } else {
+                        origVoice = true;
+                    }
+                    self.say(room, user.name + "'s **Take the Stage** is now in play! The candy bar is now open. Please sit back, relax, and enjoy the movie. c:");
+                    self.warn = setTimeout(function() {
+                        self.say(room, "/msg " + user.id + ", **Hey!** One minute remaining until your time expires. :o");
+                        self.warnAgain = setTimeout(function() {
+                            self.say(room, "/msg " + user.id + ", **WARNING:** Time's almost up! Thirty seconds remaining! QAQ");
+                        }, 60 * 500);
+                    }, 60 * 1000);
+                    self.disable = setTimeout(function() {
+                        self.say(room, "/modchat autoconfirmed");
+                        if (origVoice === false) self.say(room, "/roomdevoice " + user.id);
+                        self.say(room, "**Time's up!** Thank you for using Take the Stage. c:");
+                    }, 60 * 2000);
+                }, 60 * 1000);
+            }
+        }
+        if (!found) return this.say(room, "Sorry, but you don't seem to have a Scribe Shop account. :/");
+    },
+    sponsor: function(arg, user, room) {
+        if (!arg) return false;
+        var arg = arg.split(', ');
+        if (!arg[1]) return this.say(room, "Sorry. Please specify the user that you wish to sponsor and if you're sponsoring a ``protagonist`` or an ``antagonist``.");
+        if (toId(arg[0]) === user.id) return this.say(room, "Sponsoring yourself seems like a waste of all our time.");
+        if (!this.settings.sponsors) return this.say(room, "Sorry, but we don't have a list of sponsors to cross-reference with. Please submit a request with a staff member to be added.");
+        if (!this.settings.scribeShop) return this.say(room, "Sorry, but an instance of the Scribe Shop doesn't exist! This means we can't cross-reference with the people that need to be sponsored. :c");
+        for (var i = 0; i < this.settings.sponsors.length; i++) {
+            if (this.settings.sponsors[i].user === user.id) {
+                if (this.settings.sponsors[i].sponsoring) return this.say(room, "Error: You seem to be already sponsoring " + this.settings.sponsors[i].who + "!");
+                for (var j = 0; j < this.settings.scribeShop.length; j++) {
+                    if (toId(arg[0]) === this.settings.scribeShop[j].account) {
+                        if (toId(arg[1]) === "protagonist") {
+                            if (this.settings.scribeShop[j].protag) {
+                                if (this.settings.scribeShop[j].protag.enabled) {
+                                    if (this.settings.scribeShop[j].protag.sponsored) return this.say(room, "Sorry, but it would seem that " + this.settings.scribeShop[j].protag.sponsor + " is already working on a project for this user!");
+                                    this.settings.scribeShop[j].protag.sponsored = true;
+                                    this.settings.scribeShop[j].protag.sponsor = user.name;
+                                    var thing = new Date;
+                                    thing.setDate(thing.getDate() + 21);
+                                    this.settings.scribeShop[j].protag.deadline = thing;
+                                    this.settings.sponsors[i].sponsoring = true;
+                                    this.settings.sponsors[i].who = arg[0];
+                                    this.writeSettings();
+                                    return this.say(room, "Sponsorship set up! This action cannot be undone, so it's probably a good idea to get right to it and start working on the commission! You have **three weeks** from now to submit it using the ``" + Config.commandcharacter + "submit`` command.");
+                                } else if (this.settings.scribeShop[j].antag) {
+                                    if (!this.settings.scribeShop[j].antag.enabled) return this.say(room, "Sorry, but the user you specified hasn't redeemed Save The World! But, they do seem to have the rights to Destroy It All! In which case, you should specify to commission an antagonist instead!");
+                                } else this.say(room, "Eh. It would seem that " + arg[0] + " doesn't have the rights to be sponsored through the Scribe Shop! Oh dear...");
+                            } else {
+								return this.say(room, "ERROR: It would seem that the user you specified exists, but they have never once bought the rights for a Protagonist in the first place.");
+							}
+                        } else if (toId(arg[1]) === "antagonist") {
+                            if (this.settings.scribeShop[j].antag) {
+                                if (this.settings.scribeShop[j].antag.enabled) {
+                                    if (this.settings.scribeShop[j].antag.sponsored) return this.say(room, "Sorry, but it would seem that " + this.settings.scribeShop[j].antag.sponsor + " is already working on a project for this user!");
+                                    this.settings.scribeShop[j].antag.sponsored = true;
+                                    this.settings.scribeShop[j].antag.sponsor = user.name;
+                                    var thing = new Date;
+                                    thing.setDate(thing.getDate() + 21);
+                                    this.settings.scribeShop[j].antag.deadline = thing; //Literally the only reason we don't go and define object.timeout as "thing" is because this makes it easier when it comes to changing lots of things in bulk, instead of consistantly searching between two arrays. It just... works. Let's not touch it.
+                                    this.settings.sponsors[i].sponsoring = true;
+                                    this.settings.sponsors[i].who = arg[0];
+									if (!this.settings.bookmark) {
+										this.settings.bookmark = [];
+									}
+									var object = {
+										type: "AntagTimeout",
+										sponsor: user.id,
+										solicitor: this.settings.scribeShop[j].account,
+										timeout: this.settings.scribeShop[j].antag.deadline
+									}
+									this.settings.bookmark.push(object);
+                                    this.writeSettings();
+                                    return this.say(room, "Sponsorship set up! This action cannot be undone, so it's probably a good idea to get right to it and start working on the commission! You have **three weeks** from now to submit it using the ``" + Config.commandcharacter + "submit`` command.");
+                                } else if (this.settings.scribeShop[j].protag) {
+                                    if (!this.settings.scribeShop[j].protag.enabled) return this.say(room, "Sorry, but the user you specified hasn't redeemed Destroy It All! But, they do seem to have the rights to Save The World! In which case, you should specify to commission a ``protagonist`` instead!");
+                                } else this.say(room, "Eh. It would seem that " + arg[0] + " doesn't have the rights to be sponsored through the Scribe Shop! Oh dear...");
+                            } else {
+								return this.say(room, "ERROR: It would seem that the user you specified exists, but they have never once bought the rights for an Antagonist in the first place.");
+							}
+                        } else return this.say(room, "Please specify either ``protagonist`` or ``antagonist`` after the user you with to sponsor!");
+                    }
+                }
+            }
+        }
+        return this.say(room, "Sorry, but you don't seem to be on our list of sponsors. :/ Please submit a request with a staff member to be added!");
+    },
+    sponsors: function(arg, user, room) {
+        var text = (room === user || user.hasRank(room.id, '+')) ? '' : '/pm ' + user.id + ', ';
+        if (!this.settings.sponsors) return this.say(room, text + "Sorry, but our list of sponsors is empty. </3");
+        var output = [];
+		var line = "_____________________________________________________________________________";
+        var sponsors = this.settings.sponsors;
+        for (var i = 0; i < sponsors.length; i++) {
+            output.push("Username: " + sponsors[i].userFullcaps +
+                        "\nCurrently Sponsoring: " + sponsors[i].sponsoring + " (" + sponsors[i].who + ")\nFinished Sponsorships: " + sponsors[i].fin + "\nFailed Sponsorships: " + sponsors[i].fail + "\nTotal Sponsorships: " + (sponsors[i].fin + sponsors[i].fail),
+						"\nSponsor Since: " + sponsors[i].added + "\n",
+						line,
+						"\n");
+        }
+        return this.uploadToHastebin('The following users are official Writing Room sponsors!\n' + line + '\n\n\n' + output.join('\n'), function (link) {
+            if (link.startsWith('Error')) return this.say(room, text + link);
+            this.say(room, text + 'Sponsors: ' + link);
+        }.bind(this));
+        
+    },
+    addsponsor: function(arg, user, room) {
+        if (!user.hasRank(room.id, '#')) return false;
+        if (!arg) return this.say(room, "Don't forget to list the user that you want to add!");
+        if (!this.settings.sponsors) this.settings.sponsors = [];
+        var reference = toId(arg);
+        for (var i = 0; i < this.settings.sponsors.length; i++) {
+            if (reference === this.settings.sponsors[i].user) return this.say(room, "Sorry. That user is already in our list of sponsors!");
+        }
+        var sponsor = {
+            user: toId(arg),
+            userFullcaps: arg,
+            sponsoring: false,
+            who: "Nobody",
+			fin: 0,
+			fail: 0,
+            added: new Date()
+        }
+        this.settings.sponsors.push(sponsor);
+        this.writeSettings();
+        return this.say(room, "Sponsor recorded! Added " + arg + " to our list of sponsors. c:");
+    },
+    rmmsponsor: 'deletesponsor',
+    removesponsor: 'deletesponsor',
+    deletesponsor: function(arg, user, room) {
+		if (!user.hasRank(room.id, '#')) return false;
+        if (!arg) return this.say(room, "Please specify the user that you want to remove.");
+        if (!this.settings.sponsors) return this.say(room, "There aren't any sponsors to remove. :/");
+        var reference = toId(arg);
+        for (var i = 0; i < this.settings.sponsors.length; i++) {
+            if (reference === this.settings.sponsors[i].user) {
+                this.settings.sponsors.splice(i, 1);
+                this.writeSettings();
+                return this.say(room, "Removing sponsor... Done!");
+            }
+        }
+        return this.say(room, "Sorry, '" + reference + "' wasn't found in our list of sponsors. :/");
+    },
+    disable: 'disablegreeting',
+    enable: 'disablegreeting',
+    enablegreeting: 'disablegreeting',
+    disablegreeting: function(arg, user, room) {
+        var error = "Please specify whether you'd like to alter a Public or Private greeting.";
+        if (!arg) return this.say(room, error);
+        if (toId(arg) !== "public" && toId(arg) !== "private") return this.say(room, error);
+        if (!this.settings.scribeShop) return this.say(room, "Error: The Scribe Shop does not exist. Please instruct someone with a rank to add funds to somebody's account before continuing.");
+        for (i = 0; i < this.settings.scribeShop.length; i++) {
+            if (this.settings.scribeShop[i].account === user.id) {
+                if (toId(arg) === "private") {
+                    if (!this.settings.scribeShop[i].greetings.private) return this.say(room, "You don't have a private greeting, " + user.name + ". :/");
+                    if (this.settings.scribeShop[i].greetings.private.enabled !== false) {
+                        this.settings.scribeShop[i].greetings.private.enabled = false;
+                        this.say(room, "Private greeting now set to: Disabled.");
+                    } else {
+                        this.settings.scribeShop[i].greetings.private.enabled = true;
+                        this.say(room, "Private greeting now set to: Enabled.");
+                    }
+                } else {
+                    if (!this.settings.scribeShop[i].greetings.public) return this.say(room, "You don't have a public greeting, " + user.name + ". :/");
+                    if (this.settings.scribeShop[i].greetings.public.enabled !== false) {
+                        this.settings.scribeShop[i].greetings.public.enabled = false;
+                        this.say(room, "Public greeting now set to: Disabled.");
+                    } else {
+                        this.settings.scribeShop[i].greetings.public.enabled = true;
+                        this.say(room, "Public greeting now set to: Enabled.");
+                    }
+                }
+                return this.writeSettings();
+            }
+        }
+    },
+	'submit': function(arg, user, room) {
+		if (!arg) return this.say(room, "Incorrect Usage. Use: ``" + Config.commandcharacter + "submit [username of recipient], [document name],[protagonist/antagonist]``");
+		var arg = arg.split(', ');
+		if (!arg[1]) return this.say(room, "You seem to have forgotten to put in the document that you wish to submit!");
+		if (!arg[2]) return this.say(room, "You must specify if you're submitting a piece for a ``protagonist`` or an ``antagonist``!")
+		if (!this.settings.scribeShop) return this.say(room, "Error: The Scribe Shop doesn't seem to exist.");
+		for (var i = 0; i < this.settings.sponsors.length; i++) {
+            if (this.settings.sponsors[i].user === user.id) {
+                if (!this.settings.sponsors[i].sponsoring) return this.say(room, "Error: You're a sponsor, but you're apparently not sponsoring anyone!");
+                for (var j = 0; j < this.settings.scribeShop.length; j++) {
+                    if (toId(arg[0]) === this.settings.scribeShop[j].account) {
+                        if (toId(arg[2]) === "protagonist") {
+                            if (this.settings.scribeShop[j].protag) {
+                                if (this.settings.scribeShop[j].protag.enabled) {
+                                    if (!this.settings.scribeShop[j].protag.sponsored) return this.say(room, "Sorry, but the user you specified doesn't have a sponsor in the first place.");
+                                    this.settings.scribeShop[j].protag.sponsored = false;
+									this.settings.scribeShop[j].protag.enabled = false;
+                                    this.settings.scribeShop[j].protag.sponsor = null;
+                                    this.settings.scribeShop[j].protag.deadline = null;
+                                    this.settings.sponsors[i].sponsoring = false;
+                                    this.settings.sponsors[i].who = "Nobody";
+									this.settings.sponsors[i].fin += 1;
+									for (var h = 0; h < this.settings.scribeShop.length; h++) {
+										if (user.id === this.settings.scribeShop[h].account) {
+											this.settings.scribeShop[h].bal += 1000;
+										}
+									}
+									if (!this.settings.notifs) this.settings.notifs = [];
+									var object = {
+										type:"Submission",
+										name:toId(arg[0]),
+										'link':arg[1],
+										submitter:user.name
+									}
+									this.settings.notifs.push(object);
+									this.say(room, "/modnote " + user.name + " has submitted a Protagonist piece for " + arg[0] + ". URL: " + arg[1]);
+                                    this.writeSettings();
+                                    return this.say(room, "Sponsorship complete! Thank you for using the Scribe Shop. Your solicitor will receive your piece of work, and as a 'thank you' for completing a sponsorship program, you've been credited ``1,000`` Quills!");
+                                } else this.say(room, "Eh. It would seem that " + arg[0] + " doesn't have the ability to be sponsored through a Protagonist. Maybe they wanted an Antagonist? If you're confused about it at this stage, then something's gone wrong. .3.'");
+                            }
+                        } else if (toId(arg[1]) === "antagonist") {
+                            if (this.settings.scribeShop[j].antag) {
+                                if (this.settings.scribeShop[j].antag.enabled) {
+                                    if (this.settings.scribeShop[j].antag.sponsored) return this.say(room, "Sorry, but it would seem that " + this.settings.scribeShop[j].antag.sponsor + " is already working on a project for this user!");
+                                    this.settings.scribeShop[j].antag.sponsored = false;
+									this.settings.scribeShop[j].antag.enabled = false;
+                                    this.settings.scribeShop[j].antag.sponsor =  null;
+                                    this.settings.scribeShop[j].antag.deadline = null;
+                                    this.settings.sponsors[i].sponsoring = false;
+                                    this.settings.sponsors[i].who = "Nobody";
+									this.settings.sponsors[i].fin += 1;
+									for (var h = 0; h < this.settings.scribeShop.length; h++) {
+										if (user.id === this.settings.scribeShop[h].account) {
+											this.settings.scribeShop[h].bal += 1000;
+										}
+									}
+									if (!this.settings.notifs) this.settings.notifs = [];
+									var object = {
+										type:"Submission",
+										name:toId(arg[0]),
+										'link':arg[1],
+										submitter:user.name
+									}
+									this.say(room, "/modnote " + user.name + " has submitted an Antagonist piece for " + arg[0] + ". URL: " + arg[1]);
+									this.settings.notifs.push(object);
+                                    this.writeSettings();
+                                    return this.say(room, "Sponsorship complete! Thank you for using the Scribe Shop. Your solicitor will receive your piece of work, and as a 'thank you' for completing a sponsorship program, you've been credited ``1,000`` Quills!");
+                                } else this.say(room, "Eh. It would seem that " + arg[0] + " doesn't have the ability to be sponsored through an Antagonist. Maybe they wanted a Protagonist? If you're confused about it at this stage, then something's gone wrong. .3.'");
+                            }
+                        } else return this.say(room, "Please specify either ``protagonist`` or ``antagonist`` after the user you with to sponsor!");
+                    }
+                }
+            }
+        }
+		return this.say(room, "ERROR: You do not seem to be a sponsor at all! q-q");
 	}
+    /*
+     * End of Scribe Shop Commands
+     */
 };
