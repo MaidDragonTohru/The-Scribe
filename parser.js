@@ -249,15 +249,54 @@ exports.parse = {
 					this.say(room, "/msg " + user.id + ", The Word of the Day will need to be updated soon. Just a friendly heads up. ^.^'");
 				}
 			}
-			if (Config.logmain) console.log(user.name.cyan + " has " + "joined".green + " the room " + room.id);
-			if (Config.reply) {
-				for (var i = 0, len = Config.greetings.length; i < len; i++) {
-					if (toId(Config.greetings[i][0]) === user.id) {
-						this.say(room, Config.greetings[i][1]);
+			// Scribe Shop greetings.
+			if (this.settings.scribeShop) {
+				for (i = 0; i < this.settings.scribeShop.length; i++) {
+					if (this.settings.scribeShop[i].account === user.id && this.settings.scribeShop[i].greetings) {
+						if (this.settings.scribeShop[i].greetings.private) {
+							if ((Date.now() - this.settings.scribeShop[i].greetings.private.lastTriggered > 60 * 60 * 1000) || this.settings.scribeShop[i].greetings.private.lastTriggered === null) {
+								this.settings.scribeShop[i].greetings.private.lastTriggered = Date.now();
+								this.writeSettings();
+								this.say(room, "/msg " + user.id + ", " + this.settings.scribeShop[i].greetings.private.text);
+							}
+						}
+						if (this.settings.scribeShop[i].greetings.public) {
+							if ((Date.now() - this.settings.scribeShop[i].greetings.public.lastTriggered > 60 * 60 * 1000) || this.settings.scribeShop[i].greetings.public.lastTriggered === null) {
+								this.settings.scribeShop[i].greetings.public.lastTriggered = Date.now();
+								this.writeSettings();
+								this.say(room, "Personal greeting for ``" + user.id + "``: " + this.settings.scribeShop[i].greetings.public.text);
+							}
+						}
 						break;
 					}
 				}
 			}
+			// Check for pending notifications...
+			if (this.settings.notifs) {
+				for (var i = 0; i < this.settings.notifs.length; i++) {
+					if (this.settings.notifs[i].name === user.id) {
+						switch (this.settings.notifs[i].type) {
+							case "PSponsor":
+							case "ASponsor":
+								this.say(room, "/msg " + this.settings.notifs[i].name + ", Your sponsorship of " + this.settings.notifs[i].other + " has expired. They will be refunded and you will no-longer be officially rewarded for completing the project. :c");
+								this.settings.notifs.splice(i, 1);
+								exports.parse.writeSettings();
+							case "PSolicitor":
+							case "ASolicitor":
+								this.say(room, "/msg " + this.settings.notifs[i].name + ", Your sponsorship from " + this.settings.notifs[i].other + " has expired because they didn't submit the project within 3 weeks. Oh no... :c");
+								this.say(room, "/msg " + this.settings.notifs[i].name + ", But, on the bright side, you have been refunded for your spent Quills! You've lost absolutely nothing. c: Except maybe time.");
+								this.settings.notifs.splice(i, 1);
+								exports.parse.writeSettings();
+							case "Submission":
+								this.say(room, "/msg " + this.settings.notifs[i].name + ", Your sponsor, " + this.settings.notifs[i].submitter + ", has finished their project for you! Here's a link:");
+								this.say(room, "/msg " + this.settings.notifs[i].name + ", " + this.settings.notifs[i].link);
+								this.settings.notifs.splice(i, 1);
+								exports.parse.writeSettings();
+						}
+					}
+				}
+			}
+			if (Config.logmain) console.log(user.name.cyan + " has " + "joined".green + " the room " + room.id);
 			break;
 		case 'l': case 'L':
 			var username = spl[2];
@@ -332,15 +371,6 @@ exports.parse = {
 				sender = user.name.green;
 			}
 			console.log(room.id.cyan + ': '.cyan + sender + ': '.cyan + message);
-		}
-		if (Config.reply) {
-			var spl = toId(message);
-			for (var i = 0, len = Config.replies.length; i < len; i++) {
-				if (spl === toId(Config.replies[i][0])) {
-					this.say(room, Config.replies[i][1]);
-					break;
-				}
-			}
 		}
 		if (message.substr(0, Config.commandcharacter.length) !== Config.commandcharacter) return false;
 
@@ -705,3 +735,105 @@ exports.parse = {
 		} while (uncache.length > 0);
 	}
 };
+
+this.warn = setInterval(function() {
+	var self = this;
+	var active;
+	if (settings) {
+		if (settings.bookmark) {
+			for (var i = 0; i < settings.bookmark.length; i++) {
+				active = settings.bookmark[i];
+				switch (settings.bookmark[i].type) {
+					case "AntagTimeout":
+						var now = new Date();
+						now = now.getTime();
+						var one_day = 1000 * 60 * 60 * 24;
+						var timeout = new Date(active.timeout).getTime();
+						var difference_ms = timeout - now;
+						var output = Math.round(difference_ms/one_day);
+						//We don't check to see if the ScribeShop exists already because for AntagTimeout to exist, the SS must exist.
+						if (output <= 0) {
+							for (var j = 0; j < settings.scribeShop.length; j++) {
+								if (settings.scribeShop[j].account === active.solicitor) {
+									settings.scribeShop[j].antag.enabled = false;
+									settings.scribeShop[j].antag.sponsored = false;
+									settings.scribeShop[j].antag.deadline = null;
+									settings.scribeShop[j].antag.sponsor = null;
+									// Refund quills...
+									settings.scribeShop[j].bal += 2000;
+									break;
+								}
+							}
+							for (var j = 0; j < settings.sponsors.length; j++) {
+								if (settings.sponsors[j].user === active.sponsor) {
+									settings.sponsors[j].fail += 1;
+									settings.sponsors[j].sponsoring = false;
+									settings.sponsors[j].who = "Nobody";
+									break;
+								}
+							}
+							settings.bookmark.splice(i, 1);
+							if (!settings.notifs) settings.notifs = [];
+							var object = {
+								type:"ASponsor",
+								name:active.sponsor,
+								other:active.solicitor
+							}
+							settings.notifs.push(object);
+							var object = {
+								type:"ASolicitor",
+								name:active.solicitor,
+								other:active.sponsor
+							}
+							settings.notifs.push(object);
+							exports.parse.writeSettings();
+						}
+					case "ProtagTimeout":
+						var now = new Date();
+						now = now.getTime();
+						var one_day = 1000 * 60 * 60 * 24;
+						var timeout = new Date(active.timeout).getTime();
+						var difference_ms = timeout - now;
+						var output = Math.round(difference_ms/one_day);
+						//We don't check to see if the ScribeShop exists already because for ProtagTimeout to exist, the SS must exist.
+						if (output <= 0) {
+							for (var j = 0; j < settings.scribeShop.length; j++) {
+								if (settings.scribeShop[j].account === active.solicitor) {
+									settings.scribeShop[j].protag.enabled = false;
+									settings.scribeShop[j].protag.sponsored = false;
+									settings.scribeShop[j].protag.deadline = null;
+									settings.scribeShop[j].protag.sponsor = null;
+									// Refund quills...
+									settings.scribeShop[j].bal += 2000;
+									break;
+								}
+							}
+							for (var j = 0; j < settings.sponsors.length; j++) {
+								if (settings.sponsors[j].user === active.sponsor) {
+									settings.sponsors[j].fail += 1;
+									settings.sponsors[j].sponsoring = false;
+									settings.sponsors[j].who = "Nobody";
+									break;
+								}
+							}
+							settings.bookmark.splice(i, 1);
+							if (!settings.notifs) settings.notifs = [];
+							var object = {
+								type:"PSponsor",
+								name:active.sponsor,
+								other:active.solicitor
+							}
+							settings.notifs.push(object);
+							var object = {
+								type:"PSolicitor",
+								name:active.solicitor,
+								other:active.sponsor
+							}
+							settings.notifs.push(object);
+							exports.parse.writeSettings();
+						}
+				}
+			}
+		}
+	}
+}, 5000);
