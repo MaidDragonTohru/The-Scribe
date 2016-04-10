@@ -293,6 +293,7 @@ exports.parse = {
 								this.settings.notifs.splice(i, 1);
 								exports.parse.writeSettings();
 						}
+						break;
 					}
 				}
 			}
