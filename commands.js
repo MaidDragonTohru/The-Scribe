@@ -71,7 +71,7 @@ var types = ["Normal","Fire","Water","Electric","Grass","Ice","Fighting","Poison
 var shopMerch = [
 	["Cookie",
 	"Does nothing, but you'll want it anyway!",
-	"5 (Five)"
+	"5 (Five)",
 	5,
 	"cookie, amount of cookies",
 	"All/Any"],
