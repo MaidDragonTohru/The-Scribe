@@ -67,6 +67,7 @@ var types = ["Normal","Fire","Water","Electric","Grass","Ice","Fighting","Poison
  * 3rd Element: Price
  * 4th Element: Price with comma included (used for advertising)
  * 5th Element: Usage Instructions
+ * 6th Element: Rooms
  */
 var shopMerch = [
 	["Cookie",
