@@ -148,7 +148,7 @@ Commands any user can use!
 
 `spotlight`: Used to redeem your copy of Take the Stage. Activates modchat for 1-2 minutes.
 
-`sponsors`: Returns a list of all the room's sponsors.
+`sponsors`: Returns a list of all the room's sponsors through Hastebin. (doesn't work if Hastebin is down)
 
 `enablegreeting; disablegreeting <public/private>` Enables or disables the specified greeting, depending on its current state, and if the user owns the greetings at all.
 
