@@ -7,7 +7,8 @@ A chat bot for [Pokémon Showdown][1]. This bot has a number of commands, some h
 
 Commands
 ========
-Below is a list of commands for the bot. Note that this can occasionally become out of date as new commands are created or removed. Text within brackets (or paranthesies, if you're one of "those" people) is text not actually needed to be literally written, but more something that shows you what you should generally write in the space. Semicolons in a command's name indicate alternate names or aliases for the command, which do exactly the same thing as the other names and do not need to be added to the command for it to work; please don't actually type a semicolon in the command, as that is what the Command Character is.
+Below is a list of commands for the bot. Note that this can occasionally become out of date as new commands are created or removed. Text within angled brackets `< >` are things that need to be written in by the user. 
+Semicolons `;` in a command's name indicate alternate names or aliases for the command, which do exactly the same thing as the other names and do not need to be added to the command for it to work; please don't actually type a semicolon in the command, as that is what the Command Character is.
 
 Room Owners and Above
 ---------------------
@@ -40,7 +41,7 @@ Moderators and Above
 
 `viewbannedphrases; viewbannedwords ;vab`: Used to get the bot to Private Message the sender a list of every banned phrase or word.
 
-`announce on/off`: Used to toggle the state of the announcements for the room. Useful. ^.^
+`announce <on/off>`: Used to toggle the state of the announcements for the room. Useful. ^.^
 
 Drivers and Above
 -----------------
@@ -75,7 +76,7 @@ Voices and Above
 
 `checkmail; readmail; readmessages`: This command, as stated above, is used to view all the unread messages you have in your Inbox. The messages are deleted afterwards, so don't lose them.
 
-`bio set <autobiography>`: This command sets the biography of the person that used the command to whatever they typed. This can then be accessed by the `bio` command by any user.
+`biography; autobiography; bio set <autobiography>`: This command sets the biography of the person that used the command to whatever they typed. This can then be accessed by the `bio` command by any user.
 
 Commands any user can use!
 ---------------------------
@@ -104,7 +105,52 @@ Commands any user can use!
 
 `time`: Returns the current time (for the bot) to the room.
 
-`randRP <person 1>, <person 2>`: Generates a random interaction between character X and character Y. 
+`randRP <person 1>, <person 2>`: Generates a random interaction between character X and character Y.
+
+Scribe Shop Commands
+====================
+
+Commands only an RO can use
+---------------------------
+
+`inspire; masses; checkmasses`: Used to check or redeem a user's copy of Inspire The Masses
+
+Commands only staff can use
+---------------------------
+
+`addquills; pay; addfunds <user>, <amount>`: Adds the designated amount of money to the user's balance.
+
+`takequills; take; takefunds <user>, <amount>`: The opposite of the above.
+
+`addsponsor <user>`: Adds the specified user to the list of sponsors.
+
+`removesponsor <user>`: Removes the specified user from the list of sponsors.
+
+Commands only sponsors can use
+---------------------------
+
+`sponsor <user>, <protagonist/antagonist>`: Used to sponsor a user that has bought an applicable Scribe Shop item.
+
+`submit <username of recipient>, <document URL>, <antagonist/protagonist>`: Used for a sponsor to hand in the document that they're making for their sponsorship.
+
+Commands any user can use!
+---------------------------
+
+`bal; balance <optional user>``: Returns current balance for a particular user. Or yourself, if nobody is specified.
+
+`ss; scribeshop; shop`: Automatically generates the 'UI' for the shop, uploads it to Hastebin, and pastes it into the chat. (does not work if Hastebin is down)
+
+`buy <item>, <optional quantity; defaults to 1>`: Used in conjunction with `shop`.
+
+`cookie; cookies`: Displays the amount of cookies you have bought.
+
+`editgreeting <public/private>, (new greeting)`: Used to edit what your public or private greeting says.
+
+`spotlight`: Used to redeem your copy of Take the Stage. Activates modchat for 1-2 minutes.
+
+`sponsors`: Returns a list of all the room's sponsors.
+
+`enablegreeting; disablegreeting <public/private>` Enables or disables the specified greeting, depending on its current state, and if the user owns the greetings at all.
 
 Installation
 ============
