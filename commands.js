@@ -1532,6 +1532,7 @@ exports.commands = {
 		}
 	},
 	// Returns current balance for a particular user. Or yourself, if nobody is specified.
+	balance: 'bal',
 	bal: function (arg, user, room) {
 		var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
 		if (!this.settings.scribeShop) return this.say(room, text + "The Scribe Shop does not exist! Perhaps Quills should be given out first before trying to view a non-existent currency, hmm?");
