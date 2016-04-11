@@ -99,7 +99,7 @@ var shopMerch = [
 	"500 (Five Hundred)",
 	500,
 	"take the stage. Then, use the 'spotlight' command as instructed to use up your purchase! No refunds on this if you use it and nobody's paying attention, so use it when you think would be the best time. :3",
-	"Writing, Rap"],
+	"Writing, The Arcadium"],
 	["Poetic License",
 	"Set the topic for the next Sunday Scribing activity! (within reason)",
 	"550 (Five Hundred and Fifty)",
@@ -111,7 +111,7 @@ var shopMerch = [
 	"1,500 (One Thousand, Five Hundred)",
 	1500,
 	"private greeting. Follow the instructions provided on purchase.",
-	"Writing, Myths & Magic, and Rap"],
+	"Writing, Myths & Magic, and The Arcadium"],
 	["Let's Save The World!",
 	"Get yourself immortalized as a PROTAGONIST in a short story written by some of the Writing Room's best story writers. ETA: 3 weeks from purchase.",
 	"2,000 (Two Thousand)",
@@ -129,7 +129,7 @@ var shopMerch = [
 	"1,000,000 (One Million)",
 	0,
 	"my soul",
-	"None"]
+	"Yourself"]
 ];
 exports.commands = {
 	/**
@@ -1422,6 +1422,7 @@ exports.commands = {
 	},
 	//Used to both set (if you're a ranked user) your own autobiography and view (any user can do so) the specified user's biography, or your own if you don't specify anyone and are applicable to own one.
 	bio: 'biography',
+	autobiography: 'biography',
 	biography: function(arg, user, room) {
 		var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
 		var tarUser = toId(arg);
@@ -1466,7 +1467,7 @@ exports.commands = {
 	addquills: 'addfunds',
 	pay: 'addfunds',
 	addfunds: function(arg, user, room) {
-		if (!user.hasRank(room.id, '@')) return false;
+		if (!user.hasRank(room.id, '%')) return false;
 		arg = arg.split(',');
 		if (arg.length !== 2) return this.say(room, "Incorrect number of arguments. Usage: user, funds to add");
 		var targetUser = toId(arg[0]);
@@ -1661,6 +1662,8 @@ exports.commands = {
 			case "inspirationalquote":
 			case "quote":
 				if (amount > 1) return this.say(room, text + "Sorry, but you can only buy one quote at a time. c:");
+				this.say(room, text + "Sorry, but this is disabled for now until we can get some more quotes. Come back later! You have not been charged for this.");
+				/*
 				for (var j = 0; j < shopMerch.length; j++) {
 					if (shopMerch[j][0] == "Inspirational Quote") {
 						numBr = j;
@@ -1671,6 +1674,7 @@ exports.commands = {
 				account.bal -= shopMerch[numBr][3];
 				var quote = "Don't let your dreams be dreams! (This is a placeholder. Sorry :c)";
 				this.say(room, text + "Your inspirational quote is: " + quote);
+				*/
 				break;
 			case "inspirethemasses":
 			case "inspire":
