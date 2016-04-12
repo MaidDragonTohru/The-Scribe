@@ -255,6 +255,7 @@ exports.parse = {
 					if (this.settings.scribeShop[i].account === user.id && this.settings.scribeShop[i].greetings) {
 						if (this.settings.scribeShop[i].greetings.private) {
 							if ((Date.now() - this.settings.scribeShop[i].greetings.private.lastTriggered > 60 * 60 * 1000) || this.settings.scribeShop[i].greetings.private.lastTriggered === null) {
+								if (this.settings.scribeShop[i].greetings.private.enabled === false) break;
 								this.settings.scribeShop[i].greetings.private.lastTriggered = Date.now();
 								this.writeSettings();
 								this.say(room, "/msg " + user.id + ", " + this.settings.scribeShop[i].greetings.private.text);
@@ -262,6 +263,7 @@ exports.parse = {
 						}
 						if (this.settings.scribeShop[i].greetings.public) {
 							if ((Date.now() - this.settings.scribeShop[i].greetings.public.lastTriggered > 60 * 60 * 1000) || this.settings.scribeShop[i].greetings.public.lastTriggered === null) {
+								if (this.settings.scribeShop[i].greetings.public.enabled === false) break;
 								this.settings.scribeShop[i].greetings.public.lastTriggered = Date.now();
 								this.writeSettings();
 								this.say(room, "Personal greeting for ``" + user.id + "``: " + this.settings.scribeShop[i].greetings.public.text);
