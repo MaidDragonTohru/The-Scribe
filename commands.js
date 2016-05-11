@@ -101,10 +101,10 @@ var shopMerch = [
 	"take the stage. Then, use the 'spotlight' command as instructed to use up your purchase! No refunds on this if you use it and nobody's paying attention, so use it when you think would be the best time. :3",
 	"Writing, The Arcadium"],
 	["Poetic License",
-	"Set the topic for the next Sunday Scribing activity! (within reason)",
+	"Simply owning one of these grants you the ability to set the Word of the Day through the " + Config.commandcharacter + "wotd command! Usage: " + Config.commandcharacter + "wotd Word, Pronunciation, Part of Speech (Noun, Verb, Adjective, etc...), and Definition. -- DON'T BUY THIS IF YOU ARE ALREADY VOICE OR ABOVE",
 	"550 (Five Hundred and Fifty)",
 	550,
-	"poetic license. Simply owning one of these grants you the ability to set the Word of the Day through the " + Config.commandcharacter + "wotd command! Usage: " + Config.commandcharacter + "wotd Word, Pronunciation, Part of Speech (Noun, Verb, Adjective, etc...), and Definition.",
+	"poetic license. Then, follow the instructions provided in the item's description.",
 	"Writing"],
 	["Personal Greeting (Public)",
 	"Use this to gain the ability to set a personal greeting for The Scribe to say whenever you join the room after being gone for a while! What better way to make an entrance?",
@@ -1087,10 +1087,28 @@ exports.commands = {
 			return this.say(room, text + "Today's Word of the Day is **" + this.settings.wotd.word + "**: " + this.settings.wotd.kind + " [__" + this.settings.wotd.pron + "__] - " + this.settings.wotd.definition);
 		}
 		if (toId(arg) === 'check' || toId(arg) === 'time') return this.say(room, text + "The Word of the Day was last updated to **" + this.settings.wotd.word + "** " + this.getTimeAgo(this.settings.wotd.time) + " ago by " + this.settings.wotd.user);
-		if (!user.hasRank(room.id, '+')) return this.say(room, text + 'You must be at least Voice or higher to set the Word of the Day.');
+		var hasPerms = false;
+		if (this.settings.scribeShop) {
+			if (user.hasRank(room.id, '+')) {
+				hasPerms = true;
+			} else {
+				for (i = 0; i < this.settings.scribeShop.length; i++) {
+					if (this.settings.scribeShop[i].account === user.id) {
+						if (this.settings.scribeShop[i].wotd != 0) {
+							this.settings.scribeShop[i].wotd = 0;
+							hasPerms = true;
+							this.say(room, "Redeeming your Poetic License... If you made a mistake, bug a staff member to bug the bot creator (AxeBane) to fix it!");
+						}
+					}
+				}
+			}
+		} else if (user.hasRank(room.id, '+')) {
+			hasPerms = true;
+		}
+		if (!hasPerms) return this.say(room, text + 'You must be at least Voice or higher to set the Word of the Day.');
 		arg = arg.split(', ');
 		if (arg.length < 4) return this.say(room, text + "Invalid arguments specified. The format is: __word__, __pronunciation__, __part of speech__, __defintion__.");
-		this.settings.wotd = {
+		var wotd = {
 			word: arg[0],
             		pron: arg[1],
             		kind: arg[2],
@@ -1098,6 +1116,11 @@ exports.commands = {
 			time: Date.now(),
 			user: user.name
 		};
+		if (!this.settings.wotdHistory) {
+			this.settings.wotdHistory = [];
+		}
+		this.settings.wotd = wotd;
+		this.settings.wotdHistory.push(wotd);
 		this.writeSettings();
 		this.say(room, text + "The Word of the Day has been set to '" + arg[0] + "'!");
 	},
@@ -1533,6 +1556,7 @@ exports.commands = {
 		}
 	},
 	// Returns current balance for a particular user. Or yourself, if nobody is specified.
+	atm: 'bal',
 	balance: 'bal',
 	bal: function (arg, user, room) {
 		var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
