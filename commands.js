@@ -101,7 +101,7 @@ var shopMerch = [
 	"take the stage. Then, use the 'spotlight' command as instructed to use up your purchase! No refunds on this if you use it and nobody's paying attention, so use it when you think would be the best time. :3",
 	"Writing, The Arcadium"],
 	["Poetic License",
-	"Simply owning one of these grants you the ability to set the Word of the Day through the " + Config.commandcharacter + "wotd command! Usage: " + Config.commandcharacter + "wotd Word, Pronunciation, Part of Speech (Noun, Verb, Adjective, etc...), and Definition. -- DON'T BUY THIS IF YOU ARE ALREADY VOICE OR ABOVE",
+	"Simply owning one of these grants you the ability to set the Word of the Day up to 3 times through the " + Config.commandcharacter + "wotd command! Usage: " + Config.commandcharacter + "wotd Word, Pronunciation, Part of Speech (Noun, Verb, Adjective, etc...), and Definition. -- DON'T BUY THIS IF YOU ARE ALREADY VOICE OR ABOVE",
 	"550 (Five Hundred and Fifty)",
 	550,
 	"poetic license. Then, follow the instructions provided in the item's description.",
@@ -1095,9 +1095,9 @@ exports.commands = {
 				for (i = 0; i < this.settings.scribeShop.length; i++) {
 					if (this.settings.scribeShop[i].account === user.id) {
 						if (this.settings.scribeShop[i].wotd != 0) {
-							this.settings.scribeShop[i].wotd = 0;
+							this.settings.scribeShop[i].wotd -= 1;
 							hasPerms = true;
-							this.say(room, "Redeeming your Poetic License... If you made a mistake, bug a staff member to bug the bot creator (AxeBane) to fix it!");
+							this.say(room, "Redeeming your Poetic License... Uses remaining: " + this.settings.scribeShop[i].wotd + "!");
 						}
 					}
 				}
@@ -1764,6 +1764,7 @@ exports.commands = {
 				break;
 			case "poeticlicense":
 			case "license":
+				if (user.hasRank(room.id, '+')) return this.say(room, text + "There's no need for you to buy this! You can set the WOTD whenever you want, silly. ;p");
 				if (amount > 1) return this.say(room, text + "Sorry, but you can only buy one of these. :c");
 				if (account.wotd) return this.say(room, text + "You already own a Poetic License! Remember to set the WOTD with " + Config.commandcharacter + "wotd ``word``, ``pronunciation``, ``part of speech`` (Noun, Verb, Adjective, Etc.), and ``Definition``.");
 				for (var j = 0; j < shopMerch.length; j++) {
@@ -1774,8 +1775,8 @@ exports.commands = {
 				}
 				if (account.bal < shopMerch[numBr][3]) return this.say(room, text + "You can't afford to buy a poetic license! Should we... arrest you, or something?");
 				account.bal -= shopMerch[numBr][3];
-				account.wotd = 1;
-				this.say(room, text + "Bought! Congratulations, you now have the ability to edit the Word of the Day! The format is: " + Config.commandcharacter + "wotd ``word``, ``pronunciation``, ``part of speech`` (Noun, Verb, Adjective, Etc.), and ``Definition``.");
+				account.wotd = 3;
+				this.say(room, text + "Bought! Congratulations, you now have the ability to edit the Word of the Day up to 3 times! The format is: " + Config.commandcharacter + "wotd ``word``, ``pronunciation``, ``part of speech`` (Noun, Verb, Adjective, Etc.), and ``Definition``.");
 				break;
 			case "privategreeting":
 			case "personalgreetingpublic":
