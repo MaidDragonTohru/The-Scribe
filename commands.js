@@ -1088,6 +1088,9 @@ exports.commands = {
 		}
 		if (toId(arg) === 'check' || toId(arg) === 'time') return this.say(room, text + "The Word of the Day was last updated to **" + this.settings.wotd.word + "** " + this.getTimeAgo(this.settings.wotd.time) + " ago by " + this.settings.wotd.user);
 		var hasPerms = false;
+		if (this.settings.wotd) {
+			if (Date.now() - this.settings.wotd.time < 61200000) return this.say(room, "Sorry, but at least 17 hours must have passed since the WOTD was last set in order to set it again!");
+		}
 		if (this.settings.scribeShop) {
 			if (user.hasRank(room.id, '+')) {
 				hasPerms = true;
