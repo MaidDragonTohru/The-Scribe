@@ -1077,7 +1077,55 @@ exports.commands = {
 		
 	},
 	//End Random Commands
-	
+	// Used for Prompt of the Day stuff.
+	// CURRENTLY IN ALPHA
+	'ptsd': 'potd',
+	'prompt': 'wotd',
+	potd: function (arg, user, room) {
+		if (!this.settings.potd) {
+			this.settings.potd = [];
+			this.writeSettings();
+		}
+		if (!arg) {
+			if (!this.settings.potd[0]) return this.say(room, "ERROR: Out of Prompt of the Days! q-q");
+			return this.say(room, "Today's Prompt of the Day is: " + this.settings.potd[0] + "!");
+		} else {
+			var arg = arg.split(', ');
+			if (toId(arg[0]) == "makerandom") {
+				// This should be a last resort.
+				var thing = randIdea();
+				this.settings.potd.push({
+					prompt: thing,
+					user: user.id
+				});
+				this.writeSettings();
+				return this.say(room, "Recorded random prompt: " + thing);
+			} else if (toId(arg[0]) == "add") {
+				if (!user.hasRank(room.id, '+')) return false;
+				this.settings.potd.push({
+					prompt: arg.slice(1).join(', ').trim(),
+					user: user.id
+				});
+				this.writeSettings();
+				return this.say(room, "Recorded prompt. Your prompt is number " + this.settings.potd.length + " in the queue!");
+			} else if (toId(arg[0]) == "delete") {
+				if (!arg[1]) return this.say(room, "Please state which prompt you want to delete (between 1 and " + this.settings.potd.length);
+				if (arg[1] == "0") return false;
+				if (!user.hasRank(room.id, '%') && user.id != this.settings.potd[arg[1] - 1].user) return false;
+				this.settings.potd.splice(Number(arg[1]) - 1, 1);
+				this.writeSettings();
+				return this.say(room, "Deleting specified prompt... Prompts remaining in queue: " + this.settings.potd.length);
+			} else if (toId(arg[0]) == "list") {
+				var output = [];
+				for (var i = 0; i < this.settings.potd.length; i++) {
+					output.push("Prompt Number - " + (i + 1) + "\nPrompt: " + this.settings.potd[i].prompt + "\nSubmitter: " + this.settings.potd[i].user + "\n");
+				}
+				this.uploadToHastebin('List of Prompts\n\n' + output.join('\n'), function (link) {
+					this.say(room, link);
+				}.bind(this));
+			}
+		}
+	},
 	//Returns the Word of the Day! One of Writing's most-used commands.
 	'word': 'wotd',
 	wotd: function (arg, user, room) {
