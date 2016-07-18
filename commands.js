@@ -131,6 +131,34 @@ var shopMerch = [
 	"my soul",
 	"Yourself"]
 ];
+
+function randIdea() {
+	var genre1 = genres[Math.floor(genres.length * Math.random())];
+	if (Math.floor(Math.random() * 2)) {
+		var genre2 = genres[Math.floor(genres.length * Math.random())];
+		while (genre1 === genre2) {
+			genre2 = genres[Math.floor(genres.length * Math.random())];
+		}
+	}
+	var adjective = adjectives[Math.floor(adjectives.length * Math.random())];
+	var location = locations[Math.floor(locations.length * Math.random())];
+	var characterAdjective = characterAdjectives[Math.floor(characterAdjectives.length * Math.random())];
+	var type = characterTypes[Math.floor(characterTypes.length * Math.random())];
+	var role = roles[Math.floor(4 * Math.random())];
+	var gender = ["male", "female"][Math.floor(2 * Math.random())];
+	if (Math.floor(Math.random() * 4200 < 20)) gender = "hermaphrodite";
+	if (Math.floor(Math.random() * 4200 < 10) || type === "...thing") gender = "neuter";
+	var pronoun = pronouns[gender];
+	var possessivePronoun = possessivePronouns[gender];
+	var perkList = perks.slice(0);
+	var perk1 = perkList[Math.floor(perkList.length * Math.random())];
+	perkList.splice(perkList.indexOf(perk1), 1);
+	var perk2 = perkList[Math.floor(perkList.length * Math.random())];
+	perkList.splice(perkList.indexOf(perk2), 1);
+	var perk3 = perkList[Math.floor(perkList.length * Math.random())];
+	var debuff = debuffs[Math.floor(debuffs.length * Math.random())];
+	return "Setting: __" + adjective + " " + location + "__ | Genre: __" + genre1 + (genre2 ? "/" + genre2 : "") + "__ | " + role + ": __a " + gender + ", " + characterAdjective + " " + type + ". " + possessivePronoun + " positive factors include: " + perk1 + ", " + perk2 + ", and " + perk3 + ", though " + pronoun + (gender === "neuter" ? " are" : " is") + " unfortunately rather " + debuff + ".__";
+};
 exports.commands = {
 	/**
 	 * Help commands
@@ -1049,32 +1077,7 @@ exports.commands = {
 	randstory: 'randomstory',
 	randomstory: function (arg, user, room) {
 		var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
-		var genre1 = genres[Math.floor(genres.length * Math.random())];
-		if (Math.floor(Math.random() * 2)) {
-			var genre2 = genres[Math.floor(genres.length * Math.random())];
-			while (genre1 === genre2) {
-				genre2 = genres[Math.floor(genres.length * Math.random())];
-			}
-		}
-		var adjective = adjectives[Math.floor(adjectives.length * Math.random())];
-		var location = locations[Math.floor(locations.length * Math.random())];
-		var characterAdjective = characterAdjectives[Math.floor(characterAdjectives.length * Math.random())];
-		var type = characterTypes[Math.floor(characterTypes.length * Math.random())];
-		var role = roles[Math.floor(4 * Math.random())];
-		var gender = ["male", "female"][Math.floor(2 * Math.random())];
-		if (Math.floor(Math.random() * 4200 < 20)) gender = "hermaphrodite";
-		if (Math.floor(Math.random() * 4200 < 10) || type === "...thing") gender = "neuter";
-		var pronoun = pronouns[gender];
-		var possessivePronoun = possessivePronouns[gender];
-		var perkList = perks.slice(0);
-		var perk1 = perkList[Math.floor(perkList.length * Math.random())];
-		perkList.splice(perkList.indexOf(perk1), 1);
-		var perk2 = perkList[Math.floor(perkList.length * Math.random())];
-		perkList.splice(perkList.indexOf(perk2), 1);
-		var perk3 = perkList[Math.floor(perkList.length * Math.random())];
-		var debuff = debuffs[Math.floor(debuffs.length * Math.random())];
-		this.say(room, text + "Randomly generated story | Setting: __" + adjective + " " + location + "__ | Genre: __" + genre1 + (genre2 ? "/" + genre2 : "") + "__ | " + role + ": __a " + gender + ", " + characterAdjective + " " + type + ". " + possessivePronoun + " positive factors include: " + perk1 + ", " + perk2 + ", and " + perk3 + ", though " + pronoun + (gender === "neuter" ? " are" : " is") + " unfortunately rather " + debuff + ".__");
-		
+		return this.say(room, text + "Randomly generated story | " + randIdea());
 	},
 	//End Random Commands
 	// Used for Prompt of the Day stuff.
