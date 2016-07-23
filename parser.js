@@ -276,7 +276,7 @@ exports.parse = {
 			// Check for pending notifications...
 			if (this.settings.notifs) {
 				for (var i = 0; i < this.settings.notifs.length; i++) {
-					if (this.settings.notifs[i].name === user.id) {
+					if ((this.settings.notifs[i].name === user.id) || (this.settings.notifs[i].type == "Prompt")) {
 						switch (this.settings.notifs[i].type) {
 							case "PSponsor":
 							case "ASponsor":
@@ -292,6 +292,16 @@ exports.parse = {
 							case "Submission":
 								this.say(room, "/msg " + this.settings.notifs[i].name + ", Your sponsor, " + this.settings.notifs[i].submitter + ", has finished their project for you! Here's a link:");
 								this.say(room, "/msg " + this.settings.notifs[i].name + ", " + this.settings.notifs[i].link);
+								this.settings.notifs.splice(i, 1);
+								exports.parse.writeSettings();
+							case "Prompt":
+								if (this.settings.notifs[i].autogen == true) {
+									this.say(room, "ERROR: I wanted to update Prompt of the Day, but I'm all out of prompts! Please bug a staff member to autogenerate one or be creative for once. K, thanks. <3");
+								} else {
+									this.say(room, "The Prompt of the Day has been updated! New Prompt:");
+									this.say(room, "__" + this.settings.potdCurrent.prompt + "__");
+									this.say(room, "This was added by: " + this.settings.potdCurrent.user);
+								}
 								this.settings.notifs.splice(i, 1);
 								exports.parse.writeSettings();
 						}
@@ -837,3 +847,27 @@ this.warn = setInterval(function() {
 		}
 	}
 }, 5000);
+
+// Prompt of the Day stuff
+if (!settings.potd) {
+	settings.potd = [];
+	settings.potdeadline = Date.now() + 20000;
+	exports.parse.writeSettings();
+}
+
+this.prompt = setInterval(function() {
+	var self = this;
+	if ((settings.potdeadline - Date.now()) <= 0) {
+		console.log("Updating Prompt of the Day...");
+		if (!settings.notifs) settings.notifs = [];
+		if (settings.potd.length >= 1) {
+			settings.potdeadline += 10 * 100 * 60 * 60 * 24;
+			settings.notifs.push({type:"Prompt",autogen:false});
+			settings.potdCurrent = settings.potd[0];
+			settings.potd.shift();
+		} else {
+			settings.notifs.push({type:"Prompt",autogen:true});
+		}
+		exports.parse.writeSettings();
+	}
+}, 10 * 100 * 60 * 60);
