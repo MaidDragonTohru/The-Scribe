@@ -1081,20 +1081,16 @@ exports.commands = {
 	},
 	//End Random Commands
 	// Used for Prompt of the Day stuff.
-	// CURRENTLY IN ALPHA
+	// CURRENTLY IN BETA
 	'ptsd': 'potd',
 	'prompt': 'wotd',
 	potd: function (arg, user, room) {
-		if (!this.settings.potd) {
-			this.settings.potd = [];
-			this.writeSettings();
-		}
 		if (!arg) {
 			if (!this.settings.potd[0]) return this.say(room, "ERROR: Out of Prompt of the Days! q-q");
 			return this.say(room, "Today's Prompt of the Day is: " + this.settings.potd[0] + "!");
 		} else {
 			var arg = arg.split(', ');
-			if (toId(arg[0]) == "makerandom") {
+			if ((toId(arg[0]) == "makerandom") || (toId(arg[0]) == "autogen")) {
 				// This should be a last resort.
 				var thing = randIdea();
 				this.settings.potd.push({
@@ -1123,7 +1119,7 @@ exports.commands = {
 				for (var i = 0; i < this.settings.potd.length; i++) {
 					output.push("Prompt Number - " + (i + 1) + "\nPrompt: " + this.settings.potd[i].prompt + "\nSubmitter: " + this.settings.potd[i].user + "\n");
 				}
-				this.uploadToHastebin('List of Prompts\n\n' + output.join('\n'), function (link) {
+				this.uploadToHastebin('List of Upcoming Prompts\n\n' + output.join('\n'), function (link) {
 					this.say(room, link);
 				}.bind(this));
 			}
