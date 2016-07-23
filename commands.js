@@ -1083,7 +1083,7 @@ exports.commands = {
 	// Used for Prompt of the Day stuff.
 	// CURRENTLY IN BETA
 	'ptsd': 'potd',
-	'prompt': 'wotd',
+	'prompt': 'potd',
 	potd: function (arg, user, room) {
 		if (!arg) {
 			if (!this.settings.potd[0]) return this.say(room, "ERROR: Out of Prompt of the Days! q-q");
