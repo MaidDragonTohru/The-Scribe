@@ -1087,7 +1087,8 @@ exports.commands = {
 	potd: function (arg, user, room) {
 		if (!arg) {
 			if (!this.settings.potd[0]) return this.say(room, "ERROR: Out of Prompt of the Days! q-q");
-			return this.say(room, "Today's Prompt of the Day is: " + this.settings.potd[0] + "!");
+			this.say(room, "The current Prompt of the Day is:");
+			return this.say(room, this.settings.potdCurrent.prompt + " (set by " + this.settings.potdCurrent.user + ")");
 		} else {
 			var arg = arg.split(', ');
 			if ((toId(arg[0]) == "makerandom") || (toId(arg[0]) == "autogen")) {
