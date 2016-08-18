@@ -2280,4 +2280,104 @@ exports.commands = {
 	/*
 	* End of Scribe Shop Commands
 	*/
+	groups: function(arg, user, room) {
+		if (!this.settings.groups) {
+			this.settings.groups = {};
+			this.settings.groups.teams = [];
+			this.settings.groups.singles = [];
+			this.writeSettings();
+		}
+		if (!arg) {
+			var listSingles = [];
+			var listGroups = [];
+			var printSingles = "";
+			var printGroups = "";
+			if (this.settings.groups.singles.length == 0) {
+				printSingles = "Empty!";
+			} else {
+				for (var i = 0; i < this.settings.groups.singles.length; i++) {
+					listSingles.push("Name: " + this.settings.groups.singles[i].name + "\nAdded: " + this.settings.groups.singles[i].added + "\n");
+				}
+			}
+			if (this.settings.groups.teams.length == 0) {
+				printGroups = "Empty!";
+			} else {
+				for (var i = 0; i < this.settings.groups.teams.length; i++) {
+					listGroups.push("Leader: " + this.settings.groups.teams[i].leader + "\nOther Members: " + this.settings.groups.teams[i].rest.join(', ') + "\nAdded: " + this.settings.groups.singles[i].added + "\n");
+				}
+			}
+			// Return list of groups...
+			printSingles = "List of Solo Entries\n" + listSingles.join("\n" + "---\n");
+			printGroups = "List of Team Entries\n" + listGroups.join("\n" + "---\n");
+			this.uploadToHastebin(printSingles, function (link) {
+				if (link.startsWith('Error')) return this.say(room, text + link);
+				this.say(room, 'Solo Entries: ' + link);
+			}.bind(this));
+			return this.uploadToHastebin(printGroups, function (link) {
+				if (link.startsWith('Error')) return this.say(room, text + link);
+				this.say(room, 'Team Entries: ' + link);
+			}.bind(this));
+			
+		}
+		var args = arg.split(', ');
+		if (args[0] == "add") {
+			if (args.length > 2) {
+				// Assume team...
+				var groupToAdd = [];
+				for (var i = 1; i < args.length; i++) {
+					groupToAdd.push(args[i]);
+				}
+				var leader = groupToAdd[0];
+				groupToAdd.shift();
+				this.settings.groups.teams.push({"leader":leader,rest:groupToAdd,added:new Date()});
+				this.writeSettings();
+				return this.say(room, "Added team to groups with " + args[1] + " as the leader.")
+			} else {
+				this.settings.groups.singles.push({name:args[1],added:new Date()});
+				this.writeSettings();
+				return this.say(room, "Added " + args[1] + " to Singles group.");
+			}
+		} else if (args[0] == "remove") {
+			if (args.length > 2) {
+				if (args[1] == "team") {
+					var search = toId(args[2]);
+					for (var i = 0; i < this.settings.groups.teams.length; i++) {
+						if (search == toId(this.settings.groups.teams[i].leader)) {
+							this.settings.groups.teams.splice(i, 1);
+							this.writeSettings();
+							return this.say(room, "Removed Team with leader: " + search);
+						}
+					}
+					return this.say(room, "Cannot find team. Are you sure you're searching for the team leader's name?");
+				} else {
+					return this.say(room, "When removing a whole team, please only specify the team's leader. Usage: " + Config.commandcharacter + "groups remove, team, [leader's name]");
+				}
+			} else {
+				var search = toId(args[1]);
+				for (var i = 0; i < this.settings.groups.singles.length; i++) {
+					if (search == toId(this.settings.groups.singles[i].name)) {
+						this.settings.groups.singles.splice(i, 1);
+						this.writeSettings();
+						return this.say(room, "Removed " + search + " from groups.");
+					}
+				}
+				return this.say(room, "Cannot find user " + search + ". Are you sure you're spelling their name correctly?");
+			}
+		} else if (args[0] == "clear") {
+			if (args[1] == "singles") {
+				this.settings.groups.singles = [];
+				this.writeSettings();
+				return this.say(room, "Cleared Singles");
+			} else if (args[1] == "teams") {
+				this.settings.groups.teams = [];
+				this.writeSettings();
+				return this.say(room, "Cleared Teams");
+			} else if (args[1] == "all") {
+				this.settings.groups.singles = [];
+				this.settings.groups.teams = [];
+				this.writeSettings();
+				return this.say(room, "Cleared ALL Users");
+			}
+		}
+	}
 };
