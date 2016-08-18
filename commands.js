@@ -2281,6 +2281,7 @@ exports.commands = {
 	* End of Scribe Shop Commands
 	*/
 	groups: function(arg, user, room) {
+		if (!user.hasRank(room.id, '+')) return false;
 		if (!this.settings.groups) {
 			this.settings.groups = {};
 			this.settings.groups.teams = [];
