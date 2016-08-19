@@ -1967,7 +1967,7 @@ exports.commands = {
 		arg = arg.split(',');
 		var type = toId(arg[0]);
 		if (!arg[1] || (type !== "public" && type !== "private")) return this.say(room, "Incorrect usage. ``(" + Config.commandcharacter + "editgreeting [public/private], New Greeting)``");
-		var newGreetingText = arg[1];
+		var newGreetingText = arg.slice(1).join(', ');
 		for (i = 0; i < this.settings.scribeShop.length; i++) {
 			if (this.settings.scribeShop[i].account === user.id) {
 				if (!this.settings.scribeShop[i].greetings) {
