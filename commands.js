@@ -6,11 +6,6 @@
 const MESSAGES_TIME_OUT = 7 * 24 * 60 * 60 * 1000;
 
 var http = require('http');
-var https, csv;
-if (Config.serverid === 'showdown') {
-	https = require('https');
-	csv = require('csv-parse');
-}
 
 // .set constants
 const CONFIGURABLE_COMMANDS = {
@@ -2276,7 +2271,7 @@ exports.commands = {
 			}
 		}
 		return this.say(room, text + "ERROR: You do not seem to be a sponsor at all! q-q");
-	}
+	},
 	/*
 	* End of Scribe Shop Commands
 	*/
