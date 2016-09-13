@@ -443,7 +443,7 @@ exports.parse = {
 				var tarRoom = toId(spl[2].split('room auth')[0]);
 				if (!tarRoom) return;
 				var data = spl.slice(3).join("|").split('||');
-				var ranks = {'roomowners': '#', 'moderators': '@', 'drivers': '%', 'voices': '+'};
+				var ranks = {'roomowners': '#', 'bots': '*', 'moderators': '@', 'drivers': '%', 'voices': '+'};
 				var auth = {};
 				var rank, line;
 				for (var i = 0, len = data.length; i < len; i++) {
@@ -454,7 +454,7 @@ exports.parse = {
 					} else {
 						line = data[i].split(", ");
 						for (var l = 0, lineLen = line.length; l < lineLen; l++) {
-							auth[line[l]] = rank;
+							auth[toId(line[l])] = rank;
 						}
 					}
 				}
