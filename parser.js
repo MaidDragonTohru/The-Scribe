@@ -19,6 +19,7 @@ const FLOOD_PER_MSG_MIN = 500; // this is the minimum time between messages for 
 const FLOOD_MESSAGE_TIME = 6 * 1000;
 const MIN_CAPS_LENGTH = 18;
 const MIN_CAPS_PROPORTION = 0.8;
+const RECONNECT_TIME = 60;
 
 // TODO: move to rooms.js
 // TODO: store settings by room, not command/blacklists
@@ -230,44 +231,48 @@ exports.parse = {
 				res.on('end', function () {
 					if (data === ';') {
 						error('failed to log in; nick is registered - invalid or no password given');
-						process.exit(-1);
-					}
-					if (data.length < 50) {
-						error('failed to log in: ' + data);
-						process.exit(-1);
-					}
-
-					if (data.indexOf('heavy load') !== -1) {
-						error('the login server is under heavy load; trying again in one minute');
 						setTimeout(function () {
-							this.message(message);
-						}.bind(this), 60 * 1000);
-						return;
-					}
-
-					if (data.substr(0, 16) === '<!DOCTYPE html>') {
-						error('Connection error 522; trying agian in one minute');
-						setTimeout(function () {
-							this.message(message);
-						}.bind(this), 60 * 1000);
-						return;
-					}
-
-					try {
-						data = JSON.parse(data.substr(1));
-						if (data.actionsuccess) {
-							data = data.assertion;
-						} else {
-							error('could not log in; action was not successful: ' + JSON.stringify(data));
 							process.exit(-1);
+						}, RECONNECT_TIME * 1000);
+					} else if (data.length < 50) {
+						error('failed to log in: ' + data);
+						setTimeout(function () {
+							process.exit(-1);
+						}, RECONNECT_TIME * 1000);
+					} else if (data.indexOf('heavy load') !== -1) {
+						error('the login server is under heavy load; trying again in ' + RECONNECT_TIME + ' seconds');
+						setTimeout(function () {
+							this.message(message);
+						}.bind(this), RECONNECT_TIME * 1000);
+					} else if (data.substr(0, 16) === '<!DOCTYPE html>') {
+						error('Connection error 522; trying again in ' + RECONNECT_TIME + ' seconds');
+						setTimeout(function () {
+							this.message(message);
+						}.bind(this), RECONNECT_TIME * 1000);
+					} else {
+						if (Config.pass) {
+							try {
+								data = JSON.parse(data.substr(1));
+								if (data.actionsuccess) {
+									data = data.assertion;
+								} else {
+									error('could not log in; action was not successful: ' + JSON.stringify(data));
+									setTimeout(function () {
+										process.exit(-1);
+									}, RECONNECT_TIME * 1000);
+								}
+							} catch (e) {}
 						}
-					} catch (e) {}
-					send('|/trn ' + Config.nick + ',0,' + data);
+						send('|/trn ' + Config.nick + ',0,' + data);
+					}
 				}.bind(this));
 			}.bind(this));
 
 			req.on('error', function (err) {
 				error('login error: ' + err.stack);
+				setTimeout(function () {
+					process.exit(-1);
+				}, RECONNECT_TIME * 1000);
 			});
 
 			if (data) req.write(data);
@@ -278,7 +283,10 @@ exports.parse = {
 
 			if (spl[3] !== '1') {
 				error('failed to log in, still guest');
-				process.exit(-1);
+				setTimeout(function () {
+					process.exit(-1);
+				}, RECONNECT_TIME * 1000);
+				return;
 			}
 
 			ok('logged in as ' + spl[2]);

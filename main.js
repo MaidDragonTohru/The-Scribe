@@ -9,6 +9,7 @@
  */
 
 const MESSAGE_THROTTLE = 650;
+const RECONNECT_TIME = 60;
 
 function runNpm(command) {
 	console.log('Running `npm ' + command + '`...');
@@ -181,6 +182,7 @@ function dequeue() {
 	send(queue.shift());
 }
 
+var connectionTimeout = null;
 var connect = function (retry) {
 	if (retry) {
 		info('retrying...');
@@ -189,15 +191,17 @@ var connect = function (retry) {
 	var ws = new WebSocketClient();
 
 	ws.on('connectFailed', function (err) {
+		if (connectionTimeout) clearTimeout(connectionTimeout);
 		error('Could not connect to server ' + Config.server + ': ' + err.stack);
-		info('retrying in one minute');
+		info('retrying in ' + RECONNECT_TIME + ' seconds');
 
-		setTimeout(function () {
+		connectionTimeout = setTimeout(function () {
 			connect(true);
-		}, 60000);
+		}, RECONNECT_TIME * 1000);
 	});
 
 	ws.on('connect', function (con) {
+		if (connectionTimeout) clearTimeout(connectionTimeout);
 		global.Connection = con;
 		ok('connected to server ' + Config.server);
 
@@ -208,15 +212,15 @@ var connect = function (retry) {
 		con.on('close', function (code, reason) {
 			// Is this always error or can this be intended...?
 			error('connection closed: ' + reason + ' (' + code + ')');
-			info('retrying in one minute');
+			info('reconnecting in ' + RECONNECT_TIME + ' seconds');
 
 			for (var i in Users.users) {
 				delete Users.users[i];
 			}
 			Rooms.rooms.clear();
-			setTimeout(function () {
+			connectionTimeout = setTimeout(function () {
 				connect(true);
-			}, 60000);
+			}, RECONNECT_TIME * 1000);
 		});
 
 		con.on('message', function (response) {
@@ -242,6 +246,11 @@ var connect = function (retry) {
 	var conStr = 'ws://' + Config.server + ':' + Config.port + '/showdown/' + id + '/' + str + '/websocket';
 	info('connecting to ' + conStr + ' - secondary protocols: ' + (Config.secprotocols.join(', ') || 'none'));
 	ws.connect(conStr, Config.secprotocols);
+	connectionTimeout = setTimeout(function () {
+		error('no connection established');
+		info('retrying in ' + RECONNECT_TIME + ' seconds');
+		connect(true);
+	}, RECONNECT_TIME * 1000);
 };
 
 connect();
