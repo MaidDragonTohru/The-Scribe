@@ -1097,6 +1097,7 @@ exports.commands = {
 				return this.say(room, "Recorded random prompt: " + thing);
 			} else if (toId(arg[0]) == "add") {
 				if (!user.hasRank(room.id, '+')) return false;
+				if (!arg[1]) return this.say(room, "Please specify a prompt to add.");
 				this.settings.potd.push({
 					prompt: arg.slice(1).join(', ').trim(),
 					user: user.id
@@ -1104,7 +1105,7 @@ exports.commands = {
 				this.writeSettings();
 				return this.say(room, "Recorded prompt. Your prompt is number " + this.settings.potd.length + " in the queue!");
 			} else if (toId(arg[0]) == "delete") {
-				if (!arg[1]) return this.say(room, "Please state which prompt you want to delete (between 1 and " + this.settings.potd.length);
+				if (!arg[1]) return this.say(room, "Please state which prompt you want to delete (between 1 and " + this.settings.potd.length + ")");
 				if (arg[1] == "0") return false;
 				if (!user.hasRank(room.id, '%') && user.id != this.settings.potd[arg[1] - 1].user) return false;
 				this.settings.potd.splice(Number(arg[1]) - 1, 1);
