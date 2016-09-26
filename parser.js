@@ -373,6 +373,10 @@ exports.parse = {
 					this.say(room, "/msg " + user.id + ", The Word of the Day will need to be updated soon. Just a friendly heads up. ^.^'");
 				}
 			}
+			//Prompt of the Day tracking
+			if (this.settings.potdRanOut && room.id == "writing" && user.hasRank(room.id, '+' && Config.roomauth && Config.roomauth[room.id] && Config.roomauth[room.id][user.id]) {
+				this.say(room, "/msg " + user.id + ", I'm currently out of prompts to set! Halp! q-q Please add one with ``;prompt add, [prompt]``, or with ``;prompt autogen``");
+			}
 			// Scribe Shop greetings.
 			if (this.settings.scribeShop) {
 				for (i = 0; i < this.settings.scribeShop.length; i++) {
@@ -419,11 +423,14 @@ exports.parse = {
 								this.settings.notifs.splice(i, 1);
 								this.writeSettings();
 							case "Prompt":
-								if (this.settings.notifs[i].autogen == true) {
-									this.say(room, "ERROR: I wanted to update Prompt of the Day, but I'm all out of prompts! Please bug a staff member to autogenerate one or be creative for once. K, thanks. <3");
+								if (this.settings.potd.length == 0) {
+									if (!this.settings.potdRanOut) {
+										this.settings.potdRanOut = true;
+										this.writeSettings();
+									}
 								} else {
 									this.say(room, "The Prompt of the Day has been updated! New Prompt:");
-									this.say(room, "__" + this.settings.potdCurrent.prompt + "__");
+									this.say(room, this.settings.potdCurrent.prompt);
 									this.say(room, "This was added by: " + this.settings.potdCurrent.user);
 								}
 								this.settings.notifs.splice(i, 1);
