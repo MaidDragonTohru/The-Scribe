@@ -374,7 +374,7 @@ exports.parse = {
 				}
 			}
 			//Prompt of the Day tracking
-			if (this.settings.potdRanOut && room.id == "writing" && user.hasRank(room.id, '+' && Config.roomauth && Config.roomauth[room.id] && Config.roomauth[room.id][user.id]) {
+			if (this.settings.potdRanOut && room.id == "writing" && user.hasRank(room.id, '+') && Config.roomauth && Config.roomauth[room.id] && Config.roomauth[room.id][user.id]) {
 				this.say(room, "/msg " + user.id + ", I'm currently out of prompts to set! Halp! q-q Please add one with ``;prompt add, [prompt]``, or with ``;prompt autogen``");
 			}
 			// Scribe Shop greetings.
