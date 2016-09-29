@@ -1075,7 +1075,7 @@ exports.commands = {
 		return this.say(room, text + "Randomly generated story | " + randIdea());
 	},
 	//End Random Commands
-	// Used for Prompt of the Day stuff.
+	// Used for prompt of the Day stuff.
 	// CURRENTLY IN BETA
 	'ptsd': 'potd',
 	'prompt': 'potd',
@@ -1093,6 +1093,7 @@ exports.commands = {
 					prompt: thing,
 					user: user.id
 				});
+				this.settings.potdRanOut = false;
 				this.writeSettings();
 				return this.say(room, "Recorded random prompt: " + thing);
 			} else if (toId(arg[0]) == "add") {
@@ -1102,6 +1103,7 @@ exports.commands = {
 					prompt: arg.slice(1).join(', ').trim(),
 					user: user.id
 				});
+				this.settings.potdRanOut = false;
 				this.writeSettings();
 				return this.say(room, "Recorded prompt. Your prompt is number " + this.settings.potd.length + " in the queue!");
 			} else if (toId(arg[0]) == "delete") {
