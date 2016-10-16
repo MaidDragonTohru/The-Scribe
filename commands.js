@@ -1276,12 +1276,12 @@ exports.commands = {
 			text += "If you're new to the Writing room, be sure to read our introduction: http://pswriting.weebly.com/introduction.html";
 			break;
 		case 'mythology':
-			text += "Welcome to Mythology! In this room, we talk about magic and mythology (no black magic, though).";
+			text += "Welcome to Myths & Magic! In this room, we, well... talk about mythology and magic! Though, discussion of black magic is not encouraged.";
 			break;
 		default:
 			text += "Welcome to the room!";
 		}
-		text += " Feel free to ask any room staff any questions that you may have!";
+		text += " Feel free to ask the room staff any questions that you may have!";
 		this.say(room, text);
 	},
 	//For when you need a little love.
