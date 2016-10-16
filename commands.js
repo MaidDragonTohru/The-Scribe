@@ -1262,7 +1262,7 @@ exports.commands = {
         if (theDay === 3) { this.theDay = "Wednesday" };
         if (theDay === 4) { this.theDay = "Thursday" };
         if (theDay === 5) { this.theDay = "Friday" };
-        if (theDay === 6) { this.theDay = "Saturday"};
+        if (theDay === 6) { this.theDay = "Saturday" };
         var today = hr + ":" + mi + ":" + se + " " + AMorPM + ", " + mm + '/' + dd + '/' + yyyy + ', the ' + this.ddd + " of the " + sea + " month of " + this.mmm + ', ' + yyyy + ' (' + this.theDay + ')';
         this.say(room, "The current time is: " + today + " (UTC" + tz + ")");
 	},
@@ -1271,7 +1271,18 @@ exports.commands = {
 	faq: 'rules',
 	rules: function (arg, user, room) {
 		var text = user.hasRank(room.id, '+') || room === user ? '' : '/pm ' + user.name + ', ';
-		this.say(room, text + "If you're new to the Writing room, be sure to read our introduction: http://pswriting.weebly.com/introduction.html Feel free to ask any room staff any questions that you may have!");
+		switch (room.id) {
+		case 'writing':
+			text += "If you're new to the Writing room, be sure to read our introduction: http://pswriting.weebly.com/introduction.html";
+			break;
+		case 'mythology':
+			text += "Welcome to Myths & Magic! In this room, we, well... talk about mythology and magic! Though, discussion of black magic is not encouraged.";
+			break;
+		default:
+			text += "Welcome to the room!";
+		}
+		text += " Feel free to ask the room staff any questions that you may have!";
+		this.say(room, text);
 	},
 	//For when you need a little love.
 	esupport: function (arg, user, room) {
