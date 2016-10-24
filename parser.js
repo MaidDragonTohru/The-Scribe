@@ -394,7 +394,12 @@ exports.parse = {
 								if (this.settings.scribeShop[i].greetings.public.enabled === false) break;
 								this.settings.scribeShop[i].greetings.public.lastTriggered = Date.now();
 								this.writeSettings();
-								this.say(room, "Personal greeting for ``" + user.id + "``: " + this.settings.scribeShop[i].greetings.public.text);
+								// Check for default message.
+								if (this.settings.scribeShop[i].greetings.public.text.substr(0, 4) === "/msg") {
+									this.say(room, this.settings.scribeShop[i].greetings.public.text);
+								} else {
+									this.say(room, "Personal greeting for ``" + user.name + "``: " + this.settings.scribeShop[i].greetings.public.text);
+								}
 							}
 						}
 						break;
