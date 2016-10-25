@@ -2527,7 +2527,7 @@ exports.commands = {
 			}.bind(this));
 		} else if (arg[0] == "help") {
 			//Help function.
-			return this.say(room, "Database command information can be found here: https://github.com/AxeBane/The-Scribe/blob/master/README.md");
+			return this.say(room, "Database command information can be found here: https://github.com/AxeBane/The-Scribe/blob/master/README.md#database-commands");
 		} else {
 			return this.say(room, "Unknown parameter(s). You might be missing a comma somewhere!");
 		}
