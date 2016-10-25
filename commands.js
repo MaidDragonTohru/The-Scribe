@@ -2429,7 +2429,7 @@ exports.commands = {
 			this.writeMyths();
 			return this.say(room, "To confirm addition of ``" + input.name + "`` under pantheon ``" + input.pan + "``, type ``;myth confirm, add``.");
 		} else if (arg[0] == "confirm") {
-			if (!user.hasRank(room.id, '+')) return false;
+			if (!user.hasRank(room.id, '%')) return false;
 			if (!arg[1]) return this.say(room, "Please specify afterwards whether or not you want to ``add`` or ``delete`` something.");
 			if (arg[1] == "add" && this.myths.pending != null) {
 				this.myths.pending.id = this.myths.lastID + 1;
