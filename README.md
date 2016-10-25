@@ -152,6 +152,37 @@ Commands any user can use!
 
 `enablegreeting; disablegreeting <public/private>` Enables or disables the specified greeting, depending on its current state, and if the user owns the greetings at all.
 
+Database Commands
+=================
+
+Myths & Magic has its own built-in database system in The Scribe. Below are a list of all commands for the database.
+Accepted aliases for the `database` command: `db` and `myth`.
+
+Drivers and Above
+-----------------
+
+`database delete, <Entry ID>`: Requests to purge the entry from the database.
+
+`database confirm, <'add'/'delete'>`: Confirms an addition or deletion from the database.
+
+Voices and Above
+-----------------
+
+`database add, <Name>, <Pantheon>, <Description>`: Requests an entry to be added to the database.
+
+`database addimage, <Entry ID>, <URL>`: Sets the thumbnail for the entry to whatever URL you specify. Recommended dimensions are 84x84.
+
+Commands any user can use!
+---------------------------
+
+`database search, <Entry Name>`: Returns a list of the IDs for every entry that matches the name you ask for.
+
+`database view, <Entry ID>`: Returns the information on the entry your requested! Autocorrects to `database search` if you don't put an ID in.
+
+`database list`: Returns a full list of every single entry in the database, sorted by Pantheon.
+
+`database help`: Probably the reason why you're reading this in the first place.
+
 Installation
 ============
 
