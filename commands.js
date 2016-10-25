@@ -105,7 +105,7 @@ var shopMerch = [
 	"Use this to gain the ability to set a personal greeting for The Scribe to say whenever you join the room after being gone for a while! What better way to make an entrance?",
 	"1,500 (One Thousand, Five Hundred)",
 	1500,
-	"private greeting. Follow the instructions provided on purchase.",
+	"public greeting. Follow the instructions provided on purchase.",
 	"Writing, Myths & Magic, and The Arcadium"],
 	["Let's Save The World!",
 	"Get yourself immortalized as a PROTAGONIST in a short story written by some of the Writing Room's best story writers. ETA: 3 weeks from purchase.",
