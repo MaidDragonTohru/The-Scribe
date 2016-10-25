@@ -35,10 +35,17 @@ try {
 } catch (e) {} // file doesn't exist [yet]
 if (!Object.isObject(messages)) messages = {};
 
+var myths;
+try {
+	myths = JSON.parse(fs.readFileSync('mythDatabase.json'));
+} catch (e) {}
+if (!Object.isObject(myths)) myths = {};
+
 exports.parse = {
 	actionUrl: url.parse('https://play.pokemonshowdown.com/~~' + Config.serverid + '/action.php'),
 	'settings': settings,
 	'messages': messages,
+	'myths': myths,
 	// TODO: handle chatdata in users.js
 	chatData: {},
 	// TODO: handle blacklists in rooms.js
@@ -847,6 +854,36 @@ exports.parse = {
 					if (err) {
 						// This should only happen on Windows.
 						fs.writeFile('messages.json', data, finishWriting);
+						return;
+					}
+					finishWriting();
+				});
+			});
+		};
+	})(),
+	writeMyths: (function () {
+		var writing = false;
+		var writePending = false; // whether or not a new write is pending
+		var finishWriting = function () {
+			writing = false;
+			if (writePending) {
+				writePending = false;
+				this.writeMyths();
+			}
+		};
+		return function () {
+			if (writing) {
+				writePending = true;
+				return;
+			}
+			writing = true;
+			var data = JSON.stringify(this.myths);
+			fs.writeFile('mythDatabase.json.0', data, function () {
+				// rename is atomic on POSIX, but will throw an error on Windows
+				fs.rename('mythDatabase.json.0', 'mythDatabase.json', function (err) {
+					if (err) {
+						// This should only happen on Windows.
+						fs.writeFile('mythDatabase.json', data, finishWriting);
 						return;
 					}
 					finishWriting();

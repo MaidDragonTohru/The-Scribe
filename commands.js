@@ -203,7 +203,10 @@ exports.commands = {
 			error('failed to reload: ' + e.stack);
 		}
 	},
-	do: 'custom',
+	ping: function (arg, user, room) {
+		this.say(room, "Pong.");
+	},
+	'do': 'custom',
 	custom: function (arg, user, room) {
 		if (!user.isExcepted()) return false;
 		// Custom commands can be executed in an arbitrary room using the syntax
@@ -2388,6 +2391,145 @@ exports.commands = {
 				this.writeSettings();
 				return this.say(room, "Cleared ALL Users");
 			}
+		}
+	},
+	database: 'myth',
+	db: 'myth',
+	myth: function(arg, user, room) {
+		if (!this.myths) {
+			this.myths = {};
+		}
+		if (!this.myths.db) {
+			this.myths.db = [];
+			this.myths.lastID = -1;
+		}
+		if (!arg) return this.say(room, "Error: Not enough arguments. Please use ``;myth help`` for usage instructions.");
+		var arg = arg.split(', ');
+		if (arg[0] == "add") {
+			if (!user.hasRank(room.id, '+')) return false;
+			if (arg.length - 1 < 3) return this.say(room, "Error: Not enough arguments. Please use ``;myth help`` for usage instructions.");
+			var name = toId(arg[1]);
+			var pan = toId(arg[2]);
+			var desc = arg.slice(3, arg.length).join(', ');
+			for (var i = 0; i < this.myths.db.length; i++) {
+				if (name == toId(this.myths.db[i].name) && pan == toId(this.myths.db[i].pan)) {
+					return this.say(room, "Error: An entry already exists using that name and pantheon. Are you sure they're not already in the database?");
+				}
+			}
+			var input = {
+				id: null,
+				name: arg[1],
+				pan: toTitleCase(arg[2]),
+				desc: desc,
+				img: "https://s13.postimg.org/xo2obg0h3/no_thumb.png",
+				user: user.name,
+				added: new Date()
+			}
+			this.myths.pending = input;
+			this.writeMyths();
+			return this.say(room, "To confirm addition of ``" + input.name + "`` under pantheon ``" + input.pan + "``, type ``;myth confirm, add``.");
+		} else if (arg[0] == "confirm") {
+			if (!user.hasRank(room.id, '+')) return false;
+			if (!arg[1]) return this.say(room, "Please specify afterwards whether or not you want to ``add`` or ``delete`` something.");
+			if (arg[1] == "add" && this.myths.pending != null) {
+				this.myths.pending.id = this.myths.lastID + 1;
+				this.myths.db.push(this.myths.pending);
+				this.myths.lastID++;
+				this.say(room, "Addition confirmed! Thank you, " + this.myths.pending.user + "!");
+				this.myths.pending = null;
+				this.writeMyths();
+			} else if (arg[1] == "delete" && this.myths.pendingDelete != -1) {
+				this.myths.db.splice(this.myths.pendingDelete, 1);
+				for (var i = this.myths.pendingDelete; i < this.myths.db.length; i++) {
+					this.myths.db[i].id = i;
+					this.myths.lastID = i;
+				}
+				this.myths.pendingDelete = -1;
+				this.writeMyths();
+				return this.say(room, "Deletion confirmed! Entry no-longer exists.");
+			} else {
+				this.say(room, "There's nothing there to confirm. :v");
+			}
+		} else if (arg[0] == "addimage") {
+			if (!user.hasRank(room.id, '+')) return false;
+			if (arg.length > 3) return this.say(room, "Please only specify a myth index number and an image.");
+			if (arg.length < 3) return this.say(room, "Please specify both a myth index number and an image.");
+			if (isNaN(Number(arg[1]))) return this.say(room, "That was not an index number. Please use the number that's stated in the entry for the thing you're trying to edit.");
+			var pattern = /((http|https|ftp):\/\/)[^\s]/;
+			if (!pattern.test(arg[2])) {
+				return this.say(room, "Please enter a valid URL.");
+			}
+			for (var i = 0; i < this.myths.db.length; i++) {
+				if (arg[1] == this.myths.db[i].id) {
+					this.myths.db[i].img = arg[2];
+					this.writeMyths();
+					return this.say(room, "Done! Image added to " + this.myths.db[i].name + "!");
+				}
+			}
+			return this.say(room, "Entry not found. Are you sure you're using the right myth index number?");
+		} else if (arg[0] == "remove" || arg[0] == "delete") {
+			if (!user.hasRank(room.id, '%')) return false;
+			if (isNaN(Number(arg[1]))) return this.say(room, "That was not an index number. Please use the number that's stated in the entry for the thing you're trying to edit.");
+			for (var i = 0; i < this.myths.db.length; i++) {
+				if (this.myths.db[i].id == arg[1]) {
+					this.myths.pendingDelete = Number(arg[1]);
+					this.writeMyths();
+					return this.say(room, "Myth found under name '" + this.myths.db[i].name + "' and pantheon '" + this.myths.db[i].pan + "'. If this is correct, please use ``;myth confirm, delete``.");
+				}
+			}
+			return this.say(room, "Entry not found. Are you sure you're using the right myth index number?");
+		} else if (arg[0] == "view" || arg[0] == "show" || arg[0] == "see" || arg[0] == "search") {
+			if (arg.length < 2) return this.say(room, "Error: Not enough arguments. Please use ``;myth help`` for usage instructions.");
+			if (arg.length > 2) return this.say(room, "Error: Too many arguments. Please only search for one thing at a time. Thanks!");
+			if (!isNaN(Number(arg[1]))) {
+				if (arg[1] > this.myths.db.length || arg[1] < 0) return this.say(room, "That number entry doesn't exist!");
+				for (var i = 0; i < this.myths.db.length; i++) {
+					if (arg[1] == this.myths.db[i].id) {
+						// Requires * rank.
+						var myth = this.myths.db[i];
+						return this.say(room, '/addhtmlbox <div style="background: "><img src="' + myth.img + '" alt="' + myth.img + '" height="84" width="84" style="float: left; border: 1px solid gray;"><div style="height: 85px; text-align: left; border-bottom: 2px solid gray"><br /><span style="padding-left: 10px; font-weight: bold; font-size: 2em; font-family: Century Gothic, sans-serif">' + myth.name + '</span><br /><span style="padding-left: 10px; font-style: italic; color: grey; font-family: Century Gothic, sans-serif">' + myth.pan + '</span><br/></div><span style="padding-left: 95px; font-weight: bold; font-family: Century Gothic, sans-serif"><center>' + myth.desc + '</center></span><br /><span style="float: right; color: #888; font-size: 8pt;">Entry ID: ' + myth.id + '<br />Added by ' + myth.user + '.</span></div><br /><br />');
+					}
+				}
+				return this.say(room, "Cannot find entry.");
+			} else {
+				var term = toId(arg[1]);
+				var nameFound = [];
+				for (var i = 0; i < this.myths.db.length; i++) {
+					if (term == toId(this.myths.db[i].name)) {
+						nameFound.push([this.myths.db[i].name, this.myths.db[i].pan, this.myths.db[i].id]);
+					}
+				}
+				if (nameFound.length > 0) {
+					var panArray = [];
+					var idArray = [];
+					for (var i = 0; i < nameFound.length; i++) {
+						panArray.push(nameFound[i][1]);
+						idArray.push(nameFound[i][2]);
+					}
+					this.say(room, "We found " + nameFound.length + " result(s) for '" + arg[1] + "', under pantheon(s) [``" + panArray.join(', ') + "``]!");
+					return this.say(room, "ID(s): ``" + idArray.join(', ') + "``. Use these IDs to view the specific entry (e.g. ``view 0``.");
+				}
+				return this.say(room, "No results found for search '" + arg[1] + "'.");
+			}
+		} else if (arg[0] == "list") {
+			var output = [];
+			for (var i = 0; i < this.myths.db.length; i++) {
+				output.push(this.myths.db[i].pan + "|SORTBREAK|" + this.myths.db[i].name + " [ID: " + this.myths.db[i].id + "]" + "\nPantheon: " + this.myths.db[i].pan + "\nDescription: " + this.myths.db[i].desc + "\n(added by " + this.myths.db[i].user + ")\n\n");
+			}
+			// We sort the output alphabetically by Pantheon.
+			output.sort();
+			for (var i = 0; i < output.length; i++) {
+				output[i] = output[i].split("|SORTBREAK|").pop();
+			}
+			return this.uploadToHastebin('Myths & Magic Database\n\n\n' + output.join(''), function (link) {
+				if (link.startsWith('Error')) return this.say(room, link);
+				this.say(room, 'Full Database: ' + link);
+			}.bind(this));
+		} else if (arg[0] == "help") {
+			//Help function.
+			return this.say(room, "Database command information can be found here: https://github.com/AxeBane/The-Scribe/blob/master/README.md");
+		} else {
+			return this.say(room, "Unknown parameter(s). You might be missing a comma somewhere!");
 		}
 	}
 };

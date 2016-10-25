@@ -4,6 +4,7 @@ npm-debug.log
 config.js
 settings.json
 messages.json
+mythDatabase.json
 
 .hg
 .bzr
