@@ -1184,7 +1184,7 @@ exports.commands = {
 	//Returns the current time of day! ...For the bot, that is.
 	time: function (arg, user, room) {
 		var text = (room === user || user.hasRank(room.id, '+')) ? '' : '/pm ' + user.name + ', ';
-		var now = Date.now();
+		var now = new Date();
 		var correct = function (time) {
 			return (time < 10 ? '0' : '') + time;
 		}
@@ -1242,7 +1242,7 @@ exports.commands = {
 		}
 		hour = correct(hour);
 		var today = hour + ':' + minutes + ':' + seconds + ' ' + AMorPM + ', ' + mm + '/' + dd + '/' + year + ', the ' + ordinalDay + ' of the ' + season + ' month of ' + month + ', ' + year + '.';
-		return this.say(room, text + 'Today is ' + today + ' (' + day + ', GMT' + timezone + ')');
+		return this.say(room, text + 'The current time is ' + today + ' (' + day + ', GMT' + timezone + ')');
 	},
 	//Quick and generic introduction. Usually better to answer questions perosonally, though.
 	newbie: 'rules',
