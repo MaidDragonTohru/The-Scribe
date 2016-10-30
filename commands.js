@@ -1183,91 +1183,66 @@ exports.commands = {
 	},
 	//Returns the current time of day! ...For the bot, that is.
 	time: function (arg, user, room) {
-	var today = new Date(); 
-       	var dd = today.getDate(); 
-       	var mm = today.getMonth()+1; 
-       	var yyyy = today.getFullYear();
-       	var hr = today.getHours();
-       	var mi = today.getMinutes();
-       	var se = today.getSeconds();
-        var tz = today.getTimezoneOffset() / 60;
-	if (tz > 0) tz = "+" + tz;
-        if (mm === 1) { this.mmm = "January"; var sea = "winter"};
-        if (mm === 2) { this.mmm = "Febuary"; var sea = "winter"};
-        if (mm === 3) { this.mmm = "March"; var sea = "spring"};
-        if (mm === 4) { this.mmm = "April"; var sea = "spring"};
-        if (mm === 5) { this.mmm = "May"; var sea = "spring"};
-        if (mm === 6) { this.mmm = "June"; var sea = "summer"};
-        if (mm === 7) { this.mmm = "July"; var sea = "summer"};
-        if (mm === 8) { this.mmm = "August"; var sea = "summer"};
-        if (mm === 9) { this.mmm = "September"; var sea = "autumn"};
-        if (mm === 10) { this.mmm = "October"; var sea = "autumn"};
-        if (mm === 11) { this.mmm = "November"; var sea = "autumn"};
-        if (mm === 12) { this.mmm = "December"; var sea = "winter"};
-        if (dd === 1) { this.ddd = "first" };
-        if (dd === 2) { this.ddd = "second" };
-        if (dd === 3) { this.ddd = "third" };
-        if (dd === 4) { this.ddd = "forth" };
-        if (dd === 5) { this.ddd = "fifth" };
-        if (dd === 6) { this.ddd = "sixth" };
-        if (dd === 7) { this.ddd = "seventh" };
-        if (dd === 8) { this.ddd = "eighth" };
-        if (dd === 9) { this.ddd = "nineth" };
-        if (dd === 10) { this.ddd = "tenth" };
-        if (dd === 11) { this.ddd = "eleventh" };
-        if (dd === 12) { this.ddd = "twelfth" };
-        if (dd === 13) { this.ddd = "thirteenth" };
-        if (dd === 14) { this.ddd = "forteenth" };
-        if (dd === 15) { this.ddd = "fifteenth" };
-        if (dd === 16) { this.ddd = "sixteenth" };
-        if (dd === 17) { this.ddd = "seventeenth" };
-        if (dd === 18) { this.ddd = "eighteenth" };
-        if (dd === 19) { this.ddd = "nineteenth" };
-        if (dd === 20) { this.ddd = "twentieth" };
-        if (dd === 21) { this.ddd = "twenty-first" };
-        if (dd === 22) { this.ddd = "twenty-second" };
-        if (dd === 23) { this.ddd = "twenty-third" };
-        if (dd === 24) { this.ddd = "twenty-forth" };
-        if (dd === 25) { this.ddd = "twenty-fifth" };
-        if (dd === 26) { this.ddd = "twenty-sixth" };
-        if (dd === 27) { this.ddd = "twenty-seventh" };
-        if (dd === 28) { this.ddd = "twenty-eighth" };
-        if (dd === 29) { this.ddd = "twenty-nineth" };
-        if (dd === 30) { this.ddd = "thirtieth" };
-        if (dd === 31) { this.ddd = "thirty-first" };
-        //And one more, just for good luck.
-        if (dd === 32) { this.ddd = "thirty-second" };
-        var AMorPM = "AM"
-        if (hr === 12) AMorPM = "PM"
-        if (hr === 24) { hr = 12; AMorPm = "AM" };
-        if (hr > 12) {
-            if (hr === 13) { hr = 1 };
-            if (hr === 14) { hr = 2 };
-            if (hr === 15) { hr = 3 };
-            if (hr === 16) { hr = 4 };
-            if (hr === 17) { hr = 5 };
-            if (hr === 18) { hr = 6 };
-            if (hr === 19) { hr = 7 };
-            if (hr === 20) { hr = 8 };
-            if (hr === 21) { hr = 9 };
-            if (hr === 22) { hr = 10 };
-            if (hr === 23) { hr = 11 };
-            AMorPM = "PM";
-        };
-        if (dd<10) { dd = "0" + dd }; 
-        if (mm<10) { mm = "0" + mm };
-        if (mi<10) { mi = "0" + mi };
-        if (se<10) { se = "0" + se };
-        var theDay = today.getDay(); 
-        if (theDay === 0) { this.theDay = "Sunday" }; 
-        if (theDay === 1) { this.theDay = "Monday" }; 
-        if (theDay === 2) { this.theDay = "Tuesday" };
-        if (theDay === 3) { this.theDay = "Wednesday" };
-        if (theDay === 4) { this.theDay = "Thursday" };
-        if (theDay === 5) { this.theDay = "Friday" };
-        if (theDay === 6) { this.theDay = "Saturday" };
-        var today = hr + ":" + mi + ":" + se + " " + AMorPM + ", " + mm + '/' + dd + '/' + yyyy + ', the ' + this.ddd + " of the " + sea + " month of " + this.mmm + ', ' + yyyy + ' (' + this.theDay + ')';
-        this.say(room, "The current time is: " + today + " (UTC" + tz + ")");
+		var text = (room === user || user.hasRank(room.id, '+')) ? '' : '/pm ' + user.name + ', ';
+		var now = new Date();
+		var correct = function (time) {
+			return (time < 10 ? '0' : '') + time;
+		}
+		// Time variables
+		var timezone = now.getTimezoneOffset() / 60;
+		var year = now.getFullYear();
+		var mm = now.getMonth() + 1;
+		var theDay = now.getDay();
+		var dd = now.getDate();
+		var hour = now.getHours();
+		var minutes = correct(now.getMinutes());
+		var seconds = correct(now.getSeconds());
+		// Translate the time variables to a readable date
+		if (timezone !== 0) {
+			 // create a copy to fix +-timezone issues
+			// FIXME: maybe make this not so sloppy???
+			var _timezone = ('' + timezone);
+			timezone = (timezone > 0 ? '-' : '+') + (isNaN(Number(_timezone.charAt(0))) ? _timezone.substr(1) : _timezone);
+		} else {
+			timezone = '+0';
+		}
+		var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+		var month = months[mm - 1]; // If we don't subtract here, it'll assume it's the next month. For example, if it's October, it'll say November.
+		var season;
+		switch (month) {
+		case 'December': case 'January': case 'February':
+			season = 'winter';
+			break;
+		case 'March': case 'April': case 'May':
+			season = 'spring';
+			break;
+		case 'June': case 'July': case 'August':
+			season = 'summer';
+			break;
+		case 'September': case 'October': case 'November':
+			season = 'autumn';
+			break;
+		}
+		var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+		var day = days[theDay];
+		var _days = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteen', 'twentieth', 'twenty-first', 'twenty-second', 'twenty-third', 'twenty-fourth', 'twenty-fifth', 'twenty-sixth', 'twenty-seventh', 'twenty-eighth', 'twenty-ninth', 'thirtieth', 'thirty-first'];
+		var ordinalDay = _days[dd - 1];
+		var AMorPM = 'AM';
+		switch (hour) {
+		case 12:
+			AMorPM = 'PM';
+			break;
+		case 24:
+			AMorPM = 'AM';
+			break;
+		}
+		if (hour > 12) {
+			hour = hour - 12;
+			AMorPM = 'PM';
+		}
+		hour = correct(hour);
+		var today = hour + ':' + minutes + ':' + seconds + ' ' + AMorPM + ', ' + mm + '/' + dd + '/' + year + ', the ' + ordinalDay + ' of the ' + season + ' month of ' + month + ', ' + year + '.';
+		return this.say(room, text + 'The current time is ' + today + ' (' + day + ', GMT' + timezone + ')');
 	},
 	//Quick and generic introduction. Usually better to answer questions perosonally, though.
 	newbie: 'rules',
@@ -1841,7 +1816,7 @@ exports.commands = {
 				account.wotd = 3;
 				this.say(room, text + "Bought! Congratulations, you now have the ability to edit the Word of the Day up to 3 times! The format is: " + Config.commandcharacter + "wotd ``word``, ``pronunciation``, ``part of speech`` (Noun, Verb, Adjective, Etc.), and ``Definition``.");
 				break;
-			case "privategreeting":
+			case "publicgreeting":
 			case "personalgreetingpublic":
 			case "greetingpublic":
 				if (amount > 1) return this.say(room, text + "Sorry, but you can only buy one of these.");
