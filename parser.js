@@ -803,92 +803,83 @@ exports.parse = {
 	},
 	writeSettings: (function () {
 		var writing = false;
-		var writePending = false; // whether or not a new write is pending
-		var finishWriting = function () {
-			writing = false;
-			if (writePending) {
-				writePending = false;
-				this.writeSettings();
-			}
-		};
+		var writePending = false;
 		return function () {
 			if (writing) {
 				writePending = true;
 				return;
 			}
 			writing = true;
+
 			var data = JSON.stringify(this.settings);
-			fs.writeFile('settings.json.0', data, function () {
-				// rename is atomic on POSIX, but will throw an error on Windows
-				fs.rename('settings.json.0', 'settings.json', function (err) {
-					if (err) {
-						// This should only happen on Windows.
-						fs.writeFile('settings.json', data, finishWriting);
-						return;
+			var path = 'settings.json';
+			var tempPath = path + '.0';
+
+			fs.writeFile(tempPath, data, function () {
+				fs.rename(tempPath, path, function () {
+					writing = false;
+					if (writePending) {
+						writePending = false;
+						process.nextTick(function () {
+							this.writeSettings();
+						}.bind(this));
 					}
-					finishWriting();
-				});
-			});
+				}.bind(this));
+			}.bind(this));
 		};
 	})(),
 	writeMessages: (function () {
 		var writing = false;
-		var writePending = false; // whether or not a new write is pending
-		var finishWriting = function () {
-			writing = false;
-			if (writePending) {
-				writePending = false;
-				this.writeMessages();
-			}
-		};
+		var writePending = false;
 		return function () {
 			if (writing) {
 				writePending = true;
 				return;
 			}
 			writing = true;
+
 			var data = JSON.stringify(this.messages);
-			fs.writeFile('messages.json.0', data, function () {
-				// rename is atomic on POSIX, but will throw an error on Windows
-				fs.rename('messages.json.0', 'messages.json', function (err) {
-					if (err) {
-						// This should only happen on Windows.
-						fs.writeFile('messages.json', data, finishWriting);
-						return;
+			var path = 'messages.json';
+			var tempPath = path + '.0';
+
+			fs.writeFile(tempPath, data, function () {
+				fs.rename(tempPath, path, function () {
+					writing = false;
+					if (writePending) {
+						writePending = false;
+						process.nextTick(function () {
+							this.writeSettings();
+						}.bind(this));
 					}
-					finishWriting();
-				});
-			});
+				}.bind(this));
+			}.bind(this));
 		};
 	})(),
 	writeMyths: (function () {
 		var writing = false;
-		var writePending = false; // whether or not a new write is pending
-		var finishWriting = function () {
-			writing = false;
-			if (writePending) {
-				writePending = false;
-				this.writeMyths();
-			}
-		};
+		var writePending = false;
 		return function () {
 			if (writing) {
 				writePending = true;
 				return;
 			}
 			writing = true;
+
 			var data = JSON.stringify(this.myths);
-			fs.writeFile('mythDatabase.json.0', data, function () {
-				// rename is atomic on POSIX, but will throw an error on Windows
-				fs.rename('mythDatabase.json.0', 'mythDatabase.json', function (err) {
-					if (err) {
-						// This should only happen on Windows.
-						fs.writeFile('mythDatabase.json', data, finishWriting);
-						return;
+			var path = 'mythDatabase.json';
+			var tempPath = path + '.0';
+
+			fs.writeFile(tempPath, data, function () {
+				fs.rename(tempPath, path, function () {
+					writing = false;
+					if (writePending) {
+						writePending = false;
+						process.nextTick(function () {
+							this.writeSettings();
+						}.bind(this));
 					}
-					finishWriting();
-				});
-			});
+				}.bind(this));
+			}.bind(this));
 		};
 	})(),
 	shuffle: function (array) {
