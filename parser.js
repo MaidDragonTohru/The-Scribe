@@ -848,7 +848,7 @@ exports.parse = {
 					if (writePending) {
 						writePending = false;
 						process.nextTick(function () {
-							this.writeSettings();
+							this.writeMessages();
 						}.bind(this));
 					}
 				}.bind(this));
@@ -875,7 +875,7 @@ exports.parse = {
 					if (writePending) {
 						writePending = false;
 						process.nextTick(function () {
-							this.writeSettings();
+							this.writeMyths();
 						}.bind(this));
 					}
 				}.bind(this));
