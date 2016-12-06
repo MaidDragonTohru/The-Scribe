@@ -141,8 +141,9 @@ function randIdea() {
 	var type = characterTypes[Math.floor(characterTypes.length * Math.random())];
 	var role = roles[Math.floor(4 * Math.random())];
 	var gender = ["male", "female"][Math.floor(2 * Math.random())];
-	if (Math.floor(Math.random() * 4200 < 20)) gender = "hermaphrodite";
-	if (Math.floor(Math.random() * 4200 < 10) || type === "...thing") gender = "neuter";
+	if (Math.floor(Math.random() * 4200 < 15)) gender = "hermaphrodite";
+	if (Math.floor(Math.random() * 4200 < 10)) gender = "transgender";
+	if (Math.floor(Math.random() * 4200 < 5)) gender = "neuter";
 	var pronoun = pronouns[gender];
 	var possessivePronoun = possessivePronouns[gender];
 	var perkList = perks.slice(0);
