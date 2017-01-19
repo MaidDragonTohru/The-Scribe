@@ -606,7 +606,7 @@ exports.parse = {
 			path: '/documents'
 		};
 		
-		var req = http.request(reqOpts, function (res) {
+		var req = https.request(reqOpts, function (res) {
 			res.on('data', function (chunk) {
                 // CloudFlare can go to hell for sending the body in a header request like this
 				try {
@@ -618,7 +618,7 @@ exports.parse = {
                         callback('Unknown error uploading to Hastebin: ' + e.message);
                     }
                 }
-                callback('http://hastebin.com/raw/' + filename);
+                callback('https://hastebin.com/raw/' + filename);
 			});
         });
         req.on('error', function (e) {
