@@ -225,6 +225,7 @@ exports.commands = {
 		this.say(tarRoom, arg);
 	},
 	//Has the bot act out any JavaScript functions given. Only let people you trust use this, as it can cause some serious damage if you don't know what you're doing (and they do)
+	'eval': 'js',
 	js: function (arg, user, room) {
 		if (!user.isExcepted()) return false;
 		if (toId(arg) === 'configpass') {
