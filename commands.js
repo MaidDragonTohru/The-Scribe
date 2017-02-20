@@ -205,6 +205,7 @@ exports.commands = {
 		}
 	},
 	ping: function (arg, user, room) {
+		if (Math.round(Math.random() * 100) === 10) return this.say(room, "/me swings at the ball but misses.");
 		this.say(room, "Pong.");
 	},
 	'do': 'custom',
