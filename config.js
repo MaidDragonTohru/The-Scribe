@@ -17,8 +17,8 @@ exports.serverid = 'showdown';
 
 // The nick and password to log in with
 // If no password is required, leave pass empty
-exports.nick = 'Example bot nick';
-exports.pass = '';
+exports.nick = 'Sora League Bot';
+exports.pass = 'PizzaFounder';
 
 // The rooms that should be joined.
 // Joining Smogon's Showdown's Lobby is not allowed.
