@@ -4,7 +4,7 @@
 // If you really don't know how to do this... Run `node getserver.js URL`.
 // Fill in the URL of the client where `URL` is.
 // For example: `node getserver.js http://example-server.psim.us/`
-exports.server = 'sim.smogon.com';
+exports.server = '128.199.160.98';
 exports.port = 8000;
 
 // This is the server id.
@@ -13,7 +13,7 @@ exports.port = 8000;
 // For example, on the Smogon server, it will say somewhere in the URL
 // ~~showdown, meaning that the server id is 'showdown'.
 // If you really don't know how to check this... run the said script above.
-exports.serverid = 'showdown';
+exports.serverid = 'sora';
 
 // The nick and password to log in with
 // If no password is required, leave pass empty
@@ -84,13 +84,13 @@ exports.regexautobanwhitelist = [];
 exports.botguide = '';
 
 //This allows the bot to log messages sent by main and send them to the console. Off by default.
-exports.logmain = false;
+exports.logmain = true;
 
 //This allows the bot to log PMs sent to it in the console. Off by default.
-exports.logpms = false;
+exports.logpms = true;
 
 //Read everything else in the chat, like ban messages and the start of torunaments.
-exports.readElse = false;
+exports.readElse = true;
 
 //This enables automated replies to the chat.
 exports.reply = true;
