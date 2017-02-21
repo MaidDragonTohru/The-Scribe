@@ -35,12 +35,6 @@ try {
 } catch (e) {} // file doesn't exist [yet]
 if (!Object.isObject(messages)) messages = {};
 
-var myths;
-try {
-	myths = JSON.parse(fs.readFileSync('mythDatabase.json'));
-} catch (e) {}
-if (!Object.isObject(myths)) myths = {};
-
 exports.parse = {
 	actionUrl: url.parse('https://play.pokemonshowdown.com/~~' + Config.serverid + '/action.php'),
 	'settings': settings,
@@ -383,74 +377,6 @@ exports.parse = {
 			//Prompt of the Day tracking
 			if (this.settings.potdRanOut && room.id == "writing" && user.hasRank(room.id, '+') && Config.roomauth && Config.roomauth[room.id] && Config.roomauth[room.id][user.id]) {
 				this.say(room, "/msg " + user.id + ", I'm currently out of prompts to set! Halp! q-q Please add one with ``;prompt add, [prompt]``, or with ``;prompt autogen``");
-			}
-			// Scribe Shop greetings.
-			if (this.settings.scribeShop) {
-				for (i = 0; i < this.settings.scribeShop.length; i++) {
-					if (this.settings.scribeShop[i].account === user.id && this.settings.scribeShop[i].greetings) {
-						if (this.settings.scribeShop[i].greetings.private) {
-							if ((Date.now() - this.settings.scribeShop[i].greetings.private.lastTriggered > 60 * 60 * 1000) || this.settings.scribeShop[i].greetings.private.lastTriggered === null) {
-								if (this.settings.scribeShop[i].greetings.private.enabled === false) break;
-								this.settings.scribeShop[i].greetings.private.lastTriggered = Date.now();
-								this.writeSettings();
-								this.say(room, "/msg " + user.id + ", " + this.settings.scribeShop[i].greetings.private.text);
-							}
-						}
-						if (this.settings.scribeShop[i].greetings.public) {
-							if ((Date.now() - this.settings.scribeShop[i].greetings.public.lastTriggered > 60 * 60 * 1000) || this.settings.scribeShop[i].greetings.public.lastTriggered === null) {
-								if (this.settings.scribeShop[i].greetings.public.enabled === false) break;
-								this.settings.scribeShop[i].greetings.public.lastTriggered = Date.now();
-								this.writeSettings();
-								// Check for default message.
-								if (this.settings.scribeShop[i].greetings.public.text.substr(0, 4) === "/msg") {
-									this.say(room, this.settings.scribeShop[i].greetings.public.text);
-								} else {
-									this.say(room, "Personal greeting for ``" + user.name + "``: " + this.settings.scribeShop[i].greetings.public.text);
-								}
-							}
-						}
-						break;
-					}
-				}
-			}
-			// Check for pending notifications...
-			if (this.settings.notifs) {
-				for (var i = 0; i < this.settings.notifs.length; i++) {
-					if ((this.settings.notifs[i].name === user.id) || (this.settings.notifs[i].type == "Prompt")) {
-						switch (this.settings.notifs[i].type) {
-							case "PSponsor":
-							case "ASponsor":
-								this.say(room, "/msg " + this.settings.notifs[i].name + ", Your sponsorship of " + this.settings.notifs[i].other + " has expired. They will be refunded and you will no-longer be officially rewarded for completing the project. :c");
-								this.settings.notifs.splice(i, 1);
-								this.writeSettings();
-							case "PSolicitor":
-							case "ASolicitor":
-								this.say(room, "/msg " + this.settings.notifs[i].name + ", Your sponsorship from " + this.settings.notifs[i].other + " has expired because they didn't submit the project within 3 weeks. Oh no... :c");
-								this.say(room, "/msg " + this.settings.notifs[i].name + ", But, on the bright side, you have been refunded for your spent Quills! You've lost absolutely nothing. c: Except maybe time.");
-								this.settings.notifs.splice(i, 1);
-								this.writeSettings();
-							case "Submission":
-								this.say(room, "/msg " + this.settings.notifs[i].name + ", Your sponsor, " + this.settings.notifs[i].submitter + ", has finished their project for you! Here's a link:");
-								this.say(room, "/msg " + this.settings.notifs[i].name + ", " + this.settings.notifs[i].link);
-								this.settings.notifs.splice(i, 1);
-								this.writeSettings();
-							case "Prompt":
-								if (this.settings.potd.length == 0) {
-									if (!this.settings.potdRanOut) {
-										this.settings.potdRanOut = true;
-										this.writeSettings();
-									}
-								} else {
-									this.say(room, "The Prompt of the Day has been updated! New Prompt:");
-									this.say(room, this.settings.potdCurrent.prompt);
-									this.say(room, "This was added by: " + this.settings.potdCurrent.user);
-								}
-								this.settings.notifs.splice(i, 1);
-								this.writeSettings();
-						}
-						break;
-					}
-				}
 			}
 			if (Config.logmain) console.log(user.name.cyan + " has " + "joined".green + " the room " + room.id);
 			break;
@@ -849,33 +775,6 @@ exports.parse = {
 						writePending = false;
 						process.nextTick(function () {
 							this.writeMessages();
-						}.bind(this));
-					}
-				}.bind(this));
-			}.bind(this));
-		};
-	})(),
-	writeMyths: (function () {
-		var writing = false;
-		var writePending = false;
-		return function () {
-			if (writing) {
-				writePending = true;
-				return;
-			}
-			writing = true;
-
-			var data = JSON.stringify(this.myths);
-			var path = 'mythDatabase.json';
-			var tempPath = path + '.0';
-
-			fs.writeFile(tempPath, data, function () {
-				fs.rename(tempPath, path, function () {
-					writing = false;
-					if (writePending) {
-						writePending = false;
-						process.nextTick(function () {
-							this.writeMyths();
 						}.bind(this));
 					}
 				}.bind(this));
